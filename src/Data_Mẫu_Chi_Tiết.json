@@ -1,0 +1,110 @@
+{
+  "status": true,
+  "msg": "done",
+  "movie": {
+    "tmdb": {
+      "type": "tv",
+      "id": "254488",
+      "season": 1,
+      "vote_average": 8.5,
+      "vote_count": 120
+    },
+    "imdb": {
+      "id": "tt12345678"
+    },
+    "created": {
+      "time": "2025-09-13T10:30:00.000Z"
+    },
+    "modified": {
+      "time": "2025-09-22T07:27:30.000Z"
+    },
+    "_id": "22f4700139f7afad5efdce094bb9a8a5",
+    "name": "Phù Thủy Quan Sát",
+    "slug": "phu-thuy-quan-sat",
+    "origin_name": "Witch Watch",
+    "content": "Một thiếu niên siêng năng sống cùng người bạn thời thơ ấu gần đa, một phù thủy tập sự, để bảo vệ cô khỏi liên tục những khiếp. Nhưng liệu họ có thể sống sót ở trường trung học?",
+    "type": "hoathinh",
+    "status": "ongoing",
+    "poster_url": "https://phimimg.com/upload/vod/20250913-1/b1ac495cfdb3da91ef0a4e7789115a48.jpg",
+    "thumb_url": "https://phimimg.com/upload/vod/20250913-1/e340d45fdb6c19ab69c7f787223dc53d.jpg",
+    "is_copyright": false,
+    "sub_docquyen": false,
+    "chieurap": false,
+    "trailer_url": "https://www.youtube.com/watch?v=1jbtsWH_oro",
+    "time": "24 phút/tập",
+    "episode_current": "Tập 24",
+    "episode_total": "24 tập",
+    "quality": "FHD",
+    "lang": "Vietsub",
+    "notify": "",
+    "showtimes": "",
+    "year": 2025,
+    "view": 15420,
+    "actor": [
+      "Rina Kawaguchi",
+      "Ryota Suzuki", 
+      "Kohei Amasaki",
+      "Kaito Ishikawa"
+    ],
+    "director": [
+      "Daisuke Takashima"
+    ],
+    "category": [
+      {
+        "id": "ba6fd52e5a3aca80eaaf1a3b50a182db",
+        "name": "Hài Hước",
+        "slug": "hai-huoc"
+      },
+      {
+        "id": "0bcf4077916678de9b48c89221fcf8ae",
+        "name": "Khoa Học",
+        "slug": "khoa-hoc"
+      },
+      {
+        "id": "68564911f00849030f9c9c144ea1b931",
+        "name": "Viễn Tưởng",
+        "slug": "vien-tuong"
+      }
+    ],
+    "country": [
+      {
+        "id": "d4097fbffa8f7149a61281437171eb83",
+        "name": "Nhật Bản",
+        "slug": "nhat-ban"
+      }
+    ],
+    "episodes": [
+      {
+        "server_name": "VIP #1",
+        "server_data": [
+          {
+            "name": "Full",
+            "slug": "full",
+            "filename": "Phù Thủy Quan Sát - Full",
+            "link_embed": "https://player.phimapi.com/player/?url=https://s3.phimapi.com/file1.m3u8",
+            "link_m3u8": "https://s3.phimapi.com/file1.m3u8"
+          }
+        ]
+      },
+      {
+        "server_name": "VIP #2", 
+        "server_data": [
+          {
+            "name": "Tập 1",
+            "slug": "tap-1",
+            "filename": "Phù Thủy Quan Sát - Tập 1",
+            "link_embed": "https://player.phimapi.com/player/?url=https://s3.phimapi.com/ep1.m3u8",
+            "link_m3u8": "https://s3.phimapi.com/ep1.m3u8"
+          },
+          {
+            "name": "Tập 2",
+            "slug": "tap-2", 
+            "filename": "Phù Thủy Quan Sát - Tập 2",
+            "link_embed": "https://player.phimapi.com/player/?url=https://s3.phimapi.com/ep2.m3u8",
+            "link_m3u8": "https://s3.phimapi.com/ep2.m3u8"
+          }
+        ]
+      }
+    ]
+  }
+}

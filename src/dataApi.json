@@ -1,0 +1,1371 @@
+{
+    "status": true,
+    "msg": "done",
+    "items": [
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "254488",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-22T07:27:30.000Z"
+        },
+        "_id": "22f4700139f7afad5efdce094bb9a8a5",
+        "name": "Chước Chước Thiều Hoa",
+        "slug": "chuoc-chuoc-thieu-hoa",
+        "origin_name": "Wild Ambition Bloom",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250913-1/b1ac495cfdb3da91ef0a4e7789115a48.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250913-1/e340d45fdb6c19ab69c7f787223dc53d.jpg",
+        "sub_docquyen": false,
+        "time": "45 phút/tập",
+        "episode_current": "Tập 24",
+        "quality": "FHD",
+        "lang": "Vietsub + Thuyết Minh",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "280945",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-22T07:27:04.000Z"
+        },
+        "_id": "37db198a94d1b7770f36244f1fda20ca",
+        "name": "Ngự Trù Của Bạo Chúa",
+        "slug": "ngu-tru-cua-bao-chua",
+        "origin_name": "Bon Appétit, Your Majesty",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250823-1/6cecd0755934def609b834127974dab8.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250823-1/a3e5e347cfb12b8b836670069dd5b777.jpg",
+        "sub_docquyen": false,
+        "time": "80 phút/tập",
+        "episode_current": "Tập 10",
+        "quality": "FHD",
+        "lang": "Vietsub + Thuyết Minh",
+        "year": 2025,
+        "category": [
+          {
+            "id": "68564911f00849030f9c9c144ea1b931",
+            "name": "Viễn Tưởng",
+            "slug": "vien-tuong"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          },
+          {
+            "id": "ba6fd52e5a3aca80eaaf1a3b50a182db",
+            "name": "Hài Hước",
+            "slug": "hai-huoc"
+          }
+        ],
+        "country": [
+          {
+            "id": "05de95be5fc404da9680bbb3dd8262e6",
+            "name": "Hàn Quốc",
+            "slug": "han-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "294464",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T17:37:57.000Z"
+        },
+        "_id": "468e5112d68b2cb7c9df93692fe5730f",
+        "name": "Vâng Mệnh Trả Ngọc",
+        "slug": "vang-menh-tra-ngoc",
+        "origin_name": "The Mission Is To Return the Pearl",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250918-1/e4e2cadcd916b10beda012e524a55ee5.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250918-1/406ae81d3565d04a994fe9f89f5db5e1.jpg",
+        "sub_docquyen": false,
+        "time": "18 phút/tập",
+        "episode_current": "Tập 12",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "3a17c7283b71fa84e5a8d76fb790ed3e",
+            "name": "Cổ Trang",
+            "slug": "co-trang"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "294443",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T17:37:12.000Z"
+        },
+        "_id": "d1c1a2daad72f9d116f600c1c542b573",
+        "name": "Bút Ký Tư Gia Của Ngô Tà",
+        "slug": "but-ky-tu-gia-cua-ngo-ta",
+        "origin_name": "Time Raiders",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250920-1/add6ec331a4510d5b2755f370be7a793.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250920-1/4b41d870ea4a3ba5e3515e2e2dc4653c.jpg",
+        "sub_docquyen": false,
+        "time": "44 phút/tập",
+        "episode_current": "Tập 5",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "9822be111d2ccc29c7172c78b8af8ff5",
+            "name": "Hành Động",
+            "slug": "hanh-dong"
+          },
+          {
+            "id": "66c78b23908113d478d8d85390a244b4",
+            "name": "Phiêu Lưu",
+            "slug": "phieu-luu"
+          },
+          {
+            "id": "2fb53017b3be83cd754a08adab3e916c",
+            "name": "Bí Ẩn",
+            "slug": "bi-an"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "263034",
+          "season": 1,
+          "vote_average": 10,
+          "vote_count": 1
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T17:35:41.000Z"
+        },
+        "_id": "715eb56d3f3b71792e230102d1da496d",
+        "name": "Phó Sơn Hải",
+        "slug": "pho-son-hai",
+        "origin_name": "The Journey Of Legend",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250911-1/73625f73aeb9ce7e396f796b994b684a.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250911-1/99573d009a71f055ea5708a547b7f959.jpg",
+        "sub_docquyen": false,
+        "time": "45 phút/tập",
+        "episode_current": "Tập 26",
+        "quality": "FHD",
+        "lang": "Vietsub + Thuyết Minh",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "3a17c7283b71fa84e5a8d76fb790ed3e",
+            "name": "Cổ Trang",
+            "slug": "co-trang"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          },
+          {
+            "id": "66c78b23908113d478d8d85390a244b4",
+            "name": "Phiêu Lưu",
+            "slug": "phieu-luu"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "279322",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T17:34:24.000Z"
+        },
+        "_id": "fb888889fd40a755c36dc2b00c2b88c0",
+        "name": "Ngày Không Ngủ",
+        "slug": "ngay-khong-ngu",
+        "origin_name": "Mobius",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250917-1/ecd6c98af023631ca789a87fbdac5b53.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250917-1/dfeb65890571435ad901de5b942ef022.jpg",
+        "sub_docquyen": false,
+        "time": "45 phút/tập",
+        "episode_current": "Hoàn Tất (16/16)",
+        "quality": "FHD",
+        "lang": "Vietsub + Thuyết Minh",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "2fb53017b3be83cd754a08adab3e916c",
+            "name": "Bí Ẩn",
+            "slug": "bi-an"
+          },
+          {
+            "id": "7a035ac0b37f5854f0f6979260899c90",
+            "name": "Hình Sự",
+            "slug": "hinh-su"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "299719",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T17:30:48.000Z"
+        },
+        "_id": "4dff7cccfc092f41b8170fc6d7dc93c0",
+        "name": "Nghịch Tiên Mà Tiến",
+        "slug": "nghich-tien-ma-tien",
+        "origin_name": "Go Up Against The Immortals",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250911-1/382b95cf11224689f811039193270b6b.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250911-1/8ca7b82cf5f1442489ec8066c66e29a0.jpg",
+        "sub_docquyen": false,
+        "time": "11 phút/tập",
+        "episode_current": "Hoàn Tất (25/25)",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "3a17c7283b71fa84e5a8d76fb790ed3e",
+            "name": "Cổ Trang",
+            "slug": "co-trang"
+          },
+          {
+            "id": "68564911f00849030f9c9c144ea1b931",
+            "name": "Viễn Tưởng",
+            "slug": "vien-tuong"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "153915",
+          "season": 1,
+          "vote_average": 7,
+          "vote_count": 3
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:53:45.000Z"
+        },
+        "_id": "bb78a710e7d0494db915c83459de0c42",
+        "name": "Báo Thù",
+        "slug": "bao-thu-2021",
+        "origin_name": "The Revenge",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/32f3bc81ca240d0479b5b36b32edc47d.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/4dcb18155e4fb1e66d532ed77b4ae389.jpg",
+        "sub_docquyen": false,
+        "time": "40 phút/tập",
+        "episode_current": "Hoàn Tất (12/12)",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2021,
+        "category": [
+          {
+            "id": "7a035ac0b37f5854f0f6979260899c90",
+            "name": "Hình Sự",
+            "slug": "hinh-su"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "cefbf1640a17bad1e13c2f6f2a811a2d",
+            "name": "Thái Lan",
+            "slug": "thai-lan"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "109772",
+          "season": 1,
+          "vote_average": 6.1,
+          "vote_count": 7
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:28:36.000Z"
+        },
+        "_id": "3804d8a77337b4ed9c5f388c98822525",
+        "name": "Bánh Răng Trắng và Áo Choàng Bụi",
+        "slug": "banh-rang-trang-va-ao-choang-bui",
+        "origin_name": "My Gear And Your Gown",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/3f2efa96f1452a271c0b8f9357858cea.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/0efe256193bc86f44e5a337076a22432.jpg",
+        "sub_docquyen": false,
+        "time": "40 phút/tập",
+        "episode_current": "Hoàn Tất (12/12)",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2020,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "2975bbecb6017f4b4f06951f76d858de",
+            "name": "Thái Lan",
+            "slug": "thai-lan"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "290886",
+          "season": 1,
+          "vote_average": 8,
+          "vote_count": 1
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:13:05.000Z"
+        },
+        "_id": "65f76dcdbd789fbe2623a33ab6b35da0",
+        "name": "Ván Cờ Trắng Đen (Hắc Bạch Cục)",
+        "slug": "van-co-trang-den-hac-bach-cuc",
+        "origin_name": "Double Track Puzzle",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250908-1/7a7383fd476d47c11a4a24b93aec235e.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250908-1/6234fc78f37115533c824ad3e41702c8.jpg",
+        "sub_docquyen": false,
+        "time": "41 phút/tập",
+        "episode_current": "Hoàn Tất (20/20)",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "7a035ac0b37f5854f0f6979260899c90",
+            "name": "Hình Sự",
+            "slug": "hinh-su"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "9822be111d2ccc29c7172c78b8af8ff5",
+            "name": "Hành Động",
+            "slug": "hanh-dong"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "292760",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:12:15.000Z"
+        },
+        "_id": "aa45ea35cbdcb42012f2bf55012a0624",
+        "name": "Tì Nữ",
+        "slug": "ti-nu",
+        "origin_name": "The Maid",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250910-1/123501cee3fcdd5e4f009656cf37bd0e.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250910-1/7c8d58071596b4d0b7d455838a5b66a3.jpg",
+        "sub_docquyen": false,
+        "time": "15 phút/tập",
+        "episode_current": "Tập 21",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "3a17c7283b71fa84e5a8d76fb790ed3e",
+            "name": "Cổ Trang",
+            "slug": "co-trang"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "299121",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:11:42.000Z"
+        },
+        "_id": "f3a45758fe1e808fd1d41b62d7784a93",
+        "name": "Ngoảnh Lại Gặp Được Em",
+        "slug": "ngoanh-lai-gap-duoc-em",
+        "origin_name": "Encounter With You",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250910-1/0923572dbc8164b51df4e6682998d40a.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250910-1/d868693e2acf2bc74a8f1b01e9159ca7.jpg",
+        "sub_docquyen": false,
+        "time": "45 phút/tập",
+        "episode_current": "Tập 34",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "92aa3c93de523a414a520399bb6a4304",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "299467",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:10:55.000Z"
+        },
+        "_id": "8a019a04a3042593fec469ff979be507",
+        "name": "Nửa Thành Gió Trăng Nửa Thành Tuyết",
+        "slug": "nua-thanh-gio-trang-nua-thanh-tuyet",
+        "origin_name": "Between Love And Frost",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250917-1/b147252a33aeaec3f9767436519561f3.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250917-1/512cb72f5ace7334b28b48e7d3652f3f.jpg",
+        "sub_docquyen": false,
+        "time": "16 phút/tập",
+        "episode_current": "Tập 16",
+        "quality": "FHD",
+        "lang": "Vietsub + Thuyết Minh",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "284715",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:09:35.000Z"
+        },
+        "_id": "1eb4505084d87118b8c710ac96b97cb2",
+        "name": "Khúc Từ Biệt Trước Gương",
+        "slug": "khuc-tu-biet-truoc-guong",
+        "origin_name": "Echoes Of The Self",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/d0b150c300424223c6124bb4c1526fff.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/a3fecf59627620c4f79879354be8d6ca.jpg",
+        "sub_docquyen": false,
+        "time": "30 phút/tập",
+        "episode_current": "Tập 8",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "3a17c7283b71fa84e5a8d76fb790ed3e",
+            "name": "Cổ Trang",
+            "slug": "co-trang"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "273817",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:08:53.000Z"
+        },
+        "_id": "5aafc3f70332f6e42228be384d3c4f01",
+        "name": "Hoa Xuân Ẩn Mình",
+        "slug": "hoa-xuan-an-minh",
+        "origin_name": "Spring Fever",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/ec19afb24cfd19b744bfb2c9fdaada6b.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/ae39e41d739139b9c3a1d61900c1085c.jpg",
+        "sub_docquyen": false,
+        "time": "14 phút/tập",
+        "episode_current": "Tập 8",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "3a17c7283b71fa84e5a8d76fb790ed3e",
+            "name": "Cổ Trang",
+            "slug": "co-trang"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "300364",
+          "season": 1,
+          "vote_average": 0,
+          "vote_count": 0
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:07:56.000Z"
+        },
+        "_id": "4f383771112ef0024294d2cf15363c62",
+        "name": "Bạch Dạ Thần Duyên Khởi Tam Sinh",
+        "slug": "bach-da-than-duyen-khoi-tam-sinh",
+        "origin_name": "The Sun In The Dark",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250915-1/68947ac2e1115cca6cfae6a946020be0.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250915-1/49258418154f8c673a5bdec4e2abb11d.jpg",
+        "sub_docquyen": false,
+        "time": "29 phút/tập",
+        "episode_current": "Tập 16",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "3a17c7283b71fa84e5a8d76fb790ed3e",
+            "name": "Cổ Trang",
+            "slug": "co-trang"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "3e075636c731fe0f889c69e0bf82c083",
+            "name": "Trung Quốc",
+            "slug": "trung-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "283704",
+          "season": 1,
+          "vote_average": 8,
+          "vote_count": 1
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T16:06:15.000Z"
+        },
+        "_id": "c1020880214e7bbf222d0069b7c77cb7",
+        "name": "Ẩm Thực Của Fermat",
+        "slug": "am-thuc-cua-fermat-2025",
+        "origin_name": "Fermat Kitchen",
+        "type": "hoathinh",
+        "poster_url": "https://phimimg.com/upload/vod/20250809-1/2e4374d04dd7358c6572bb339aa39fa1.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250809-1/11241adf1cd1a214b3771f9daf4fd202.jpg",
+        "sub_docquyen": false,
+        "time": "24 phút/tập",
+        "episode_current": "Tập 11",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "d4097fbffa8f7149a61281437171eb83",
+            "name": "Nhật Bản",
+            "slug": "nhat-ban"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "275177",
+          "season": 1,
+          "vote_average": 6,
+          "vote_count": 1
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T06:33:37.000Z"
+        },
+        "_id": "d3b0b66668aabbb1887660ef1ba740ff",
+        "name": "Vươn Tới Mặt Trăng",
+        "slug": "vuon-toi-mat-trang",
+        "origin_name": "To The Moon",
+        "type": "series",
+        "poster_url": "https://phimimg.com/upload/vod/20250920-1/8a8cbd011b0dd30c1b1a22eef7b6c3eb.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250920-1/039f3797187cd3c422ad0656c96888d0.jpg",
+        "sub_docquyen": false,
+        "time": "66 phút/tập",
+        "episode_current": "Tập 2",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "05de95be5fc404da9680bbb3dd8262e6",
+            "name": "Hàn Quốc",
+            "slug": "han-quoc"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "movie",
+          "id": "299537",
+          "season": null,
+          "vote_average": 6.8,
+          "vote_count": 16256
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T06:28:10.000Z"
+        },
+        "_id": "e069ea4c9c233d36ff9c7f329bc08ff1",
+        "name": "Đại Úy Marvel",
+        "slug": "dai-uy-marvel",
+        "origin_name": "Captain Marvel",
+        "type": "single",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/fade94fa0cacab50a76740e1dbf1c18f.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/68ec76eabfab720f03ac7c6e59c81c56.jpg",
+        "sub_docquyen": false,
+        "time": "124 phút",
+        "episode_current": "Full",
+        "quality": "FHD",
+        "lang": "Vietsub + Thuyết Minh",
+        "year": 2019,
+        "category": [
+          {
+            "id": "9822be111d2ccc29c7172c78b8af8ff5",
+            "name": "Hành Động",
+            "slug": "hanh-dong"
+          },
+          {
+            "id": "66c78b23908113d478d8d85390a244b4",
+            "name": "Phiêu Lưu",
+            "slug": "phieu-luu"
+          },
+          {
+            "id": "0bcf4077916678de9b48c89221fcf8ae",
+            "name": "Khoa Học",
+            "slug": "khoa-hoc"
+          },
+          {
+            "id": "68564911f00849030f9c9c144ea1b931",
+            "name": "Viễn Tưởng",
+            "slug": "vien-tuong"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "74d9fa92f4dea9ecea8fc2233dc7921a",
+            "name": "Âu Mỹ",
+            "slug": "au-my"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "movie",
+          "id": "609681",
+          "season": null,
+          "vote_average": 5.976,
+          "vote_count": 3105
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T06:27:01.000Z"
+        },
+        "_id": "54ff9e9e3a2ec0300d4ce11261f5169f",
+        "name": "Biệt Đội Marvel",
+        "slug": "biet-doi-marvel",
+        "origin_name": "The Marvels",
+        "type": "single",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/9fbaf2be93c21c594912344105f0c73f.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/86c9aacc40e9fce15886e03ed838f2da.jpg",
+        "sub_docquyen": false,
+        "time": "105 phút",
+        "episode_current": "Full",
+        "quality": "FHD",
+        "lang": "Vietsub + Thuyết Minh",
+        "year": 2023,
+        "category": [
+          {
+            "id": "0bcf4077916678de9b48c89221fcf8ae",
+            "name": "Khoa Học",
+            "slug": "khoa-hoc"
+          },
+          {
+            "id": "68564911f00849030f9c9c144ea1b931",
+            "name": "Viễn Tưởng",
+            "slug": "vien-tuong"
+          },
+          {
+            "id": "66c78b23908113d478d8d85390a244b4",
+            "name": "Phiêu Lưu",
+            "slug": "phieu-luu"
+          },
+          {
+            "id": "9822be111d2ccc29c7172c78b8af8ff5",
+            "name": "Hành Động",
+            "slug": "hanh-dong"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "74d9fa92f4dea9ecea8fc2233dc7921a",
+            "name": "Âu Mỹ",
+            "slug": "au-my"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "272556",
+          "season": 1,
+          "vote_average": 8,
+          "vote_count": 12
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T06:25:11.000Z"
+        },
+        "_id": "33bf3f3023004bd4ddd06fb39952f804",
+        "name": "Đối Phó Với Chị Em Nhà Mikadono Thật Dễ Dàng",
+        "slug": "doi-pho-voi-chi-em-nha-mikadono-that-de-dang",
+        "origin_name": "Dealing With Mikadono Sisters Is A Breeze",
+        "type": "hoathinh",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/225d729a6973f543840c181e9355bcb7.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/431696f7d88949f891923db65bf27edd.jpg",
+        "sub_docquyen": false,
+        "time": "24 phút/tập",
+        "episode_current": "Hoàn Tất (12/12)",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "ba6fd52e5a3aca80eaaf1a3b50a182db",
+            "name": "Hài Hước",
+            "slug": "hai-huoc"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "d4097fbffa8f7149a61281437171eb83",
+            "name": "Nhật Bản",
+            "slug": "nhat-ban"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "96316",
+          "season": 1,
+          "vote_average": 8.369,
+          "vote_count": 922
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T06:22:22.000Z"
+        },
+        "_id": "826db7e382b0391c9f3e987fdf33a5f9",
+        "name": "Bạn Gái Thuê (Phần 4)",
+        "slug": "ban-gai-thue-phan-4",
+        "origin_name": "Rent-A-Girlfriend (Season 4)",
+        "type": "hoathinh",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/af40177d9f21468eaed393f74aa59012.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/3aaea5508de705817c0c1afd18a7e9c1.jpg",
+        "sub_docquyen": false,
+        "time": "25 phút/tập",
+        "episode_current": "Tập 10",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2025,
+        "category": [
+          {
+            "id": "ba6fd52e5a3aca80eaaf1a3b50a182db",
+            "name": "Hài Hước",
+            "slug": "hai-huoc"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "d4097fbffa8f7149a61281437171eb83",
+            "name": "Nhật Bản",
+            "slug": "nhat-ban"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "96316",
+          "season": 1,
+          "vote_average": 8.369,
+          "vote_count": 922
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T06:21:36.000Z"
+        },
+        "_id": "b8b26f24186191c7af8a25e2cc6115ca",
+        "name": "Bạn Gái Thuê (Phần 3)",
+        "slug": "ban-gai-thue-phan-3",
+        "origin_name": "Rent-A-Girlfriend (Season 3)",
+        "type": "hoathinh",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/2a285f0bcfb758696a05e3dd19d95c54.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/7464e6aff4d69c4811cd6ac8874cbd7a.jpg",
+        "sub_docquyen": false,
+        "time": "25 phút/tập",
+        "episode_current": "Hoàn Tất (12/12)",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2023,
+        "category": [
+          {
+            "id": "ba6fd52e5a3aca80eaaf1a3b50a182db",
+            "name": "Hài Hước",
+            "slug": "hai-huoc"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "d4097fbffa8f7149a61281437171eb83",
+            "name": "Nhật Bản",
+            "slug": "nhat-ban"
+          }
+        ]
+      },
+      {
+        "tmdb": {
+          "type": "tv",
+          "id": "96316",
+          "season": 1,
+          "vote_average": 8.369,
+          "vote_count": 922
+        },
+        "imdb": {
+          "id": null
+        },
+        "modified": {
+          "time": "2025-09-21T06:20:50.000Z"
+        },
+        "_id": "c81b59a1e08f93cdea2fa3637aee0565",
+        "name": "Bạn Gái Thuê (Phần 2)",
+        "slug": "ban-gai-thue-phan-2",
+        "origin_name": "Rent-A-Girlfriend (Season 2)",
+        "type": "hoathinh",
+        "poster_url": "https://phimimg.com/upload/vod/20250921-1/829eeba488059eae74f3ce7ad24163b8.jpg",
+        "thumb_url": "https://phimimg.com/upload/vod/20250921-1/49dd0f14d74a581d897fe4686c21e43c.jpg",
+        "sub_docquyen": false,
+        "time": "25 phút/tập",
+        "episode_current": "Hoàn Tất (12/12)",
+        "quality": "FHD",
+        "lang": "Vietsub",
+        "year": 2022,
+        "category": [
+          {
+            "id": "ba6fd52e5a3aca80eaaf1a3b50a182db",
+            "name": "Hài Hước",
+            "slug": "hai-huoc"
+          },
+          {
+            "id": "37a7b38b6184a5ebd3c43015aa20709d",
+            "name": "Chính Kịch",
+            "slug": "chinh-kich"
+          },
+          {
+            "id": "bb2b4b030608ca5984c8dd0770f5b40b",
+            "name": "Tình Cảm",
+            "slug": "tinh-cam"
+          },
+          {
+            "id": "a7b065b92ad356387ef2e075dee66529",
+            "name": "Tâm Lý",
+            "slug": "tam-ly"
+          }
+        ],
+        "country": [
+          {
+            "id": "d4097fbffa8f7149a61281437171eb83",
+            "name": "Nhật Bản",
+            "slug": "nhat-ban"
+          }
+        ]
+      }
+    ],
+    "pagination": {
+      "totalItems": 24314,
+      "totalItemsPerPage": 24,
+      "currentPage": 1,
+      "totalPages": 1014,
+      "updateToday": 2
+    }
+  }
