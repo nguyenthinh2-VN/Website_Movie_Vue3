@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/views/HomePage.vue'
 import CategoryPage from '@/views/CategoryPage.vue'
 import MovieDetailPage from '@/views/MovieDetailPage.vue'
+import AnimePage from '@/views/AnimePage.vue'
 
 const routes = [
   {
@@ -20,7 +21,13 @@ const routes = [
     name: 'MovieDetail',
     component: MovieDetailPage,
     props: true
+  },
+  {
+    path: '/hoat-hinh',
+    name: 'Anime',
+    component: AnimePage
   }
+
 ]
 
 const router = createRouter({

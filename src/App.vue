@@ -22,6 +22,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #ffffff;
   min-height: 100vh;
+  padding-top: 80px; /* Space for fixed navbar */
 }
 
 #app {

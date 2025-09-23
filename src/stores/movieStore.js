@@ -19,17 +19,14 @@ export const useMovieStore = defineStore('movie', {
   }),
 
   getters: {
-    // Kiểm tra có phim hay không
     hasMovies: (state) => state.movies.length > 0,
     
-    // Lấy phim theo thể loại
     getMoviesByCategory: (state) => (categorySlug) => {
       return state.movies.filter(movie => 
         movie.category.some(cat => cat.slug === categorySlug)
       )
     },
     
-    // Lấy phim theo năm
     getMoviesByYear: (state) => (year) => {
       return state.movies.filter(movie => movie.year === year)
     }
@@ -39,64 +36,55 @@ export const useMovieStore = defineStore('movie', {
     async fetchMovies(page = 1) {
       this.loading = true
       this.error = null
-      
+
+      // 🔹 Kiểm tra cache trước
+      const cached = this.pageCache.get(page)
+      if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
+        this.movies = cached.data.movies
+        this.pagination = { ...cached.data.pagination, currentPage: page }
+        this.loading = false
+        return
+      }
+
       try {
-        const response = await fetch(`https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${page}`)
+        const response = await fetch(
+          `https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${page}`
+        )
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         
         const data = await response.json()
-        console.log('API Response:', data)
         
         if (data.status) {
-          // Kiểm tra cấu trúc data
+          let movies = []
+          let pagination = {}
+
           if (data.data && data.data.items) {
-            this.movies = data.data.items
-            this.pagination = data.data.pagination || {}
-            this.pagination.currentPage = page
+            movies = data.data.items
+            pagination = data.data.pagination || {}
           } else if (data.items) {
-            this.movies = data.items
-            this.pagination = data.pagination || {}
-            this.pagination.currentPage = page
+            movies = data.items
+            pagination = data.pagination || {}
           } else {
-            console.error('Unexpected data structure:', data)
             throw new Error('Invalid data structure')
           }
+
+          this.movies = movies
+          this.pagination = { ...pagination, currentPage: page }
+
+          // 🔹 Lưu cache
+          this.pageCache.set(page, {
+            data: { movies, pagination },
+            timestamp: Date.now()
+          })
         } else {
           throw new Error(data.msg || 'Failed to fetch movies')
         }
         
       } catch (error) {
         this.error = error.message
-        console.error('Error fetching movies:', error)
-      } finally {
-        this.loading = false
-      }
-    },
-
-    async loadMoreMovies(page) {
-      this.loading = true
-      
-      try {
-        const response = await fetch(`https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${page}`)
-        const data = await response.json()
-        
-        if (data.status) {
-          // Thêm phim mới vào danh sách hiện tại
-          if (data.data && data.data.items) {
-            this.movies.push(...data.data.items)
-            this.pagination = data.data.pagination || {}
-          } else if (data.items) {
-            this.movies.push(...data.items)
-            this.pagination = data.pagination || {}
-          }
-        }
-        
-      } catch (error) {
-        this.error = error.message
-        console.error('Error loading more movies:', error)
       } finally {
         this.loading = false
       }
@@ -110,27 +98,20 @@ export const useMovieStore = defineStore('movie', {
       // Scroll to section-title when changing page
       const sectionTitle = document.querySelector('.section-title')
       if (sectionTitle) {
-        sectionTitle.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        })
+        sectionTitle.scrollIntoView({ behavior: 'smooth', block: 'start' })
       } else {
-        // Fallback to top if section-title not found
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     },
 
-    // Tìm kiếm phim theo tên
     searchMovies(query) {
       if (!query) return this.movies
-      
       return this.movies.filter(movie => 
         movie.name.toLowerCase().includes(query.toLowerCase()) ||
         movie.origin_name.toLowerCase().includes(query.toLowerCase())
       )
     },
 
-    // Reset store
     resetStore() {
       this.movies = []
       this.loading = false
@@ -142,6 +123,7 @@ export const useMovieStore = defineStore('movie', {
         totalPages: 0,
         updateToday: 0
       }
+      this.pageCache.clear()
     }
   }
 })

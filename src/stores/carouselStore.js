@@ -18,7 +18,7 @@ export const useCarouselStore = defineStore('carousel', {
       this.error = null
       
       try {
-        const response = await fetch('https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1')
+        const response = await fetch('https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=1')
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)

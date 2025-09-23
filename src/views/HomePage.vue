@@ -4,11 +4,11 @@
     <main class="main-content">
       <!-- Carousel Section -->
       <AnimeCarousel></AnimeCarousel>
-      
+
       <div class="container featured-container">
         <section class="featured-section">
           <h2 class="section-title">Phim mới cập nhật</h2>
-          
+
           <!-- Loading State -->
           <div v-if="movieStore.loading" class="loading-section">
             <div class="spinner-border text-light" role="status">
@@ -16,36 +16,44 @@
             </div>
             <p class="loading-text">Đang tải danh sách phim...</p>
           </div>
-          
+
           <!-- Error State -->
           <div v-else-if="movieStore.error" class="error-section">
             <div class="alert alert-danger" role="alert">
               Lỗi tải dữ liệu: {{ movieStore.error }}
-              <button @click="loadMovies" class="btn btn-sm btn-outline-danger ms-2">Thử lại</button>
-              <button @click="testAPI" class="btn btn-sm btn-outline-info ms-2">Test API</button>
+              <button
+                @click="loadMovies"
+                class="btn btn-sm btn-outline-danger ms-2"
+              >
+                Thử lại
+              </button>
+              <button @click="testAPI" class="btn btn-sm btn-outline-info ms-2">
+                Test API
+              </button>
             </div>
             <div class="debug-info mt-3" v-if="debugInfo">
               <h6>Debug Info:</h6>
               <pre>{{ debugInfo }}</pre>
             </div>
           </div>
-          
+
           <!-- Movies Grid -->
           <div v-else-if="movieStore.hasMovies" class="movies-grid">
-            <MovieCard 
-              v-for="movie in displayedMovies" 
-              :key="movie._id" 
+            <MovieCard
+              v-for="movie in displayedMovies"
+              :key="movie._id"
               :movie="movie"
             />
           </div>
-          
+
           <!-- No Data State -->
           <div v-else class="no-data-section">
             <div class="no-data-content">
               <i class="bi bi-film display-1 text-muted mb-3"></i>
               <h3 class="text-light mb-2">Không có dữ liệu phim</h3>
               <p class="text-muted mb-3">
-                Không thể tải danh sách phim. Vui lòng kiểm tra kết nối mạng và thử lại.
+                Không thể tải danh sách phim. Vui lòng kiểm tra kết nối mạng và
+                thử lại.
               </p>
               <button @click="loadMovies" class="btn btn-retry">
                 <i class="bi bi-arrow-clockwise me-2"></i>
@@ -53,9 +61,9 @@
               </button>
             </div>
           </div>
-          
+
           <!-- Pagination -->
-          <MoviePagination 
+          <MoviePagination
             v-if="movieStore.hasMovies && movieStore.pagination.totalPages > 1"
             :current-page="movieStore.pagination.currentPage"
             :total-pages="movieStore.pagination.totalPages"
@@ -70,81 +78,100 @@
 </template>
 
 <script>
-import AppHeader from '@/components/Header.vue'
-import AppFooter from '@/components/Footer.vue'
-import AnimeCarousel from '@/components/AnimeCarousel.vue'
-import MovieCard from '@/components/MovieCard.vue'
-import MoviePagination from '@/components/Pagination.vue'
-import { useMovieStore } from '@/stores/movieStore'
+import AppHeader from "@/components/Header.vue";
+import AppFooter from "@/components/Footer.vue";
+import AnimeCarousel from "@/components/AnimeCarousel.vue";
+import MovieCard from "@/components/MovieCard.vue";
+import MoviePagination from "@/components/Pagination.vue";
+import { useMovieStore } from "@/stores/movieStore";
 
 export default {
-  name: 'HomePage',
+  name: "HomePage",
   components: {
     AppHeader,
     AppFooter,
     AnimeCarousel,
     MovieCard,
-    MoviePagination
+    MoviePagination,
   },
   setup() {
-    const movieStore = useMovieStore()
-    return { movieStore }
+    const movieStore = useMovieStore();
+    return { movieStore };
   },
   data() {
     return {
-      debugInfo: null
-    }
+      debugInfo: null,
+    };
   },
   computed: {
     displayedMovies() {
       // Hiển thị tất cả phim vì carousel đã có store riêng
-      return this.movieStore.movies
-    }
+      return this.movieStore.movies;
+    },
   },
   methods: {
     async loadMovies() {
-      await this.movieStore.fetchMovies(1)
+      // lấy page từ URL query, nếu không có thì mặc định 1
+      const page = this.$route.query.page
+        ? parseInt(this.$route.query.page)
+        : 1;
+      await this.movieStore.fetchMovies(page);
     },
+    //Đưa State lên URL
     async handlePageChange(page) {
-      await this.movieStore.changePage(page)
+      await this.movieStore.changePage(page);
+      this.$router.push({ query: { page } }); // lưu số trang vào URL
     },
     async testAPI() {
-      this.debugInfo = 'Testing API...'
+      this.debugInfo = "Testing API...";
       try {
-        const testUrl = 'https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1'
-        console.log('Testing URL:', testUrl)
-        
-        const response = await fetch(testUrl)
-        const data = await response.json()
-        
-        this.debugInfo = JSON.stringify({
-          url: testUrl,
-          status: response.status,
-          ok: response.ok,
-          dataStructure: {
-            hasStatus: !!data.status,
-            statusValue: data.status,
-            hasData: !!data.data,
-            hasItems: !!(data.data && data.data.items),
-            itemsLength: data.data && data.data.items ? data.data.items.length : 0,
-            pagination: data.data && data.data.pagination ? data.data.pagination : null
+        const testUrl =
+          "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1";
+        console.log("Testing URL:", testUrl);
+
+        const response = await fetch(testUrl);
+        const data = await response.json();
+
+        this.debugInfo = JSON.stringify(
+          {
+            url: testUrl,
+            status: response.status,
+            ok: response.ok,
+            dataStructure: {
+              hasStatus: !!data.status,
+              statusValue: data.status,
+              hasData: !!data.data,
+              hasItems: !!(data.data && data.data.items),
+              itemsLength:
+                data.data && data.data.items ? data.data.items.length : 0,
+              pagination:
+                data.data && data.data.pagination ? data.data.pagination : null,
+            },
+            firstItem:
+              data.data && data.data.items && data.data.items[0]
+                ? data.data.items[0]
+                : null,
           },
-          firstItem: data.data && data.data.items && data.data.items[0] ? data.data.items[0] : null
-        }, null, 2)
-        
+          null,
+          2
+        );
       } catch (error) {
-        this.debugInfo = JSON.stringify({
-          error: error.message,
-          stack: error.stack
-        }, null, 2)
+        this.debugInfo = JSON.stringify(
+          {
+            error: error.message,
+            stack: error.stack,
+          },
+          null,
+          2
+        );
       }
-    }
+    },
   },
   async mounted() {
     // Load initial data
-    await this.loadMovies()
-  }
-}
+    await this.loadMovies();
+  },
+};
 </script>
 
 <style scoped>
@@ -189,7 +216,7 @@ export default {
 }
 
 .section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -308,16 +335,16 @@ export default {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .no-data-section {
     padding: 3rem 1rem;
     min-height: 300px;
   }
-  
+
   .btn-retry {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
@@ -328,16 +355,16 @@ export default {
   .container {
     padding: 0 1rem;
   }
-  
+
   .movies-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
-  
+
   .section-title {
     font-size: 1.8rem;
   }
-  
+
   .featured-container {
     padding-top: 2rem;
   }
@@ -348,11 +375,11 @@ export default {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
   }
-  
+
   .section-title {
     font-size: 1.5rem;
   }
-  
+
   .container {
     padding: 0 0.5rem;
   }

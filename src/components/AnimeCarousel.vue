@@ -39,14 +39,15 @@
               <div class="row align-items-center justify-content-center">
                 <div class="col-lg-8 text-center">
                   <div class="anime-details">
-                    <span class="anime-badge">{{ movie.episode_current }}</span>
+                    <!-- <span class="anime-badge">{{ movie.episode_current }}</span> -->
                     <h1 class="anime-title">{{ movie.name }}</h1>
                     <h2 class="anime-subtitle">{{ movie.origin_name }}</h2>
                     <div class="anime-meta">
                       <span class="genre">{{ getGenres(movie.category) }}</span>
-                      <span class="quality">{{ movie.quality }}</span>
+                      <!-- <span class="quality">{{ movie.quality }}</span> -->
+                      <span class="anime-badge">{{ movie.episode_current }}</span>
                       <span class="year">{{ movie.year }}</span>
-                      <span class="lang">{{ movie.lang }}</span>
+                      <!-- <span class="lang">{{ movie.lang }}</span> -->
                     </div>
                   </div>
                 </div>
@@ -174,9 +175,9 @@ export default {
   height: 100%;
   background: linear-gradient(
     135deg,
-    rgba(26, 26, 46, 0.7) 0%,
-    rgba(22, 33, 62, 0.6) 50%,
-    rgba(15, 52, 96, 0.5) 100%
+    rgba(26, 26, 46, 0.6) 0%,
+    rgba(22, 33, 62, 0.5) 50%,
+    rgba(15, 52, 96, 0.45) 100%
   );
 }
 
@@ -193,16 +194,8 @@ export default {
 }
 
 .anime-badge {
-  display: inline-block;
-  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-  color: white;
-  padding: 0.4rem 1.2rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background: rgba(248, 208, 47, 0.2) !important;
+  border-color: rgba(255, 215, 61, 0.3) !important;
 }
 
 .anime-title {
