@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/views/HomePage.vue'
 import CategoryPage from '@/views/CategoryPage.vue'
 import MovieDetailPage from '@/views/MovieDetailPage.vue'
+import WatchPage from '@/views/WatchPage.vue'
 import AnimePage from '@/views/AnimePage.vue'
 
 const routes = [
@@ -23,6 +24,13 @@ const routes = [
     name: 'MovieDetail',
     component: MovieDetailPage,
     meta: { title: "Trang Chi Tiết" },
+    props: true
+  },
+  {
+    path: '/xem/:slug/:serverIndex/:episodeIndex',
+    name: 'watch',
+    component: WatchPage,
+    meta: { title: "Xem Phim" },
     props: true
   },
   {

@@ -26,7 +26,7 @@
       <!-- Movie Detail Content -->
       <div v-else-if="movieDetailStore.hasMovie" class="movie-detail-content">
         <div class="container">
-          <div class="row">
+          <div class="row container-body">
             <!-- Movie Poster -->
             <div class="col-lg-4 col-md-5">
               <div class="movie-poster-section">
@@ -42,23 +42,42 @@
                   </div>
                 </div>
                 
-                <!-- Action Buttons -->
+                <!-- Action Buttons with Naive UI -->
                 <div class="action-buttons">
-                  <button class="btn btn-watch">
-                    <i class="bi bi-play-circle me-2"></i>
-                    XEM PHIM
-                  </button>
-                  <button 
-                    v-if="movieDetailStore.movieInfo?.trailer_url"
-                    class="btn btn-trailer"
-                    @click="openTrailerModal"
+                  <n-button 
+                    type="info" 
+                    size="large"
+                    @click="toggleEpisodes"
+                    class="btn-episodes"
                   >
-                    <i class="bi bi-camera-video me-2"></i>
-                    TRAILER
-                  </button>
-                  <button class="btn btn-bookmark">
-                    <i class="bi bi-bookmark"></i>
-                  </button>
+                    <template #icon>
+                      <i class="bi bi-play-circle"></i>
+                    </template>
+                    Chọn Tập
+                  </n-button>
+                  
+                  <n-button 
+                    v-if="movieDetailStore.movieInfo?.trailer_url"
+                    type="success" 
+                    size="large"
+                    @click="openTrailerModal"
+                    class="btn-trailer"
+                  >
+                    <template #icon>
+                      <i class="bi bi-camera-video"></i>
+                    </template>
+                    Trailer
+                  </n-button>
+                  
+                  <n-button 
+                    circle
+                    size="large"
+                    class="btn-bookmark"
+                  >
+                    <template #icon>
+                      <i class="bi bi-bookmark"></i>
+                    </template>
+                  </n-button>
                 </div>
               </div>
             </div>
@@ -70,18 +89,7 @@
                 <h1 class="movie-title">{{ movieDetailStore.movieInfo.name }}</h1>
                 <h2 class="movie-subtitle">{{ movieDetailStore.movieInfo.origin_name }}</h2>
                 
-                <!-- Rating -->
-                <div class="movie-rating">
-                  <div class="stars">
-                    <i 
-                      v-for="star in 5" 
-                      :key="star"
-                      :class="getStarClass(star, movieDetailStore.rating)"
-                    ></i>
-                  </div>
-                  <span class="rating-score">{{ formatRating(movieDetailStore.rating) }}</span>
-                </div>
-                
+
                 <!-- Movie Meta Info -->
                 <div class="movie-meta">
                   <div class="meta-row">
@@ -133,8 +141,12 @@
                   <div class="meta-row">
                     <span class="meta-label">Yêu thích:</span>
                     <div class="rating-stars">
-                      <span v-for="n in 5" :key="n" class="star">⭐</span>
-                      <span class="rating-text">({{ movieDetailStore.rating }}/10)</span>
+                      <i 
+                        v-for="star in 5" 
+                        :key="star"
+                        :class="getStarClass(star, movieDetailStore.rating)"
+                      ></i>
+                      <span class="rating-text">({{ formatRating(movieDetailStore.rating) }}/5)</span>
                     </div>
                   </div>
                 </div>
@@ -171,9 +183,49 @@
           </div>
         </div>
       </div>
+
+      <!-- Episodes Section (Outside container-body) -->
+      <div v-if="movieDetailStore.hasMovie && showEpisodes" class="episodes-section">
+        <div class="container">
+          <n-collapse v-model:expanded-names="expandedEpisodes" class="episodes-collapse">
+            <n-collapse-item title="Danh sách tập phim" name="episodes">
+              <div class="episodes-container" v-if="Array.isArray(movieDetailStore.episodes) && movieDetailStore.episodes.length > 0">
+                <div 
+                  v-for="(server, serverIndex) in movieDetailStore.episodes" 
+                  :key="serverIndex"
+                  class="server-section"
+                >
+                  <div class="server-header">
+                    <n-tag type="error" size="large">
+                      {{ server.server_name }}
+                    </n-tag>
+                  </div>
+                  <div class="episodes-grid" v-if="Array.isArray(server.server_data) && server.server_data.length > 0">
+                    <n-button
+                      v-for="(episode, episodeIndex) in server.server_data"
+                      :key="episodeIndex"
+                      size="small"
+                      class="episode-btn"
+                      @click="playEpisode(serverIndex, episodeIndex, episode)"
+                    >
+                      {{ getEpisodeNumber(episode.name) }}
+                    </n-button>
+                  </div>
+                  <div v-else class="no-server-data">
+                    <p class="text-muted">Server này chưa có tập phim nào.</p>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="no-episodes">
+                <p>Chưa có tập phim nào được cập nhật.</p>
+              </div>
+            </n-collapse-item>
+          </n-collapse>
+        </div>
+      </div>
       
       <!-- No Data State -->
-      <div v-else class="no-data-section">
+      <div v-else-if="!movieDetailStore.loading && !movieDetailStore.error && !movieDetailStore.hasMovie" class="no-data-section">
         <div class="container">
           <div class="no-data-content">
             <i class="bi bi-film display-1 text-muted mb-3"></i>
@@ -231,13 +283,18 @@ import AppHeader from '@/components/Header.vue'
 import AppFooter from '@/components/Footer.vue'
 import RelatedMovies from '@/components/RelatedMovies.vue'
 import { useMovieDetailStore } from '@/stores/movieDetailStore'
+import { NButton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
 
 export default {
   name: 'MovieDetailPage',
   components: {
     AppHeader,
     AppFooter,
-    RelatedMovies
+    RelatedMovies,
+    NButton,
+    NCollapse,
+    NCollapseItem,
+    NTag
   },
   setup() {
     const movieDetailStore = useMovieDetailStore()
@@ -249,7 +306,9 @@ export default {
       isDescriptionExpanded: false,
       isDescriptionLong: false,
       showTrailerModal: false,
-      trailerEmbedUrl: null
+      trailerEmbedUrl: null,
+      expandedEpisodes: [], // For collapse control
+      showEpisodes: false // Control episodes section visibility
     }
   },
   async mounted() {
@@ -277,6 +336,9 @@ export default {
     async loadMovieDetail() {
       if (this.movieSlug) {
         await this.movieDetailStore.fetchMovieDetail(this.movieSlug)
+        // Debug: Log episodes data
+        console.log('Episodes data:', this.movieDetailStore.episodes)
+        console.log('Movie data:', this.movieDetailStore.movie)
         // Check if description is long after loading
         this.$nextTick(() => {
           this.checkDescriptionLength()
@@ -335,7 +397,9 @@ export default {
     
     formatRating(rating) {
       if (rating === 0) return '0.0'
-      const rounded = Math.round(rating * 10) / 10
+      // Chuyển từ thang 10 sang thang 5 để hiển thị
+      const starRating = rating / 2
+      const rounded = Math.round(starRating * 10) / 10
       return rounded.toFixed(1)
     },
     
@@ -356,7 +420,44 @@ export default {
     
     goToCategory(categorySlug) {
       this.$router.push(`/the-loai/${categorySlug}`)
-    }
+    },
+  
+    
+    playEpisode(serverIndex, episodeIndex, episode) {
+      console.log('Play episode:', episode)
+      console.log('Server index:', serverIndex)
+      console.log('Episode index:', episodeIndex)
+      
+      // Chuyển hướng đến trang xem phim
+      this.$router.push({
+        name: 'watch',
+        params: {
+          slug: this.movieSlug,
+          serverIndex: (serverIndex + 1).toString(), // Server bắt đầu từ 1
+          episodeIndex: (episodeIndex + 1).toString() // Episode bắt đầu từ 1
+        }
+      })
+    },
+    
+    toggleEpisodes() {
+      this.showEpisodes = !this.showEpisodes
+      if (this.showEpisodes) {
+        // Auto expand episodes when showing
+        this.expandedEpisodes = ['episodes']
+        // Scroll to episodes section
+        this.$nextTick(() => {
+          const episodesSection = document.querySelector('.episodes-section')
+          if (episodesSection) {
+            episodesSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        })
+      }
+    },
+    
+    getEpisodeNumber(episodeName) {
+      // Bỏ chữ "Tập" và chỉ lấy số: "Tập 01" -> "1", "Tập 1" -> "1"
+      return episodeName.replace(/^Tập\s*0?/, '').trim()
+    },
   }
 }
 </script>
@@ -473,44 +574,88 @@ export default {
   flex-wrap: wrap;
 }
 
-.btn-watch {
-  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 25px;
-  font-weight: bold;
-  font-size: 1rem;
+/* Custom styling for bookmark button */
+.btn-bookmark {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
   transition: all 0.3s ease;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
+}
+
+.btn-bookmark:hover {
+  background: rgba(255, 107, 107, 0.2) !important;
+  border-color: rgba(255, 107, 107, 0.3) !important;
+  color: #ffd93d !important;
+  transform: translateY(-2px);
+}
+
+/* Episodes Collapse Styling */
+.episodes-collapse {
+  margin-top: 1.5rem;
+}
+
+.episodes-container {
+  padding: 1rem 0;
+}
+
+.server-section {
+  margin-bottom: 1.5rem;
+}
+
+.server-header {
+  margin-bottom: 0.8rem;
+}
+
+.episodes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(35px, max-content));
+  gap: 8px;
+  max-width: 100%;
+  justify-content: start;
+}
+
+.episode-btn {
+  min-width: 35px !important;
+  width: max-content !important;
+  height: 35px !important;
+  max-width: none !important;
+  max-height: 100% !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white !important;
+  padding: 2px 6px !important;
+  margin: 2px !important;
+  background-color: #282F33 !important;
+  overflow: visible;
+  white-space: nowrap;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-.btn-watch:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+.episode-btn:hover {
+  background-color: #E46565 !important;
 }
 
-.btn-favorite {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 0.75rem 1rem;
-  border-radius: 25px;
-  transition: all 0.3s ease;
+.no-episodes {
+  text-align: center;
+  padding: 2rem;
+  color: #a0a0a0;
 }
 
-.btn-favorite:hover {
-  background: rgba(255, 107, 107, 0.2);
-  border-color: rgba(255, 107, 107, 0.3);
+.no-server-data {
+  text-align: center;
+  padding: 1rem;
+  color: #666;
+  font-style: italic;
 }
+
 
 /* Movie Info Section */
 .movie-info-section {
-  padding-left: 2rem;
+  padding-left: 1rem;
 }
 
 .movie-title {
@@ -525,40 +670,13 @@ export default {
 
 .movie-subtitle {
   font-size: 1.2rem;
-  color: #a0a0a0;
+  color:#F0FFFF;
   margin-bottom: 1.5rem;
   font-style: italic;
 }
 
-/* Rating */
-.movie-rating {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
 
-.stars {
-  display: flex;
-  gap: 0.2rem;
-}
-
-.stars i {
-  color: #ffd93d;
-  font-size: 1.2rem;
-}
-
-.stars i.no-rating {
-  color: #666;
-}
-
-.rating-score {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #ffd93d;
-}
-
-/* Movie Meta */
+/* Movie Meta PC */
 .movie-meta {
   display: flex;
   flex-direction: column;
@@ -603,8 +721,13 @@ export default {
   gap: 0.5rem;
 }
 
-.star {
+.rating-stars i {
+  color: #ffd93d;
   font-size: 1rem;
+}
+
+.rating-stars i.no-rating {
+  color: #666;
 }
 
 .rating-text {
@@ -690,65 +813,6 @@ export default {
   color: rgba(255, 255, 255, 0.3) !important;
 }
 
-.btn-watch {
-  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 25px;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  margin-right: 1rem;
-}
-
-.btn-watch:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
-}
-
-.btn-trailer {
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.8rem;
-  border-radius: 25px;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-trailer:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-  color: white;
-}
-
-.btn-bookmark {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 0.8rem 1rem;
-  border-radius: 25px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-bookmark:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-2px);
-  color: #ffd93d;
-}
-
 .btn-retry {
   background: linear-gradient(45deg, #ff6b6b, #ffd93d);
   border: none;
@@ -778,12 +842,14 @@ export default {
   }
   
   .meta-row {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     gap: 0.5rem;
   }
   
   .meta-label {
-    min-width: auto;
+    min-width: 100px;
+    flex-shrink: 0;
   }
 }
 
@@ -792,16 +858,95 @@ export default {
     padding: 0 1rem;
   }
   
+  /* Mobile Layout: Stack poster on top */
+  .row {
+    flex-direction: column;
+  }
+  
+  .col-lg-4, .col-md-5 {
+    order: 1;
+    margin-bottom: 1.5rem;
+  }
+  
+  .col-lg-8, .col-md-7 {
+    order: 2;
+  }
+  
+  /* Smaller poster for mobile */
+  .poster-container {
+    max-width: 250px;
+    margin: 0 auto 1rem auto;
+  }
+  
   .movie-title {
     font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 1rem;
   }
   
   .movie-subtitle {
     font-size: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  
+  
+  /* Keep meta info inline on mobile */
+  .meta-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .meta-label {
+    min-width: 100px;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+  
+  .meta-value {
+    font-size: 0.9rem;
   }
   
   .action-buttons {
-    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+  
+  /* Episodes collapse responsive */
+  .episodes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(35px, max-content));
+    gap: 0.3rem;
+    justify-content: start;
+  }
+  
+  .episode-btn {
+    min-width: 35px !important;
+    width: max-content !important;
+    height: 35px !important;
+    max-width: none !important;
+    max-height: 100% !important;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: white !important;
+    padding: 2px 5px !important;
+    margin: 2px !important;
+    background-color: #282F33 !important;
+    overflow: visible;
+    white-space: nowrap;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  .episode-btn:hover {
+    background-color: #E46565 !important;
   }
   
   .movie-description-inline {
@@ -811,6 +956,34 @@ export default {
   
   .description-title {
     font-size: 1.1rem;
+    text-align: center;
+  }
+  .trailer-modal {
+    width: 95%;
+    margin: 1rem;
+  }
+  
+  .trailer-modal-header {
+    padding: 1rem;
+  }
+  
+  .modal-title {
+    font-size: 1.1rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .btn-watch,
+  .btn-trailer {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .btn-bookmark {
+    flex-shrink: 0;
   }
 }
 
@@ -896,45 +1069,78 @@ export default {
   border: none;
 }
 
-@media (max-width: 768px) {
-  .trailer-modal {
-    width: 95%;
-    margin: 1rem;
-  }
-  
-  .trailer-modal-header {
-    padding: 1rem;
-  }
-  
-  .modal-title {
-    font-size: 1.1rem;
-  }
-  
-  .action-buttons {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .btn-watch,
-  .btn-trailer {
-    flex: 1;
-    min-width: 120px;
-  }
-  
-  .btn-bookmark {
-    flex-shrink: 0;
-  }
-}
 
 @media (max-width: 576px) {
+  /* Even smaller poster for very small screens */
+  .poster-container {
+    max-width: 300px;
+  }
+  
   .movie-title {
     font-size: 1.5rem;
   }
   
-  .movie-rating {
-    flex-direction: column;
-    align-items: flex-start;
+
+
+  /* Movie Meta Mobile */
+.movie-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+  
+  /* Compact meta info for small screens */
+  .meta-label {
+    min-width: 80px;
+    font-size: 0.85rem;
+  }
+  
+  .meta-value {
+    font-size: 0.85rem;
+  }
+  
+  .action-buttons {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  /* Smaller episodes buttons on mobile */
+  .episodes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(32px, max-content));
+    gap: 0.25rem;
+    justify-content: start;
+  }
+  
+  .episode-btn {
+    min-width: 32px !important;
+    width: max-content !important;
+    height: 32px !important;
+    max-width: none !important;
+    max-height: 100% !important;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: white !important;
+    padding: 1px 4px !important;
+    margin: 1px !important;
+    background-color: #282F33 !important;
+    overflow: visible;
+    white-space: nowrap;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+  }
+
+  .episode-btn:hover {
+    background-color: #E46565 !important;
+  }
+  
+  .server-header {
+    margin-bottom: 0.6rem;
   }
   
   .trailer-modal-header {

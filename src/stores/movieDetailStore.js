@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useMovieDetailStore = defineStore('movieDetail', {
   state: () => ({
     movie: null,
+    episodesData: [], // Đổi tên để tránh conflict với getter
     loading: false,
     error: null
   }),
@@ -35,10 +36,10 @@ export const useMovieDetailStore = defineStore('movieDetail', {
       }
     },
     
-    // Lấy episodes
+    // Lấy episodes - episodes nằm ngoài movie object
     episodes: (state) => {
-      if (!state.movie || !state.movie.episodes) return []
-      return state.movie.episodes
+      // Trả về episodes từ state (đã được lưu từ API)
+      return Array.isArray(state.episodesData) ? state.episodesData : []
     },
     
     // Lấy rating
@@ -64,10 +65,28 @@ export const useMovieDetailStore = defineStore('movieDetail', {
         console.log('Movie Detail API Response:', data)
         
         if (data.status) {
-          // API trả về movie detail trong data.movie
+          // API trả về movie detail trong data.movie và episodes trong data.episodes
           if (data.movie) {
             this.movie = data.movie
+            
+            // Lấy episodes từ API response (cùng cấp với movie theo file mẫu)
+            this.episodesData = data.episodes || []
+            
+            console.log('Raw episodes from API:', data.episodes)
+            console.log('Episodes type:', typeof data.episodes)
+            console.log('Episodes is array:', Array.isArray(data.episodes))
             console.log('Movie detail loaded:', this.movie.name)
+            console.log('Episodes saved to state:', this.episodesData)
+            
+            if (this.episodesData && Array.isArray(this.episodesData) && this.episodesData.length > 0) {
+              console.log('Episodes loaded:', this.episodesData.length, 'servers')
+              // Log chi tiết từng server
+              this.episodesData.forEach((server, index) => {
+                console.log(`Server ${index + 1}: ${server.server_name} - ${server.server_data?.length || 0} episodes`)
+              })
+            } else {
+              console.log('No episodes available for this movie')
+            }
           } else {
             console.error('Unexpected data structure:', data)
             throw new Error('Invalid movie data structure')
@@ -88,6 +107,7 @@ export const useMovieDetailStore = defineStore('movieDetail', {
     // Reset store
     resetStore() {
       this.movie = null
+      this.episodesData = [] // Reset về array rỗng
       this.loading = false
       this.error = null
     }
