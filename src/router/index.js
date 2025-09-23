@@ -8,18 +8,21 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    meta: { title: "Trang Chủ - Website Movie" },
     component: HomePage
   },
   {
     path: '/the-loai/:slug',
     name: 'Category',
     component: CategoryPage,
+    meta: { title: "Thể Loại" },
     props: true
   },
   {
     path: '/phim/:slug',
     name: 'MovieDetail',
     component: MovieDetailPage,
+    meta: { title: "Trang Chi Tiết" },
     props: true
   },
   {
@@ -34,12 +37,24 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    // Always scroll to top when navigating to a new route
+    // If only query parameters changed (like pagination), don't scroll
+    if (to.path === from.path && to.name === from.name) {
+      return false // Don't scroll
+    }
+
+    // If returning to a keep-alive cached page, restore saved position
     if (savedPosition) {
       return savedPosition
-    } else {
-      return { top: 0, behavior: 'smooth' }
     }
+
+    // For keep-alive pages (list pages), don't auto-scroll to top
+    const keepAlivePages = ['Home', 'Category', 'Anime'] // Thêm route name mới vào đây
+    if (keepAlivePages.includes(to.name)) {
+      return false // Let the page handle its own scroll position
+    }
+
+    // For other pages (like MovieDetail), scroll to top
+    return { top: 0, behavior: 'smooth' }
   }
 })
 

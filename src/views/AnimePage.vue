@@ -97,6 +97,14 @@ export default {
     // Load anime movies when component mounts
     await this.loadAnimeMovies()
   },
+  
+  async activated() {
+    // Called when component is activated by keep-alive
+    // Only reload if we don't have data or need to refresh
+    if (!this.animeStore.hasMovies && !this.animeStore.loading) {
+      await this.loadAnimeMovies()
+    }
+  },
   methods: {
     async loadAnimeMovies() {
       // Lấy page từ URL query, nếu không có thì mặc định 1

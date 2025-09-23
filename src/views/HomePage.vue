@@ -171,6 +171,14 @@ export default {
     // Load initial data
     await this.loadMovies();
   },
+  
+  async activated() {
+    // Called when component is activated by keep-alive
+    // Only reload if we don't have data or need to refresh
+    if (!this.movieStore.hasMovies && !this.movieStore.loading) {
+      await this.loadMovies();
+    }
+  },
 };
 </script>
 

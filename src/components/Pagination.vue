@@ -3,8 +3,8 @@
     <ul class="pagination justify-content-center">
       <!-- Previous Button -->
       <li class="page-item" :class="{ disabled: currentPage === 1 }">
-        <button 
-          class="page-link" 
+        <button
+          class="page-link"
           @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
         >
@@ -14,7 +14,11 @@
       </li>
 
       <!-- First Page -->
-      <li v-if="showFirstPage" class="page-item" :class="{ active: currentPage === 1 }">
+      <li
+        v-if="showFirstPage"
+        class="page-item"
+        :class="{ active: currentPage === 1 }"
+      >
         <button class="page-link" @click="changePage(1)">1</button>
       </li>
 
@@ -24,10 +28,10 @@
       </li>
 
       <!-- Page Numbers -->
-      <li 
-        v-for="page in visiblePages" 
-        :key="page" 
-        class="page-item" 
+      <li
+        v-for="page in visiblePages"
+        :key="page"
+        class="page-item"
         :class="{ active: currentPage === page }"
       >
         <button class="page-link" @click="changePage(page)">{{ page }}</button>
@@ -39,14 +43,20 @@
       </li>
 
       <!-- Last Page -->
-      <li v-if="showLastPage" class="page-item" :class="{ active: currentPage === totalPages }">
-        <button class="page-link" @click="changePage(totalPages)">{{ totalPages }}</button>
+      <li
+        v-if="showLastPage"
+        class="page-item"
+        :class="{ active: currentPage === totalPages }"
+      >
+        <button class="page-link" @click="changePage(totalPages)">
+          {{ totalPages }}
+        </button>
       </li>
 
       <!-- Next Button -->
       <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-        <button 
-          class="page-link" 
+        <button
+          class="page-link"
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
         >
@@ -59,8 +69,10 @@
     <!-- Page Info -->
     <div class="pagination-info">
       <span class="page-info-text">
-        Trang {{ currentPage }} / {{ totalPages }} 
-        ({{ totalItems.toLocaleString() }} phim)
+        Trang {{ currentPage }} / {{ totalPages }} ({{
+          totalItems.toLocaleString()
+        }}
+        phim)
       </span>
     </div>
   </nav>
@@ -68,69 +80,72 @@
 
 <script>
 export default {
-  name: 'MoviePagination',
+  name: "MoviePagination",
   props: {
     currentPage: {
       type: Number,
-      required: true
+      required: true,
     },
     totalPages: {
       type: Number,
-      required: true
+      required: true,
     },
     totalItems: {
       type: Number,
-      required: true
+      required: true,
     },
     maxVisiblePages: {
       type: Number,
-      default: 5
-    }
+      default: 5,
+    },
   },
-  emits: ['page-change'],
+  emits: ["page-change"],
   computed: {
     visiblePages() {
-      const pages = []
-      const half = Math.floor(this.maxVisiblePages / 2)
-      let start = Math.max(2, this.currentPage - half)
-      let end = Math.min(this.totalPages - 1, this.currentPage + half)
+      const pages = [];
+      const half = Math.floor(this.maxVisiblePages / 2);
+      let start = Math.max(2, this.currentPage - half);
+      let end = Math.min(this.totalPages - 1, this.currentPage + half);
 
       // Adjust if we're near the beginning or end
       if (this.currentPage <= half + 1) {
-        end = Math.min(this.totalPages - 1, this.maxVisiblePages)
+        end = Math.min(this.totalPages - 1, this.maxVisiblePages);
       }
       if (this.currentPage >= this.totalPages - half) {
-        start = Math.max(2, this.totalPages - this.maxVisiblePages + 1)
+        start = Math.max(2, this.totalPages - this.maxVisiblePages + 1);
       }
 
       for (let i = start; i <= end; i++) {
         if (i !== 1 && i !== this.totalPages) {
-          pages.push(i)
+          pages.push(i);
         }
       }
-      return pages
+      return pages;
     },
     showFirstPage() {
-      return this.totalPages > 1
+      return this.totalPages > 1;
     },
     showLastPage() {
-      return this.totalPages > 1 && this.currentPage !== this.totalPages
+      return this.totalPages > 1 && this.currentPage !== this.totalPages;
     },
     showFirstEllipsis() {
-      return this.visiblePages.length > 0 && this.visiblePages[0] > 2
+      return this.visiblePages.length > 0 && this.visiblePages[0] > 2;
     },
     showLastEllipsis() {
-      return this.visiblePages.length > 0 && this.visiblePages[this.visiblePages.length - 1] < this.totalPages - 1
-    }
+      return (
+        this.visiblePages.length > 0 &&
+        this.visiblePages[this.visiblePages.length - 1] < this.totalPages - 1
+      );
+    },
   },
   methods: {
     changePage(page) {
       if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
-        this.$emit('page-change', page)
+        this.$emit("page-change", page);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -203,12 +218,12 @@ export default {
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
   }
-  
+
   .pagination {
     flex-wrap: wrap;
     gap: 0.25rem;
   }
-  
+
   .page-info-text {
     font-size: 0.8rem;
     padding: 0.4rem 0.8rem;
@@ -221,7 +236,7 @@ export default {
     font-size: 0.85rem;
     margin: 0 1px;
   }
-  
+
   .pagination-wrapper {
     margin: 2rem 0;
   }

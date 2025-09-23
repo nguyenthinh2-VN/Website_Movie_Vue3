@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <router-view />
+    <router-view v-slot="{ Component, route }">
+      <keep-alive :include="['HomePage', 'CategoryPage', 'AnimePage']">
+        <component :is="Component" :key="route.fullPath" />
+      </keep-alive>
+    </router-view>
   </div>
 </template>
 

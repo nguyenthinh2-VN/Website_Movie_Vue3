@@ -1,7 +1,12 @@
 <template>
   <div class="movie-card" @click="goToMovieDetail">
     <div class="movie-poster">
-      <img :src="getImageUrl(movie.poster_url)" :alt="movie.name" class="poster-image" loading="lazy">
+      <img
+        :src="getImageUrl(movie.poster_url)"
+        :alt="movie.name"
+        class="poster-image"
+        loading="lazy"
+      />
       <div class="movie-overlay">
         <div class="play-button">
           <i class="bi bi-play-circle"></i>
@@ -12,32 +17,36 @@
         </div>
       </div>
     </div>
-    
+
     <div class="movie-details">
       <h3 class="movie-title" :title="movie.name">{{ movie.name }}</h3>
-      
+
       <div class="movie-rating">
         <div class="stars">
-          <i 
-            v-for="star in 5" 
+          <i
+            v-for="star in 5"
             :key="star"
             :class="getStarClass(star, getRating())"
           ></i>
         </div>
-        <span class="rating-score" :class="{ 'no-rating': getRating() === 0 }">{{ formatRating(getRating()) }}</span>
+        <span
+          class="rating-score"
+          :class="{ 'no-rating': getRating() === 0 }"
+          >{{ formatRating(getRating()) }}</span
+        >
       </div>
-      
+
       <div class="movie-meta">
         <span class="meta-value episode">{{ movie.episode_current }}</span>
-<!--         <span class="meta-value quality">{{ movie.quality }}</span> -->
+        <!--         <span class="meta-value quality">{{ movie.quality }}</span> -->
         <span class="meta-value lang">{{ movie.lang }}</span>
         <span class="meta-value year">{{ movie.year }}</span>
       </div>
-      
+
       <div class="movie-categories">
-        <span 
-          v-for="category in movie.category.slice(0, 2)" 
-          :key="category.id" 
+        <span
+          v-for="category in movie.category.slice(0, 2)"
+          :key="category.id"
           class="category-tag"
         >
           {{ category.name }}
@@ -49,79 +58,83 @@
 
 <script>
 export default {
-  name: 'MovieCard',
+  name: "MovieCard",
   props: {
     movie: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     getImageUrl(posterUrl) {
       // Nếu URL đã có domain thì return luôn, ngược lại thêm CDN domain
-      if (posterUrl && (posterUrl.startsWith('http') || posterUrl.startsWith('//'))) {
-        return posterUrl
+      if (
+        posterUrl &&
+        (posterUrl.startsWith("http") || posterUrl.startsWith("//"))
+      ) {
+        return posterUrl;
       }
       // Thêm CDN domain từ API mẫu
-      return `https://phimimg.com/${posterUrl}`
+      return `https://phimimg.com/${posterUrl}`;
     },
-    
+
     getMovieType(type) {
       const typeMap = {
-        'series': 'Phim bộ',
-        'single': 'Phim lẻ',
-        'hoathinh': 'Hoạt hình'
-      }
-      return typeMap[type] || 'Phim'
+        series: "Phim bộ",
+        single: "Phim lẻ",
+        hoathinh: "Hoạt hình",
+      };
+      return typeMap[type] || "Phim";
     },
-    
+
     getRating() {
       // Trả về rating nếu có, ngược lại trả về 0
-      return (this.movie.tmdb && this.movie.tmdb.vote_average) ? this.movie.tmdb.vote_average : 0
+      return this.movie.tmdb && this.movie.tmdb.vote_average
+        ? this.movie.tmdb.vote_average
+        : 0;
     },
-    
+
     formatRating(rating) {
       // Nếu rating = 0 thì hiển thị "0.0"
       if (rating === 0) {
-        return '0.0'
+        return "0.0";
       }
       // Làm tròn theo quy tắc: >= 0.5 thì làm tròn lên, < 0.5 thì làm tròn xuống
-      const rounded = Math.round(rating * 10) / 10
-      return rounded.toFixed(1)
+      const rounded = Math.round(rating * 10) / 10;
+      return rounded.toFixed(1);
     },
-    
+
     getStarClass(starPosition, rating) {
       // Nếu rating = 0, tất cả sao đều không màu
       if (rating === 0) {
-        return 'bi bi-star no-rating'
+        return "bi bi-star no-rating";
       }
-      
+
       // Chuyển đổi rating từ thang 10 sang thang 5 sao (1 sao = 2 điểm)
-      const starRating = rating / 2
-      
+      const starRating = rating / 2;
+
       if (starPosition <= Math.floor(starRating)) {
         // Sao đầy
-        return 'bi bi-star-fill'
-      } else if (starPosition === Math.floor(starRating) + 1 && starRating % 1 >= 0.5) {
+        return "bi bi-star-fill";
+      } else if (
+        starPosition === Math.floor(starRating) + 1 &&
+        starRating % 1 >= 0.5
+      ) {
         // Sao nửa (nếu phần thập phân >= 0.5)
-        return 'bi bi-star-half'
+        return "bi bi-star-half";
       } else {
         // Sao rỗng
-        return 'bi bi-star'
+        return "bi bi-star";
       }
     },
-    
+
     goToMovieDetail() {
       // Navigate to movie detail page
-      this.$router.push(`/phim/${this.movie.slug}`)
-      
-      // Scroll to top after navigation
-      this.$nextTick(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      })
-    }
-  }
-}
+      this.$router.push(`/phim/${this.movie.slug}`);
+      // Don't scroll here - let router scrollBehavior handle it
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -355,32 +368,32 @@ export default {
   .movie-details {
     padding: 0.8rem;
   }
-  
+
   .movie-title {
     font-size: 1rem;
   }
-  
+
   .movie-rating {
     margin-bottom: 0.6rem;
   }
-  
+
   .stars i {
     font-size: 0.8rem;
   }
-  
+
   .rating-score {
     font-size: 0.8rem;
   }
-  
+
   .movie-meta {
     gap: 0.4rem;
   }
-  
+
   .meta-value {
     font-size: 0.75rem;
     padding: 3px 8px;
   }
-  
+
   .play-button {
     width: 50px;
     height: 50px;
@@ -392,42 +405,42 @@ export default {
   .movie-details {
     padding: 0.6rem;
   }
-  
+
   .movie-title {
     font-size: 0.9rem;
     min-height: 2.2rem;
     margin-bottom: 0.6rem;
   }
-  
+
   .movie-rating {
     margin-bottom: 0.6rem;
     gap: 0.4rem;
   }
-  
+
   .stars i {
     font-size: 0.75rem;
   }
-  
+
   .rating-score {
     font-size: 0.75rem;
     padding: 1px 4px;
   }
-  
+
   .movie-meta {
     gap: 0.25rem;
     margin-bottom: 0.8rem;
   }
-  
+
   .meta-value {
     font-size: 0.65rem;
     padding: 2px 5px;
   }
-  
+
   .category-tag {
     font-size: 0.65rem;
     padding: 2px 6px;
   }
-  
+
   .play-button {
     width: 45px;
     height: 45px;
@@ -439,41 +452,41 @@ export default {
   .movie-details {
     padding: 0.5rem;
   }
-  
+
   .movie-title {
     font-size: 0.85rem;
     min-height: 2rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .movie-rating {
     margin-bottom: 0.5rem;
     gap: 0.3rem;
   }
-  
+
   .stars i {
     font-size: 0.7rem;
   }
-  
+
   .rating-score {
     font-size: 0.7rem;
     padding: 1px 3px;
   }
-  
+
   .movie-meta {
     gap: 0.2rem;
   }
-  
+
   .meta-value {
     font-size: 0.6rem;
     padding: 1px 4px;
   }
-  
+
   .category-tag {
     font-size: 0.6rem;
     padding: 2px 5px;
   }
-  
+
   .play-button {
     width: 40px;
     height: 40px;

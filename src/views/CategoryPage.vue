@@ -105,6 +105,19 @@ export default {
       await this.loadCategoryMovies()
     }
   },
+  
+  async activated() {
+    // Called when component is activated by keep-alive
+    const newSlug = this.$route.params.slug
+    
+    // If slug changed or no data, reload
+    if (newSlug !== this.categorySlug || (!this.categoryMovieStore.hasMovies && !this.categoryMovieStore.loading)) {
+      this.categorySlug = newSlug
+      if (this.categorySlug) {
+        await this.loadCategoryMovies()
+      }
+    }
+  },
   async beforeRouteUpdate(to, from, next) {
     // Khi route thay đổi (chuyển sang thể loại khác)
     this.categorySlug = to.params.slug
