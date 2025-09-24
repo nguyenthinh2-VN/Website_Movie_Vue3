@@ -6,18 +6,31 @@
         <span class="text-gradient">Yuki Anime</span>
       </a>
 
-      <!-- Mobile menu button -->
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarContent"
-        aria-controls="navbarContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <!-- Mobile search and menu buttons -->
+      <div class="mobile-controls d-lg-none">
+        <!-- Mobile search button -->
+        <button
+          class="mobile-search-btn"
+          type="button"
+          @click="toggleMobileSearch"
+          aria-label="Toggle search"
+        >
+          <i class="bi bi-search"></i>
+        </button>
+
+        <!-- Mobile menu button -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+          aria-controls="navbarContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
 
       <!-- Navbar content -->
       <div class="collapse navbar-collapse" id="navbarContent">
@@ -32,7 +45,12 @@
             >
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :class="{ active: $route.name === 'Anime' }" to="/hoat-hinh">Anime mới</router-link>
+            <router-link
+              class="nav-link"
+              :class="{ active: $route.name === 'Anime' }"
+              to="/hoat-hinh"
+              >Anime mới</router-link
+            >
           </li>
           <li
             class="nav-item dropdown"
@@ -97,8 +115,8 @@
           </li>
         </ul>
 
-        <!-- Search form -->
-        <form class="d-flex" role="search">
+        <!-- Desktop Search form -->
+        <form class="d-none d-lg-flex" role="search">
           <input
             class="form-control me-2 search-input"
             type="search"
@@ -116,6 +134,33 @@
       </div>
     </div>
   </nav>
+
+  <!-- Mobile Search Dropdown -->
+  <div
+    class="mobile-search-dropdown d-lg-none"
+    :class="{ show: showMobileSearch }"
+  >
+    <div class="container">
+      <form
+        class="mobile-search-form"
+        role="search"
+        @submit.prevent="handleSearch"
+      >
+        <div class="search-input-group">
+          <input
+            class="form-control mobile-search-input"
+            type="search"
+            placeholder="Tìm kiếm anime..."
+            v-model="searchQuery"
+            ref="mobileSearchInput"
+          />
+          <button class="btn mobile-search-submit" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -132,6 +177,7 @@ export default {
       searchQuery: "",
       showDropdown: false,
       mobileDropdownOpen: false,
+      showMobileSearch: false,
     };
   },
   async mounted() {
@@ -186,6 +232,19 @@ export default {
         navbar.classList.add("scrolled");
       } else {
         navbar.classList.remove("scrolled");
+      }
+    },
+
+    toggleMobileSearch() {
+      this.showMobileSearch = !this.showMobileSearch;
+
+      // Focus on input when opening
+      if (this.showMobileSearch) {
+        this.$nextTick(() => {
+          if (this.$refs.mobileSearchInput) {
+            this.$refs.mobileSearchInput.focus();
+          }
+        });
       }
     },
   },
@@ -265,8 +324,6 @@ export default {
   transform: translateY(-2px);
 }
 
-/* Removed underline effects */
-
 /* Search input styling */
 .search-input {
   background: rgba(255, 255, 255, 0.1) !important;
@@ -304,10 +361,45 @@ export default {
   color: #ffffff !important;
 }
 
+/* Mobile controls */
+.mobile-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-search-btn {
+  background: rgba(255, 107, 107, 0.2);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.mobile-search-btn:hover,
+.mobile-search-btn:focus {
+  background: rgba(255, 107, 107, 0.3);
+  border-color: rgba(255, 107, 107, 0.5);
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.mobile-search-btn i {
+  font-size: 1rem;
+}
+
 /* Mobile toggle button */
 .navbar-toggler {
   border: 1px solid rgba(255, 107, 107, 0.3) !important;
   background: rgba(255, 107, 107, 0.2);
+  width: 40px;
+  height: 40px;
 }
 
 .navbar-toggler:focus {
@@ -317,23 +409,32 @@ export default {
 /* Responsive adjustments */
 @media (max-width: 991px) {
   .navbar-nav {
-    margin: 1rem 0;
+    margin: 0.5rem 0;
   }
 
   .navbar-nav .nav-link {
     text-align: center;
-    margin: 0.2rem 0;
+    margin: 0.1rem 0;
+    padding: 0.4rem 1rem !important;
   }
 
   form[role="search"] {
-    margin-top: 1rem;
+    margin-top: 0.75rem;
     justify-content: center;
   }
 
   .search-input {
     width: 200px !important;
   }
+
+  /* Fix container spacing */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
+
+/* Ensure proper sp
 
 @media (max-width: 576px) {
   .text-gradient {
@@ -538,7 +639,7 @@ export default {
     top: 100%;
     left: 0;
     right: 0;
-    height: 10px;
+    height: 8px;
     background: transparent;
     z-index: 999;
   }
@@ -557,12 +658,12 @@ export default {
 
   .dropdown-menu {
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 8px);
     left: 0;
     z-index: 1000;
     min-width: 200px;
     width: max-content;
-    max-width: 300px;
+    max-width: 280px;
   }
 
   .dropdown.show .dropdown-menu,
@@ -592,17 +693,22 @@ export default {
     display: none;
   }
 
+  /* Fix navbar collapse positioning */
+  .navbar-collapse {
+    margin-top: 0.5rem;
+  }
+
   .dropdown-menu {
     position: static !important;
     float: none;
     width: 100%;
-    margin-top: 0.5rem !important;
+    margin-top: 0.25rem !important;
     background: rgba(22, 33, 62, 0.95) !important;
     border-radius: 10px !important;
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3) !important;
     overflow-x: hidden;
     min-width: unset;
-    transform: translateY(-10px) scale(0.95);
+    transform: translateY(-5px) scale(0.98);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     max-height: 0;
     padding: 0 !important;
@@ -613,7 +719,7 @@ export default {
     visibility: visible !important;
     transform: translateY(0) scale(1) !important;
     pointer-events: auto !important;
-    max-height: 400px !important;
+    max-height: 300px !important;
     padding: 0.5rem 0 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
@@ -623,7 +729,7 @@ export default {
     visibility: visible !important;
     transform: translateY(0) scale(1) !important;
     pointer-events: auto !important;
-    max-height: 400px !important;
+    max-height: 300px !important;
     padding: 0.5rem 0 !important;
   }
 
@@ -639,6 +745,106 @@ export default {
   .dropdown-item:hover {
     transform: none;
     background: rgba(255, 107, 107, 0.15) !important;
+  }
+
+  /* Fix navbar toggler positioning */
+  .navbar-toggler {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1;
+    border-radius: 0.375rem;
+  }
+
+  .navbar-toggler-icon {
+    width: 1.2em;
+    height: 1.2em;
+  }
+}
+
+/* Mobile Search Dropdown */
+.mobile-search-dropdown {
+  background: rgba(26, 26, 46, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 107, 107, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  padding: 1rem;
+  top: 50px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  position: fixed;
+}
+
+.mobile-search-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.mobile-search-form {
+  width: 100%;
+}
+
+.search-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mobile-search-input {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  border-radius: 25px !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 1rem;
+  flex: 1;
+}
+
+.mobile-search-input:focus {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 107, 107, 0.5) !important;
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.3) !important;
+  color: #ffffff !important;
+  outline: none;
+}
+
+.mobile-search-input::placeholder {
+  color: #a0a0a0 !important;
+}
+
+.mobile-search-submit {
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  color: #ffffff !important;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.mobile-search-submit:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4) !important;
+  color: #ffffff !important;
+}
+
+.mobile-search-submit i {
+  font-size: 1rem;
+}
+
+/* Hide mobile search on desktop */
+@media (min-width: 992px) {
+  .mobile-search-dropdown {
+    display: none !important;
   }
 }
 </style>

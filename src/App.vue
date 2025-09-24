@@ -5,12 +5,20 @@
         <component :is="Component" :key="route.fullPath" />
       </keep-alive>
     </router-view>
+    
+    <!-- Back to Top Button - Available on all pages -->
+    <BackToTop />
   </div>
 </template>
 
 <script>
+import BackToTop from '@/components/BackToTop.vue'
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    BackToTop
+  }
 }
 </script>
 
