@@ -5,7 +5,7 @@
         <!-- Logo và mô tả -->
         <div class="footer-section">
           <div class="footer-logo">
-            <h3>AnimeStream</h3>
+            <h3>Yuki Anime</h3>
             <p>Nơi tập hợp những bộ anime hay nhất, cập nhật liên tục với chất lượng HD cao. Trải nghiệm xem phim anime tuyệt vời nhất dành cho bạn.</p>
           </div>
           <div class="social-links">
@@ -44,9 +44,9 @@
         <div class="footer-section">
           <h4>Liên hệ</h4>
           <div class="contact-info">
-            <p>📧 contact@animestream.com</p>
+            <p>📧 contact@YukiAnime.com</p>
             <p>📞 +84 123 456 789</p>
-            <p>📍 Hà Nội, Việt Nam</p>
+            <p>📍 Hồ Chí Minh, Việt Nam</p>
           </div>
           <div class="newsletter">
             <p>Đăng ký nhận thông báo anime mới:</p>
@@ -61,7 +61,7 @@
       <!-- Copyright -->
       <div class="footer-bottom">
         <div class="copyright">
-          <p>&copy; 2024 AnimeStream. Tất cả quyền được bảo lưu.</p>
+          <p>&copy; 2024 Yuki Anime. Tất cả quyền được bảo lưu.</p>
           <div class="footer-bottom-links">
             <a href="#">Điều khoản sử dụng</a>
             <a href="#">Chính sách bảo mật</a>
