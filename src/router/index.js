@@ -4,6 +4,7 @@ import CategoryPage from '@/views/CategoryPage.vue'
 import MovieDetailPage from '@/views/MovieDetailPage.vue'
 import WatchPage from '@/views/WatchPage.vue'
 import AnimePage from '@/views/AnimePage.vue'
+import SearchPage from '@/views/SearchPage.vue'
 
 const routes = [
   {
@@ -37,6 +38,12 @@ const routes = [
     path: '/hoat-hinh',
     name: 'Anime',
     component: AnimePage
+  },
+  {
+    path: '/tim-kiem',
+    name: 'Search',
+    component: SearchPage,
+    meta: { title: 'Tìm kiếm' }
   }
 
 ]
@@ -56,7 +63,7 @@ const router = createRouter({
     }
 
     // For keep-alive pages (list pages), don't auto-scroll to top
-    const keepAlivePages = ['Home', 'Category', 'Anime'] // Thêm route name mới vào đây
+    const keepAlivePages = ['Home', 'Category', 'Anime', 'Search'] // Thêm route name mới vào đây
     if (keepAlivePages.includes(to.name)) {
       return false // Let the page handle its own scroll position
     }

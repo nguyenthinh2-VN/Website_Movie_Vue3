@@ -1,25 +1,27 @@
 <template>
   <div id="app">
     <router-view v-slot="{ Component, route }">
-      <keep-alive :include="['HomePage', 'CategoryPage', 'AnimePage']">
+      <keep-alive
+        :include="['HomePage', 'CategoryPage', 'AnimePage', 'SearchPage']"
+      >
         <component :is="Component" :key="route.fullPath" />
       </keep-alive>
     </router-view>
-    
+
     <!-- Back to Top Button - Available on all pages -->
     <BackToTop />
   </div>
 </template>
 
 <script>
-import BackToTop from '@/components/BackToTop.vue'
+import BackToTop from "@/components/BackToTop.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    BackToTop
-  }
-}
+    BackToTop,
+  },
+};
 </script>
 
 <style>
@@ -31,7 +33,7 @@ export default {
 
 body {
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #ffffff;
   min-height: 100vh;
   padding-top: 80px; /* Space for fixed navbar */
@@ -76,7 +78,7 @@ body {
 }
 
 .section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -175,23 +177,22 @@ body {
   box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
 }
 
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .movies-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .no-data-section {
     padding: 3rem 1rem;
     min-height: 300px;
   }
-  
+
   .btn-retry {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
@@ -202,16 +203,16 @@ body {
   .container {
     padding: 0 1rem;
   }
-  
+
   .movies-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
-  
+
   .section-title {
     font-size: 1.8rem;
   }
-  
+
   .featured-container {
     padding-top: 2rem;
   }
@@ -222,11 +223,11 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
   }
-  
+
   .section-title {
     font-size: 1.5rem;
   }
-  
+
   .container {
     padding: 0 0.5rem;
   }

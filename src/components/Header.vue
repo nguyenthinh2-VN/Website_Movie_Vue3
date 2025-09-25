@@ -116,21 +116,70 @@
         </ul>
 
         <!-- Desktop Search form -->
-        <form class="d-none d-lg-flex" role="search">
-          <input
-            class="form-control me-2 search-input"
-            type="search"
-            placeholder="Tìm kiếm anime..."
-            v-model="searchQuery"
-          />
-          <button
-            class="btn btn-search"
-            type="submit"
-            @click.prevent="handleSearch"
+        <div
+          class="desktop-search-container position-relative d-none d-lg-flex"
+        >
+          <form
+            class="w-100 d-flex"
+            role="search"
+            @submit.prevent="handleSearch"
           >
-            🔍
-          </button>
-        </form>
+            <input
+              class="form-control me-2 search-input"
+              type="search"
+              placeholder="Tìm kiếm anime..."
+              v-model="searchQuery"
+              @input="handleSearchInput"
+              @focus="showSuggestions = true"
+              @blur="hideSuggestions"
+              autocomplete="off"
+            />
+            <button class="btn btn-search" type="submit">🔍</button>
+          </form>
+
+          <!-- Suggestions Dropdown -->
+          <div
+            v-if="showSuggestions && searchQuery.length > 0"
+            class="suggestions-dropdown"
+          >
+            <div
+              v-if="searchStore.suggestionsLoading"
+              class="suggestion-item text-secondary"
+            >
+              Đang tìm...
+            </div>
+            <ul
+              v-else-if="searchStore.suggestions.length > 0"
+              class="list-unstyled mb-0"
+            >
+              <li
+                v-for="movie in searchStore.suggestions.slice(0, 7)"
+                :key="movie._id"
+                class="suggestion-item"
+                @mousedown.prevent="selectSuggestion(movie.slug)"
+              >
+                <img
+                  :src="getImageUrl(movie.poster_url)"
+                  alt=""
+                  class="suggestion-poster"
+                />
+                <div class="suggestion-info">
+                  <div class="suggestion-name">{{ movie.name }}</div>
+                  <div class="suggestion-year text-muted">{{ movie.year }}</div>
+                </div>
+              </li>
+              <li
+                class="suggestion-item view-all"
+                @mousedown.prevent="handleSearch"
+              >
+                Xem tất cả kết quả cho "{{ searchQuery }}"
+              </li>
+            </ul>
+            <div v-else class="suggestion-item text-secondary">
+              Không tìm thấy kết quả phù hợp.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -153,24 +202,72 @@
             placeholder="Tìm kiếm anime..."
             v-model="searchQuery"
             ref="mobileSearchInput"
+            @input="handleSearchInput"
+            autocomplete="off"
           />
           <button class="btn mobile-search-submit" type="submit">
             <i class="bi bi-search"></i>
           </button>
         </div>
       </form>
+
+      <!-- Mobile Suggestions -->
+      <div
+        v-if="searchQuery.length > 0"
+        class="suggestions-dropdown mobile-suggestions"
+      >
+        <div
+          v-if="searchStore.suggestionsLoading"
+          class="suggestion-item text-secondary"
+        >
+          Đang tìm...
+        </div>
+        <ul
+          v-else-if="searchStore.suggestions.length > 0"
+          class="list-unstyled mb-0"
+        >
+          <li
+            v-for="movie in searchStore.suggestions.slice(0, 5)"
+            :key="movie._id"
+            class="suggestion-item"
+            @mousedown.prevent="selectSuggestion(movie.slug)"
+          >
+            <img
+              :src="getImageUrl(movie.poster_url)"
+              alt=""
+              class="suggestion-poster"
+            />
+            <div class="suggestion-info">
+              <div class="suggestion-name">{{ movie.name }}</div>
+              <div class="suggestion-year text-muted">{{ movie.year }}</div>
+            </div>
+          </li>
+          <li
+            class="suggestion-item view-all"
+            @mousedown.prevent="handleSearch"
+          >
+            Xem tất cả kết quả cho "{{ searchQuery }}"
+          </li>
+        </ul>
+        <div v-else class="suggestion-item text-secondary">
+          Không tìm thấy kết quả phù hợp.
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { useCategoryStore } from "@/stores/categoryStore";
+import { useSearchStore } from "@/stores/searchStore";
 
 export default {
   name: "AppHeader",
+  components: {},
   setup() {
     const categoryStore = useCategoryStore();
-    return { categoryStore };
+    const searchStore = useSearchStore();
+    return { categoryStore, searchStore };
   },
   data() {
     return {
@@ -178,6 +275,8 @@ export default {
       showDropdown: false,
       mobileDropdownOpen: false,
       showMobileSearch: false,
+      showSuggestions: false,
+      debounceTimer: null,
     };
   },
   async mounted() {
@@ -194,9 +293,42 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
+    handleSearchInput() {
+      clearTimeout(this.debounceTimer);
+      if (!this.searchQuery.trim()) {
+        this.searchStore.clearSuggestions();
+        return;
+      }
+      this.debounceTimer = setTimeout(() => {
+        this.searchStore.fetchSearchSuggestions(this.searchQuery);
+      }, 300);
+    },
+    hideSuggestions() {
+      setTimeout(() => {
+        this.showSuggestions = false;
+      }, 200);
+    },
+    selectSuggestion(slug) {
+      this.searchQuery = "";
+      this.searchStore.clearSuggestions();
+      this.$router.push(`/phim/${slug}`);
+    },
+    getImageUrl(posterUrl) {
+      if (
+        posterUrl &&
+        (posterUrl.startsWith("http") || posterUrl.startsWith("//"))
+      ) {
+        return posterUrl;
+      }
+      return `https://phimimg.com/${posterUrl}`;
+    },
     handleSearch() {
-      console.log("Searching for:", this.searchQuery);
-      // Implement search functionality here
+      const q = this.searchQuery.trim();
+      if (!q) return;
+      // Close mobile search if open
+      this.showMobileSearch = false;
+      // Navigate to search page with page=1
+      this.$router.push({ path: "/tim-kiem", query: { q, page: 1 } });
     },
 
     toggleMobileDropdown() {
@@ -228,10 +360,12 @@ export default {
 
     handleScroll() {
       const navbar = document.querySelector(".navbar");
-      if (window.scrollY > 50) {
-        navbar.classList.add("scrolled");
-      } else {
-        navbar.classList.remove("scrolled");
+      if (navbar) {
+        if (window.scrollY > 50) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
       }
     },
 
@@ -846,5 +980,81 @@ export default {
   .mobile-search-dropdown {
     display: none !important;
   }
+}
+
+/* Search Suggestions */
+.desktop-search-container {
+  flex: 1;
+  max-width: 350px;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: 15px;
+  margin-top: 8px;
+  z-index: 1100;
+  max-height: 400px;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background-color: rgba(255, 107, 107, 0.1);
+}
+
+.suggestion-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.suggestion-poster {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 0.75rem;
+}
+
+.suggestion-info {
+  overflow: hidden;
+}
+
+.suggestion-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: #fff;
+}
+
+.suggestion-year {
+  font-size: 0.8rem;
+}
+
+.view-all {
+  font-weight: bold;
+  color: #ff6b6b;
+  justify-content: center;
+  font-style: italic;
+}
+
+.mobile-suggestions {
+  position: static;
+  margin-top: 1rem;
+  border-radius: 10px;
+  max-height: calc(100vh - 200px); /* Prevent it from taking the whole screen */
 }
 </style>

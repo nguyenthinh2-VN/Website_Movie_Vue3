@@ -1,7 +1,7 @@
 <template>
   <div class="related-movies-section">
     <h3 class="section-title">Phim tương tự</h3>
-    
+
     <!-- Loading State -->
     <div v-if="loading" class="loading-state">
       <div class="spinner-border text-light" role="status">
@@ -9,54 +9,84 @@
       </div>
       <p>Đang tải phim tương tự...</p>
     </div>
-    
+
     <!-- Error State -->
     <div v-else-if="error" class="error-state">
       <p class="text-danger">{{ error }}</p>
     </div>
-    
+
     <!-- Movies Swiper -->
     <div v-else-if="relatedMovies.length > 0" class="related-movies-swiper">
-      <swiper
-        :slidesPerView="4"
-        :spaceBetween="20"
-        :breakpoints="{
-          320: { slidesPerView: 2, spaceBetween: 8 },
-          768: { slidesPerView: 3, spaceBetween: 8 },
-          992: { slidesPerView: 4, spaceBetween: 10 },
-          1200: { slidesPerView: 5, spaceBetween: 12 }
-        }"
-        :modules="modules"
-        class="movies-swiper"
-      >
-        <swiper-slide v-for="movie in relatedMovies" :key="movie._id">
-          <div class="related-movie-card" @click="navigateToMovie(movie.slug)">
-            <div class="movie-poster">
-              <img 
-                :src="getImageUrl(movie.poster_url)" 
-                :alt="movie.name" 
-                class="poster-image"
-                loading="lazy"
-              />
-              <div class="movie-overlay">
-                <div class="play-button">
-                  <i class="bi bi-play-circle"></i>
-                </div>
-                <div class="movie-badges">
-                  <span class="quality-badge">{{ movie.quality }}</span>
-                  <span class="episode-badge">{{ movie.episode_current }}</span>
+      <div class="swiper-container">
+        <!-- Navigation Buttons -->
+        <button
+          class="swiper-nav-btn swiper-nav-prev"
+          @click="slidePrev"
+          :disabled="isBeginning"
+        >
+          <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <swiper
+          ref="swiperRef"
+          :slidesPerView="4"
+          :spaceBetween="20"
+          :slidesPerGroup="4"
+          :breakpoints="{
+            320: { slidesPerView: 2, spaceBetween: 8, slidesPerGroup: 2 },
+            768: { slidesPerView: 3, spaceBetween: 8, slidesPerGroup: 3 },
+            992: { slidesPerView: 4, spaceBetween: 10, slidesPerGroup: 4 },
+            1200: { slidesPerView: 5, spaceBetween: 12, slidesPerGroup: 5 },
+          }"
+          :modules="modules"
+          class="movies-swiper"
+          @swiper="onSwiper"
+          @slideChange="onSlideChange"
+        >
+          <swiper-slide v-for="movie in relatedMovies" :key="movie._id">
+            <div
+              class="related-movie-card"
+              @click="navigateToMovie(movie.slug)"
+            >
+              <div class="movie-poster">
+                <img
+                  :src="getImageUrl(movie.poster_url)"
+                  :alt="movie.name"
+                  class="poster-image"
+                  loading="lazy"
+                />
+                <div class="movie-overlay">
+                  <div class="play-button">
+                    <i class="bi bi-play-circle"></i>
+                  </div>
+                  <div class="movie-badges">
+                    <span class="quality-badge">{{ movie.quality }}</span>
+                    <span class="episode-badge">{{
+                      movie.episode_current
+                    }}</span>
+                  </div>
                 </div>
               </div>
+              <div class="movie-info">
+                <h4 class="movie-title" :title="movie.name">
+                  {{ movie.name }}
+                </h4>
+                <p class="movie-year">{{ movie.year }}</p>
+              </div>
             </div>
-            <div class="movie-info">
-              <h4 class="movie-title" :title="movie.name">{{ movie.name }}</h4>
-              <p class="movie-year">{{ movie.year }}</p>
-            </div>
-          </div>
-        </swiper-slide>
-      </swiper>
+          </swiper-slide>
+        </swiper>
+
+        <button
+          class="swiper-nav-btn swiper-nav-next"
+          @click="slideNext"
+          :disabled="isEnd"
+        >
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
     </div>
-    
+
     <!-- No Data State -->
     <div v-else class="no-data-state">
       <p class="text-muted">Không tìm thấy phim tương tự</p>
@@ -65,12 +95,12 @@
 </template>
 
 <script>
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { useCategoryMovieStore } from '@/stores/categoryMovieStore'
-import 'swiper/css'
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { useCategoryMovieStore } from "@/stores/categoryMovieStore";
+import "swiper/css";
 
 export default {
-  name: 'RelatedMovies',
+  name: "RelatedMovies",
   components: {
     Swiper,
     SwiperSlide,
@@ -78,78 +108,122 @@ export default {
   props: {
     currentMovie: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   setup() {
-    const categoryMovieStore = useCategoryMovieStore()
-    return { 
+    const categoryMovieStore = useCategoryMovieStore();
+    return {
       categoryMovieStore,
-      modules: []
-    }
+      modules: [],
+    };
   },
   data() {
     return {
       relatedMovies: [],
       loading: false,
-      error: null
-    }
+      error: null,
+      swiperInstance: null,
+      isBeginning: true,
+      isEnd: false,
+    };
   },
   async mounted() {
-    await this.loadRelatedMovies()
+    await this.loadRelatedMovies();
   },
   watch: {
     currentMovie: {
       handler() {
-        this.loadRelatedMovies()
+        this.loadRelatedMovies();
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   methods: {
     async loadRelatedMovies() {
-      if (!this.currentMovie || !this.currentMovie.category || this.currentMovie.category.length === 0) {
-        return
+      if (
+        !this.currentMovie ||
+        !this.currentMovie.category ||
+        this.currentMovie.category.length === 0
+      ) {
+        return;
       }
-      
-      this.loading = true
-      this.error = null
-      
+
+      this.loading = true;
+      this.error = null;
+
       try {
         // Lấy thể loại đầu tiên của phim hiện tại
-        const firstCategory = this.currentMovie.category[0]
-        
+        const firstCategory = this.currentMovie.category[0];
+
         // Fetch movies từ thể loại đó
-        await this.categoryMovieStore.fetchMoviesByCategory(firstCategory.slug, 1)
-        
-        if (this.categoryMovieStore.movies && this.categoryMovieStore.movies.length > 0) {
-          // Lọc bỏ phim hiện tại và lấy tối đa 20 phim
+        await this.categoryMovieStore.fetchMoviesByCategory(
+          firstCategory.slug,
+          1
+        );
+
+        if (
+          this.categoryMovieStore.movies &&
+          this.categoryMovieStore.movies.length > 0
+        ) {
+          // Lọc bỏ phim hiện tại và lấy tối đa 30 phim
           this.relatedMovies = this.categoryMovieStore.movies
-            .filter(movie => movie._id !== this.currentMovie._id)
-            .slice(0, 20)
+            .filter((movie) => movie._id !== this.currentMovie._id)
+            .slice(0, 30);
         }
-        
       } catch (error) {
-        this.error = 'Không thể tải phim tương tự'
-        console.error('Error loading related movies:', error)
+        this.error = "Không thể tải phim tương tự";
+        console.error("Error loading related movies:", error);
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
-    
+
     getImageUrl(imageUrl) {
-      if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('//'))) {
-        return imageUrl
+      if (
+        imageUrl &&
+        (imageUrl.startsWith("http") || imageUrl.startsWith("//"))
+      ) {
+        return imageUrl;
       }
-      return `https://phimimg.com/${imageUrl}`
+      return `https://phimimg.com/${imageUrl}`;
     },
-    
+
     navigateToMovie(movieSlug) {
       // Navigate to movie detail page
-      this.$router.push(`/phim/${movieSlug}`)
-    }
-  }
-}
+      this.$router.push(`/phim/${movieSlug}`);
+    },
+
+    // Swiper methods
+    onSwiper(swiper) {
+      this.swiperInstance = swiper;
+      this.updateNavigationState();
+    },
+
+    onSlideChange() {
+      this.updateNavigationState();
+    },
+
+    updateNavigationState() {
+      if (this.swiperInstance) {
+        this.isBeginning = this.swiperInstance.isBeginning;
+        this.isEnd = this.swiperInstance.isEnd;
+      }
+    },
+
+    slidePrev() {
+      if (this.swiperInstance && !this.isBeginning) {
+        this.swiperInstance.slidePrev();
+      }
+    },
+
+    slideNext() {
+      if (this.swiperInstance && !this.isEnd) {
+        this.swiperInstance.slideNext();
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -169,7 +243,7 @@ export default {
 }
 
 .section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -199,8 +273,60 @@ export default {
   margin: 0 -10px;
 }
 
+.swiper-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .movies-swiper {
   padding: 10px;
+  flex: 1;
+}
+
+/* Navigation Buttons */
+.swiper-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.swiper-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.4);
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+}
+
+.swiper-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.swiper-nav-prev {
+  left: -25px;
+}
+
+.swiper-nav-next {
+  right: -25px;
 }
 
 .movies-swiper .swiper-wrapper {
@@ -263,7 +389,11 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -345,27 +475,41 @@ export default {
   .section-title {
     font-size: 1.5rem;
   }
-  
+
   .related-movies-swiper {
     margin: 0 -5px;
   }
-  
+
   .movies-swiper {
     padding: 5px;
   }
-  
+
+  .swiper-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .swiper-nav-prev {
+    left: -20px;
+  }
+
+  .swiper-nav-next {
+    right: -20px;
+  }
+
   .movie-info {
     padding: 0.6rem;
     min-height: 70px;
   }
-  
+
   .movie-title {
     font-size: 0.85rem;
     line-height: 1.3;
     max-height: 2.6em;
     margin-bottom: 0.4rem;
   }
-  
+
   .movie-year {
     font-size: 0.75rem;
   }
@@ -375,11 +519,25 @@ export default {
   .section-title {
     font-size: 1.3rem;
   }
-  
+
+  .swiper-nav-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+
+  .swiper-nav-prev {
+    left: -15px;
+  }
+
+  .swiper-nav-next {
+    right: -15px;
+  }
+
   .play-button {
     font-size: 2rem;
   }
-  
+
   .quality-badge,
   .episode-badge {
     font-size: 0.6rem;
