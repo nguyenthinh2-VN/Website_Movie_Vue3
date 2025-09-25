@@ -53,9 +53,7 @@ export default {
   border-radius: 50%;
   
   /* Transparent background with blur effect */
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #ff4c00;
   
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 
@@ -72,12 +70,7 @@ export default {
 }
 
 .back-to-top-btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  background: rgba(255, 107, 107, 0.2);
-  border-color: rgba(255, 107, 107, 0.4);
-  box-shadow: 
-    0 12px 40px rgba(255, 107, 107, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  background: #ff4c00;
 }
 
 .back-to-top-btn:active {

@@ -294,25 +294,18 @@ export default {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
+  background: #ff4c00;
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.swiper-nav-btn:hover:not(:disabled) {
-  background: rgba(255, 107, 107, 0.2);
-  border-color: rgba(255, 107, 107, 0.4);
-  transform: translateY(-50%) scale(1.05);
-  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
-}
+
 
 .swiper-nav-btn:disabled {
   opacity: 0.3;

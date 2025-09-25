@@ -280,7 +280,7 @@ export default {
     };
   },
   async mounted() {
-    // Load categories when component mounts
+    // Load categories when component mounts (sử dụng cache nếu có)
     await this.categoryStore.fetchCategories();
 
     // Add scroll listener for navbar effects
