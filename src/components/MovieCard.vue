@@ -39,11 +39,11 @@
       <div class="movie-meta">
         <span class="meta-value episode">{{ movie.episode_current }}</span>
         <!--         <span class="meta-value quality">{{ movie.quality }}</span> -->
-        <span class="meta-value lang">{{ movie.lang }}</span>
-        <span class="meta-value year">{{ movie.year }}</span>
+        <!-- <span class="meta-value lang">{{ movie.lang }}</span> -->
+        <!-- <span class="meta-value year">{{ movie.year }}</span> -->
       </div>
 
-      <div class="movie-categories">
+      <!-- <div class="movie-categories">
         <span
           v-for="category in movie.category.slice(0, 2)"
           :key="category.id"
@@ -51,7 +51,7 @@
         >
           {{ category.name }}
         </span>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -67,15 +67,16 @@ export default {
   },
   methods: {
     getImageUrl(posterUrl) {
-      // Nếu URL đã có domain thì return luôn, ngược lại thêm CDN domain
-      if (
-        posterUrl &&
-        (posterUrl.startsWith("http") || posterUrl.startsWith("//"))
-      ) {
-        return posterUrl;
+      if (!posterUrl) {
+        return '';
       }
-      // Thêm CDN domain từ API mẫu
-      return `https://phimimg.com/${posterUrl}`;
+      let originalUrl;
+      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
+        originalUrl = posterUrl;
+      } else {
+        originalUrl = `https://phimimg.com/${posterUrl}`;
+      }
+      return `https://phimapi.com/image.php?url=${encodeURIComponent(originalUrl)}`;
     },
 
     getMovieType(type) {
@@ -244,7 +245,7 @@ export default {
 .movie-title {
   font-size: 1.1rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.1rem;
   color: #ffffff;
   display: -webkit-box;
   -webkit-line-clamp: 2;

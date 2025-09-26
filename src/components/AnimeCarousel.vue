@@ -1,20 +1,20 @@
 <template>
   <div class="carousel-container">
-    <div v-if="carouselStore.loading" class="loading-container">
+    <div v-if="animeStore.loading" class="loading-container">
       <div class="spinner-border text-light" role="status">
         <span class="visually-hidden">Đang tải...</span>
       </div>
     </div>
     
-    <div v-else-if="carouselStore.error" class="error-container">
+    <div v-else-if="animeStore.error" class="error-container">
       <div class="alert alert-danger" role="alert">
-        Lỗi tải dữ liệu: {{ carouselStore.error }}
-        <button @click="loadFeaturedMovies" class="btn btn-sm btn-outline-danger ms-2">Thử lại</button>
+        Lỗi tải dữ liệu: {{ animeStore.error }}
+        <button @click="animeStore.fetchAnimeMovies(1)" class="btn btn-sm btn-outline-danger ms-2">Thử lại</button>
       </div>
     </div>
     
     <swiper
-      v-else-if="carouselStore.hasMovies"
+      v-else-if="featuredMovies.length > 0"
       :slidesPerView="1"
       :spaceBetween="30"
       :loop="true"
@@ -29,8 +29,8 @@
       }"
       class="anime-swiper"
     >
-      <swiper-slide v-for="movie in carouselStore.featuredMovies" :key="movie._id">
-        <div class="slide-content">
+      <swiper-slide v-for="movie in featuredMovies" :key="movie._id">
+        <div class="slide-content" @click="navigateToMovie(movie.slug)">
           <div class="slide-background" :style="{ backgroundImage: `url(${getImageUrl(movie.thumb_url)})` }">
             <div class="slide-overlay"></div>
           </div>
@@ -73,7 +73,7 @@ import 'swiper/css/navigation';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 
 // Import Pinia store
-import { useCarouselStore } from '@/stores/carouselStore';
+import { useAnimeStore } from '@/stores/animeStore';
 
 export default {
   name: 'AnimeCarousel',
@@ -82,35 +82,48 @@ export default {
     SwiperSlide,
   },
   setup() {
-    const carouselStore = useCarouselStore();
+    const animeStore = useAnimeStore();
     
     return {
       modules: [Pagination, Navigation, Autoplay],
-      carouselStore
+      animeStore
     };
   },
+  computed: {
+    // Lấy 10 phim đầu tiên từ animeStore
+    featuredMovies() {
+      return this.animeStore.movies.slice(0, 10);
+    }
+  },
   async mounted() {
-    // Load featured movies when component mounts
-    await this.loadFeaturedMovies();
+    // Load anime movies nếu chưa có data
+    if (!this.animeStore.hasMovies && !this.animeStore.loading) {
+      await this.animeStore.fetchAnimeMovies(1);
+    }
   },
   methods: {
-    async loadFeaturedMovies() {
-      await this.carouselStore.fetchFeaturedMovies();
-    },
     
-    getImageUrl(imageUrl) {
-      // Nếu URL đã có domain thì return luôn, ngược lại thêm CDN domain
-      if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('//'))) {
-        return imageUrl
+    getImageUrl(posterUrl) {
+      if (!posterUrl) {
+        return '';
       }
-      // Thêm CDN domain từ API mẫu
-      return `https://phimimg.com/${imageUrl}`
+      let originalUrl;
+      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
+        originalUrl = posterUrl;
+      } else {
+        originalUrl = `https://phimimg.com/${posterUrl}`;
+      }
+      return `https://phimapi.com/image.php?url=${encodeURIComponent(originalUrl)}`;
     },
     
     // Helper method to format genres
     getGenres(categories) {
       if (!categories || categories.length === 0) return 'Chưa phân loại';
       return categories.slice(0, 3).map(cat => cat.name).join(', ');
+    },
+    // Navigate to movie detail page
+    navigateToMovie(movieSlug) {
+      this.$router.push(`/phim/${movieSlug}`);
     }
   }
 }
@@ -118,7 +131,7 @@ export default {
 
 <style scoped>
 .carousel-container {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 /* Loading and Error States */

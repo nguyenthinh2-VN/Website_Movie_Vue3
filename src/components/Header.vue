@@ -2,15 +2,15 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
     <div class="container">
       <!-- Brand/Logo -->
-      <a class="navbar-brand fw-bold" href="#">
+      <router-link class="navbar-brand fw-bold" to="/">
         <span class="text-gradient">Yuki Anime</span>
-      </a>
+      </router-link>
 
       <!-- Mobile search and menu buttons -->
       <div class="mobile-controls d-lg-none">
         <!-- Mobile search button -->
         <button
-          class="mobile-search-btn"
+          class="btn-mobile-header mobile-search-btn"
           type="button"
           @click="toggleMobileSearch"
           aria-label="Toggle search"
@@ -20,7 +20,7 @@
 
         <!-- Mobile menu button -->
         <button
-          class="navbar-toggler"
+          class="btn-mobile-header navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarContent"
@@ -35,7 +35,7 @@
       <!-- Navbar content -->
       <div class="collapse navbar-collapse" id="navbarContent">
         <!-- Navigation links -->
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0" @click="closeDropdowns">
           <li class="nav-item">
             <router-link
               class="nav-link"
@@ -52,25 +52,20 @@
               >Anime mới</router-link
             >
           </li>
-          <li
-            class="nav-item dropdown"
-            @mouseenter="showDropdown = true"
-            @mouseleave="showDropdown = false"
-            :class="{ show: showDropdown || mobileDropdownOpen }"
-          >
+          <li class="nav-item dropdown" ref="categoryDropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
               role="button"
-              :class="{ show: showDropdown || mobileDropdownOpen }"
-              @click.prevent="toggleMobileDropdown"
-              aria-expanded="false"
+              :class="{ show: isCategoryDropdownOpen }"
+              @click.prevent.stop="toggleCategoryDropdown"
+              :aria-expanded="isCategoryDropdownOpen"
             >
               Thể loại
             </a>
             <ul
               class="dropdown-menu"
-              :class="{ show: showDropdown || mobileDropdownOpen }"
+              :class="{ show: isCategoryDropdownOpen }"
               v-if="categoryStore.hasCategories"
             >
               <li
@@ -79,6 +74,9 @@
               >
                 <router-link
                   class="dropdown-item"
+                  :class="{
+                    'active-category': activeCategorySlug === category.slug,
+                  }"
                   :to="`/the-loai/${category.slug}`"
                   @click="closeDropdowns"
                 >
@@ -88,22 +86,13 @@
             </ul>
             <ul
               class="dropdown-menu"
-              :class="{ show: showDropdown || mobileDropdownOpen }"
-              v-else-if="categoryStore.loading"
+              :class="{ show: isCategoryDropdownOpen }"
+              v-else
             >
               <li>
-                <span class="dropdown-item-text text-muted">Đang tải...</span>
-              </li>
-            </ul>
-            <ul
-              class="dropdown-menu"
-              :class="{ show: showDropdown || mobileDropdownOpen }"
-              v-else-if="categoryStore.error"
-            >
-              <li>
-                <span class="dropdown-item-text text-danger"
-                  >Lỗi tải dữ liệu</span
-                >
+                <span class="dropdown-item-text text-muted">{{
+                  categoryStore.loading ? "Đang tải..." : "Lỗi"
+                }}</span>
               </li>
             </ul>
           </li>
@@ -160,8 +149,11 @@
               >
                 <img
                   :src="getImageUrl(movie.poster_url)"
-                  alt=""
+                  :alt="movie.name"
                   class="suggestion-poster"
+                  loading="lazy"
+                  @error="handleImageError"
+                  @load="handleImageLoad"
                 />
                 <div class="suggestion-info">
                   <div class="suggestion-name">{{ movie.name }}</div>
@@ -234,8 +226,11 @@
           >
             <img
               :src="getImageUrl(movie.poster_url)"
-              alt=""
+              :alt="movie.name"
               class="suggestion-poster"
+              loading="lazy"
+              @error="handleImageError"
+              @load="handleImageLoad"
             />
             <div class="suggestion-info">
               <div class="suggestion-name">{{ movie.name }}</div>
@@ -272,13 +267,23 @@ export default {
   data() {
     return {
       searchQuery: "",
-      showDropdown: false,
-      mobileDropdownOpen: false,
+      isCategoryDropdownOpen: false,
       showMobileSearch: false,
       showSuggestions: false,
       debounceTimer: null,
     };
   },
+  computed: {
+    // Tính toán active category một lần duy nhất
+    activeCategorySlug() {
+      const path = this.$route.path;
+      if (path.startsWith("/the-loai/")) {
+        return path.replace("/the-loai/", "");
+      }
+      return null;
+    },
+  },
+
   async mounted() {
     // Load categories when component mounts (sử dụng cache nếu có)
     await this.categoryStore.fetchCategories();
@@ -286,11 +291,25 @@ export default {
     // Add scroll listener for navbar effects
     this.handleScroll();
     window.addEventListener("scroll", this.handleScroll);
+    document.addEventListener("click", this.handleClickOutside);
   },
 
   beforeUnmount() {
     // Remove scroll listener
     window.removeEventListener("scroll", this.handleScroll);
+    document.removeEventListener("click", this.handleClickOutside);
+  },
+  watch: {
+    $route() {
+      // Close category dropdown on navigation
+      this.isCategoryDropdownOpen = false;
+
+      // Close mobile navbar manually
+      const navbarContent = document.getElementById("navbarContent");
+      if (navbarContent) {
+        navbarContent.classList.remove("show");
+      }
+    },
   },
   methods: {
     handleSearchInput() {
@@ -314,13 +333,18 @@ export default {
       this.$router.push(`/phim/${slug}`);
     },
     getImageUrl(posterUrl) {
-      if (
-        posterUrl &&
-        (posterUrl.startsWith("http") || posterUrl.startsWith("//"))
-      ) {
-        return posterUrl;
+      if (!posterUrl) {
+        return "";
       }
-      return `https://phimimg.com/${posterUrl}`;
+      let originalUrl;
+      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
+        originalUrl = posterUrl;
+      } else {
+        originalUrl = `https://phimimg.com/${posterUrl}`;
+      }
+      return `https://phimapi.com/image.php?url=${encodeURIComponent(
+        originalUrl
+      )}`;
     },
     handleSearch() {
       const q = this.searchQuery.trim();
@@ -331,18 +355,31 @@ export default {
       this.$router.push({ path: "/tim-kiem", query: { q, page: 1 } });
     },
 
-    toggleMobileDropdown() {
-      // Only toggle on mobile (when screen width < 992px)
-      if (window.innerWidth < 992) {
-        this.mobileDropdownOpen = !this.mobileDropdownOpen;
-      }
-      // Prevent default behavior for all cases since we're using @click.prevent
+    toggleCategoryDropdown() {
+      this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
     },
 
     closeDropdowns() {
-      // Close all dropdowns when navigating
-      this.mobileDropdownOpen = false;
-      this.showDropdown = false;
+      // Close category dropdown
+      this.isCategoryDropdownOpen = false;
+
+      // Close main navbar on mobile manually
+      const navbarContent = document.getElementById("navbarContent");
+      if (navbarContent) {
+        navbarContent.classList.remove("show");
+      }
+
+      // Scroll to top of the page smoothly
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+
+    handleClickOutside(event) {
+      if (
+        this.$refs.categoryDropdown &&
+        !this.$refs.categoryDropdown.contains(event.target)
+      ) {
+        this.isCategoryDropdownOpen = false;
+      }
     },
 
     selectCategory(category) {
@@ -381,6 +418,18 @@ export default {
         });
       }
     },
+
+    handleImageError(event) {
+      // Set placeholder image when original fails to load
+      event.target.src =
+        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA0MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjMzMzIi8+CjxwYXRoIGQ9Ik0yMCAzMEM4Ljk1NDMgMzAgMCAyMS4wNDU3IDAgMTBDMCAxOC45NTQzIDguOTU0MyAzMCAyMCAzMFoiIGZpbGw9IiM1NTUiLz4KPHN2Zz4K";
+      event.target.classList.add("error-placeholder");
+    },
+
+    handleImageLoad(event) {
+      // Remove any error styling when image loads successfully
+      event.target.classList.remove("error-placeholder");
+    },
   },
 };
 </script>
@@ -389,7 +438,7 @@ export default {
 /* Custom navbar background */
 .navbar {
   background: #131419 !important;
-  padding: 10px 0;
+  padding: 9px 0;
   position: fixed !important;
   top: 0;
   left: 0;
@@ -502,9 +551,10 @@ export default {
   gap: 0.5rem;
 }
 
-.mobile-search-btn {
+/* Shared styles for mobile header buttons */
+.btn-mobile-header {
   background: rgba(255, 107, 107, 0.2);
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  border: 1px solid rgba(255, 107, 107, 0.3) !important; /* Use important to override Bootstrap */
   color: #ffffff;
   width: 40px;
   height: 40px;
@@ -514,30 +564,26 @@ export default {
   justify-content: center;
   transition: all 0.3s ease;
   cursor: pointer;
+  padding: 0; /* Reset padding to ensure perfect centering */
 }
 
-.mobile-search-btn:hover,
-.mobile-search-btn:focus {
+.btn-mobile-header:hover,
+.btn-mobile-header:focus {
   background: rgba(255, 107, 107, 0.3);
-  border-color: rgba(255, 107, 107, 0.5);
+  border-color: rgba(255, 107, 107, 0.5) !important;
   color: #ffffff;
   transform: scale(1.05);
+  box-shadow: none !important; /* Remove Bootstrap's focus shadow */
 }
 
+/* Icon-specific adjustments for visual balance */
 .mobile-search-btn i {
-  font-size: 1rem;
+  font-size: 1.1rem; /* Slightly larger search icon */
 }
 
-/* Mobile toggle button */
-.navbar-toggler {
-  border: 1px solid rgba(255, 107, 107, 0.3) !important;
-  background: rgba(255, 107, 107, 0.2);
-  width: 40px;
-  height: 40px;
-}
-
-.navbar-toggler:focus {
-  box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.3) !important;
+.navbar-toggler-icon {
+  width: 1.2em;
+  height: 1.2em;
 }
 
 /* Responsive adjustments */
@@ -606,7 +652,7 @@ export default {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Dropdown Styles */
+/* === New, Simplified Dropdown Styles === */
 .dropdown {
   position: relative;
 }
@@ -620,278 +666,102 @@ export default {
   border-right: 0.3em solid transparent;
   border-bottom: 0;
   border-left: 0.3em solid transparent;
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease-in-out;
 }
 
+/* Rotate arrow when dropdown is open */
 .dropdown-toggle.show::after {
   transform: rotate(180deg);
 }
 
 .dropdown-menu {
-  background: rgba(26, 26, 46, 0.95) !important;
-  border: 1px solid rgba(255, 107, 107, 0.2) !important;
-  border-radius: 15px !important;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-  margin-top: 0 !important;
-  max-height: 400px;
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  min-width: 200px;
+  max-height: 300px; /* Limit height and allow scrolling */
   overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0.5rem 0 !important;
-  min-width: 180px;
-  width: auto;
-  white-space: nowrap;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transform: translateY(-15px) scale(0.9) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  pointer-events: none !important;
-  display: block !important;
-}
-
-.dropdown-item {
-  color: #ffffff !important;
-  padding: 0.6rem 1.2rem !important;
-  transition: all 0.3s ease;
-  border-radius: 8px !important;
-  margin: 0 0.5rem !important;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  width: calc(100% - 1rem);
-}
-
-.dropdown-item:hover,
-.dropdown-item:focus {
-  background: rgba(255, 107, 107, 0.2) !important;
-  color: #ff6b6b !important;
-  transform: translateX(5px);
-}
-
-.dropdown-menu.show {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateY(0) scale(1) !important;
-  pointer-events: auto !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Enhanced nav-item dropdown show animation */
-.nav-item.dropdown.show .dropdown-menu {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateY(0) scale(1) !important;
-  pointer-events: auto !important;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  display: block !important;
-}
-
-/* Override Bootstrap dropdown defaults */
-.navbar .dropdown-menu {
-  display: block !important;
-}
-
-.navbar .dropdown-menu:not(.show) {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: all 0.5s ease !important;
-  pointer-events: none !important;
-}
-/* Smooth transition for dropdown items */
-.dropdown-menu li {
+  display: none; /* Hidden by default */
+  position: absolute;
+  z-index: 1000;
   opacity: 0;
-  transform: translateX(-10px);
-  transition: all 0.2s ease;
-  transition-delay: 0s;
-}
-
-.dropdown-menu.show li {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.dropdown-menu.show li:nth-child(1) {
-  transition-delay: 0.05s;
-}
-.dropdown-menu.show li:nth-child(2) {
-  transition-delay: 0.1s;
-}
-.dropdown-menu.show li:nth-child(3) {
-  transition-delay: 0.15s;
-}
-.dropdown-menu.show li:nth-child(4) {
-  transition-delay: 0.2s;
-}
-.dropdown-menu.show li:nth-child(5) {
-  transition-delay: 0.25s;
-}
-.dropdown-menu.show li:nth-child(n + 6) {
-  transition-delay: 0.3s;
-}
-
-.dropdown-item-text {
-  padding: 0.6rem 1.2rem !important;
-  margin: 0 0.5rem !important;
-  font-size: 0.9rem;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 /* Custom scrollbar for dropdown */
 .dropdown-menu::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
-
 .dropdown-menu::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: transparent;
 }
-
 .dropdown-menu::-webkit-scrollbar-thumb {
-  background: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.4);
   border-radius: 3px;
 }
 
-.dropdown-menu::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 107, 107, 0.7);
+/* Show the dropdown when it has the .show class */
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Desktop hover behavior */
-@media (min-width: 992px) {
-  /* Add invisible bridge to prevent dropdown from disappearing */
-  .dropdown::before {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 8px;
-    background: transparent;
-    z-index: 999;
-  }
-
-  .dropdown:hover .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-  }
-
-  .dropdown:hover .dropdown-menu li {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .dropdown-menu {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    z-index: 1000;
-    min-width: 200px;
-    width: max-content;
-    max-width: 280px;
-  }
-
-  .dropdown.show .dropdown-menu,
-  .dropdown-menu.show {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) scale(1) !important;
-    pointer-events: auto !important;
-  }
-
-  .dropdown.show .dropdown-menu li,
-  .dropdown-menu.show li {
-    opacity: 1 !important;
-    transform: translateX(0) !important;
-  }
-
-  .dropdown-item {
-    width: auto;
-    margin: 0 0.5rem !important;
-  }
+.dropdown-item {
+  color: #e0e0e0 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Mobile specific styles */
+/* Hover and focus effects */
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: rgba(255, 107, 107, 0.15) !important;
+  color: #ff8a8a !important;
+}
+
+/* Active category style */
+.dropdown-item.active-category {
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3) !important;
+}
+
+/* Active category hover effect */
+.dropdown-item.active-category:hover,
+.dropdown-item.active-category:focus {
+  background: linear-gradient(45deg, #ff8a8a, #ffdd5d) !important;
+  color: #ffffff !important;
+  transform: translateX(2px);
+}
+
+.dropdown-item-text {
+  padding: 0.5rem 1rem;
+  color: black;
+}
+
+/* Mobile specific adjustments */
 @media (max-width: 991px) {
-  /* Remove bridge on mobile */
-  .dropdown::before {
-    display: none;
-  }
-
-  /* Fix navbar collapse positioning */
-  .navbar-collapse {
-    margin-top: 0.5rem;
-  }
-
   .dropdown-menu {
-    position: static !important;
-    float: none;
+    position: static; /* Let it flow in the document */
     width: 100%;
-    margin-top: 0.25rem !important;
-    background: rgba(22, 33, 62, 0.95) !important;
-    border-radius: 10px !important;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-    overflow-x: hidden;
-    min-width: unset;
-    transform: translateY(-5px) scale(0.98);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 0;
-    padding: 0 !important;
-  }
-
-  .dropdown-menu.show {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) scale(1) !important;
-    pointer-events: auto !important;
-    max-height: 300px !important;
-    padding: 0.5rem 0 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  }
-
-  .nav-item.dropdown.show .dropdown-menu {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) scale(1) !important;
-    pointer-events: auto !important;
-    max-height: 300px !important;
-    padding: 0.5rem 0 !important;
+    margin-top: 0.5rem;
+    max-height: 250px;
+    box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.3);
+    background: rgba(15, 15, 25, 0.8);
   }
 
   .dropdown-item {
     text-align: center;
-    margin: 0.2rem 0.5rem !important;
-    width: calc(100% - 1rem);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .dropdown-item:hover {
-    transform: none;
-    background: rgba(255, 107, 107, 0.15) !important;
-  }
-
-  /* Fix navbar toggler positioning */
-  .navbar-toggler {
-    padding: 0.25rem 0.5rem;
-    font-size: 1rem;
-    line-height: 1;
-    border-radius: 0.375rem;
-  }
-
-  .navbar-toggler-icon {
-    width: 1.2em;
-    height: 1.2em;
   }
 }
 
@@ -1026,6 +896,28 @@ export default {
   object-fit: cover;
   border-radius: 4px;
   margin-right: 0.75rem;
+  background: linear-gradient(45deg, #333, #555);
+  transition: opacity 0.3s ease;
+}
+
+.suggestion-poster[loading="lazy"] {
+  background: linear-gradient(45deg, #333, #555);
+  background-size: 200% 200%;
+  animation: shimmer 1.5s infinite;
+}
+
+.suggestion-poster.error-placeholder {
+  opacity: 0.6;
+  filter: grayscale(100%);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% -200%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
 }
 
 .suggestion-info {

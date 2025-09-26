@@ -9,7 +9,7 @@
           :disabled="currentPage === 1"
         >
           <i class="bi bi-chevron-left"></i>
-          Trước
+          
         </button>
       </li>
 
@@ -60,21 +60,20 @@
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
         >
-          Sau
           <i class="bi bi-chevron-right"></i>
         </button>
       </li>
     </ul>
 
     <!-- Page Info -->
-    <div class="pagination-info">
+    <!-- <div class="pagination-info">
       <span class="page-info-text">
         Trang {{ currentPage }} / {{ totalPages }} ({{
           totalItems.toLocaleString()
         }}
         phim)
       </span>
-    </div>
+    </div> -->
   </nav>
 </template>
 
@@ -152,18 +151,20 @@ export default {
 .pagination-wrapper {
   margin: 3rem 0;
   text-align: center;
+  gap: 10px;
 }
 
 .pagination {
   margin-bottom: 1rem;
+  
 }
 
 .page-link {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
-  padding: 0.75rem 1rem;
-  margin: 0 2px;
+  padding: 0.5rem 0.8rem;
+  margin: 0 5px;
   border-radius: 8px;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
@@ -198,9 +199,9 @@ export default {
   cursor: not-allowed;
 }
 
-.pagination-info {
+/* .pagination-info {
   margin-top: 1rem;
-}
+} */
 
 .page-info-text {
   color: #a0a0a0;

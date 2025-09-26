@@ -72,11 +72,11 @@ export const useMovieDetailStore = defineStore('movieDetail', {
             // Lấy episodes từ API response (cùng cấp với movie theo file mẫu)
             this.episodesData = data.episodes || []
             
-            console.log('Raw episodes from API:', data.episodes)
+            /* console.log('Raw episodes from API:', data.episodes)
             console.log('Episodes type:', typeof data.episodes)
             console.log('Episodes is array:', Array.isArray(data.episodes))
             console.log('Movie detail loaded:', this.movie.name)
-            console.log('Episodes saved to state:', this.episodesData)
+            console.log('Episodes saved to state:', this.episodesData) */
             
             if (this.episodesData && Array.isArray(this.episodesData) && this.episodesData.length > 0) {
               console.log('Episodes loaded:', this.episodesData.length, 'servers')

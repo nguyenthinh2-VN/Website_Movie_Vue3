@@ -27,9 +27,6 @@
               >
                 Thử lại
               </button>
-              <button @click="testAPI" class="btn btn-sm btn-outline-info ms-2">
-                Test API
-              </button>
             </div>
             <div class="debug-info mt-3" v-if="debugInfo">
               <h6>Debug Info:</h6>
@@ -39,7 +36,7 @@
 
           <!-- Movies Grid -->
           <div v-else-if="movieStore.hasMovies" class="movies-grid">
-            <MovieCard
+            <MovieCardNew 
               v-for="movie in displayedMovies"
               :key="movie._id"
               :movie="movie"
@@ -81,9 +78,9 @@
 import AppHeader from "@/components/Header.vue";
 import AppFooter from "@/components/Footer.vue";
 import AnimeCarousel from "@/components/AnimeCarousel.vue";
-import MovieCard from "@/components/MovieCard.vue";
 import MoviePagination from "@/components/Pagination.vue";
 import { useMovieStore } from "@/stores/movieStore";
+import MovieCardNew from "@/components/MovieCardNew.vue";
 
 export default {
   name: "HomePage",
@@ -91,8 +88,8 @@ export default {
     AppHeader,
     AppFooter,
     AnimeCarousel,
-    MovieCard,
     MoviePagination,
+    MovieCardNew,
   },
   setup() {
     const movieStore = useMovieStore();
@@ -122,50 +119,7 @@ export default {
       await this.movieStore.changePage(page);
       this.$router.push({ query: { page } }); // lưu số trang vào URL
     },
-    async testAPI() {
-      this.debugInfo = "Testing API...";
-      try {
-        const testUrl =
-          "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1";
-        console.log("Testing URL:", testUrl);
-
-        const response = await fetch(testUrl);
-        const data = await response.json();
-
-        this.debugInfo = JSON.stringify(
-          {
-            url: testUrl,
-            status: response.status,
-            ok: response.ok,
-            dataStructure: {
-              hasStatus: !!data.status,
-              statusValue: data.status,
-              hasData: !!data.data,
-              hasItems: !!(data.data && data.data.items),
-              itemsLength:
-                data.data && data.data.items ? data.data.items.length : 0,
-              pagination:
-                data.data && data.data.pagination ? data.data.pagination : null,
-            },
-            firstItem:
-              data.data && data.data.items && data.data.items[0]
-                ? data.data.items[0]
-                : null,
-          },
-          null,
-          2
-        );
-      } catch (error) {
-        this.debugInfo = JSON.stringify(
-          {
-            error: error.message,
-            stack: error.stack,
-          },
-          null,
-          2
-        );
-      }
-    },
+    
   },
   async mounted() {
     // Load initial data
@@ -283,7 +237,7 @@ export default {
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
@@ -327,21 +281,21 @@ export default {
 @media (max-width: 1200px) {
   .movies-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 992px) {
   .movies-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .movies-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .section-title {

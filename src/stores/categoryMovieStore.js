@@ -30,7 +30,7 @@ export const useCategoryMovieStore = defineStore('categoryMovie', {
       }
       
       try {
-        const response = await fetch(`https://phimapi.com/v1/api/the-loai/${categorySlug}?page=${page}&limit=15`)
+        const response = await fetch(`https://phimapi.com/v1/api/the-loai/${categorySlug}?page=${page}&limit=16`)
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)

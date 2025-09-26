@@ -1,23 +1,30 @@
 <template>
   <div class="category-page">
     <AppHeader></AppHeader>
-    
+
     <main class="main-content">
       <div class="container category-container">
         <section class="category-section">
           <!-- Category Title -->
           <h2 class="section-title">
-            {{ categoryMovieStore.categoryInfo?.name || 'Thể loại phim' }}
+            {{ categoryMovieStore.categoryInfo?.name || "Thể loại phim" }}
           </h2>
-          
+
           <!-- Category Stats -->
-          <div v-if="categoryMovieStore.pagination.totalItems > 0" class="category-stats">
+          <div
+            v-if="categoryMovieStore.pagination.totalItems > 0"
+            class="category-stats"
+          >
             <p class="stats-text">
-              Tìm thấy <strong>{{ categoryMovieStore.pagination.totalItems.toLocaleString() }}</strong> phim 
-              trong thể loại <strong>{{ categoryMovieStore.categoryInfo?.name }}</strong>
+              Tìm thấy
+              <strong>{{
+                categoryMovieStore.pagination.totalItems.toLocaleString()
+              }}</strong>
+              phim trong thể loại
+              <strong>{{ categoryMovieStore.categoryInfo?.name }}</strong>
             </p>
           </div>
-          
+
           <!-- Loading State -->
           <div v-if="categoryMovieStore.loading" class="loading-section">
             <div class="spinner-border text-light" role="status">
@@ -25,24 +32,29 @@
             </div>
             <p class="loading-text">Đang tải danh sách phim...</p>
           </div>
-          
+
           <!-- Error State -->
           <div v-else-if="categoryMovieStore.error" class="error-section">
             <div class="alert alert-danger" role="alert">
               Lỗi tải dữ liệu: {{ categoryMovieStore.error }}
-              <button @click="loadCategoryMovies" class="btn btn-sm btn-outline-danger ms-2">Thử lại</button>
+              <button
+                @click="loadCategoryMovies"
+                class="btn btn-sm btn-outline-danger ms-2"
+              >
+                Thử lại
+              </button>
             </div>
           </div>
-          
+
           <!-- Movies Grid -->
           <div v-else-if="categoryMovieStore.hasMovies" class="movies-grid">
-            <MovieCard 
-              v-for="movie in categoryMovieStore.movies" 
-              :key="movie._id" 
+            <MovieCardNew
+              v-for="movie in categoryMovieStore.movies"
+              :key="movie._id"
               :movie="movie"
             />
           </div>
-          
+
           <!-- No Data State -->
           <div v-else class="no-data-section">
             <div class="no-data-content">
@@ -57,10 +69,13 @@
               </button>
             </div>
           </div>
-          
+
           <!-- Pagination -->
-          <MoviePagination 
-            v-if="categoryMovieStore.hasMovies && categoryMovieStore.pagination.totalPages > 1"
+          <MoviePagination
+            v-if="
+              categoryMovieStore.hasMovies &&
+              categoryMovieStore.pagination.totalPages > 1
+            "
             :current-page="categoryMovieStore.pagination.currentPage"
             :total-pages="categoryMovieStore.pagination.totalPages"
             :total-items="categoryMovieStore.pagination.totalItems"
@@ -69,77 +84,97 @@
         </section>
       </div>
     </main>
-    
+
     <AppFooter></AppFooter>
   </div>
 </template>
 
 <script>
-import AppHeader from '@/components/Header.vue'
-import AppFooter from '@/components/Footer.vue'
-import MovieCard from '@/components/MovieCard.vue'
-import MoviePagination from '@/components/Pagination.vue'
-import { useCategoryMovieStore } from '@/stores/categoryMovieStore'
+import AppHeader from "@/components/Header.vue";
+import AppFooter from "@/components/Footer.vue";
+import MovieCardNew from "@/components/MovieCardNew.vue";
+import MoviePagination from "@/components/Pagination.vue";
+import { useCategoryMovieStore } from "@/stores/categoryMovieStore";
 
 export default {
-  name: 'CategoryPage',
+  name: "CategoryPage",
   components: {
     AppHeader,
     AppFooter,
-    MovieCard,
-    MoviePagination
+    MovieCardNew,
+    MoviePagination,
   },
   setup() {
-    const categoryMovieStore = useCategoryMovieStore()
-    return { categoryMovieStore }
+    const categoryMovieStore = useCategoryMovieStore();
+    return { categoryMovieStore };
   },
   data() {
     return {
-      categorySlug: null
-    }
+      categorySlug: null,
+    };
   },
   async mounted() {
     // Lấy category slug từ route params
-    this.categorySlug = this.$route.params.slug
+    this.categorySlug = this.$route.params.slug;
     if (this.categorySlug) {
-      await this.loadCategoryMovies()
+      await this.loadCategoryMovies();
     }
   },
-  
+
   async activated() {
     // Called when component is activated by keep-alive
-    const newSlug = this.$route.params.slug
-    
+    const newSlug = this.$route.params.slug;
+
     // If slug changed or no data, reload
-    if (newSlug !== this.categorySlug || (!this.categoryMovieStore.hasMovies && !this.categoryMovieStore.loading)) {
-      this.categorySlug = newSlug
+    if (
+      newSlug !== this.categorySlug ||
+      (!this.categoryMovieStore.hasMovies && !this.categoryMovieStore.loading)
+    ) {
+      this.categorySlug = newSlug;
       if (this.categorySlug) {
-        await this.loadCategoryMovies()
+        await this.loadCategoryMovies();
       }
     }
   },
   async beforeRouteUpdate(to, from, next) {
     // Khi route thay đổi (chuyển sang thể loại khác)
-    this.categorySlug = to.params.slug
+    this.categorySlug = to.params.slug;
     if (this.categorySlug) {
-      await this.loadCategoryMovies()
+      await this.loadCategoryMovies();
     }
-    next()
+    next();
+  },
+  watch: {
+    // Cập nhật title khi categoryInfo thay đổi
+    'categoryMovieStore.categoryInfo': {
+      handler(newCategoryInfo) {
+        if (newCategoryInfo && newCategoryInfo.name) {
+          document.title = `Thể Loại - ${newCategoryInfo.name} - Website Movie`;
+        } else {
+          document.title = 'Thể Loại - Website Movie';
+        }
+      },
+      immediate: true,
+      deep: true
+    }
   },
   methods: {
     async loadCategoryMovies() {
       if (this.categorySlug) {
-        await this.categoryMovieStore.fetchMoviesByCategory(this.categorySlug, 1)
+        await this.categoryMovieStore.fetchMoviesByCategory(
+          this.categorySlug,
+          1
+        );
       }
     },
-    
+
     async handlePageChange(page) {
       if (this.categorySlug) {
-        await this.categoryMovieStore.changePage(this.categorySlug, page)
+        await this.categoryMovieStore.changePage(this.categorySlug, page);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -184,7 +219,7 @@ export default {
 }
 
 .section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -249,7 +284,7 @@ export default {
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
@@ -293,37 +328,37 @@ export default {
 @media (max-width: 1200px) {
   .movies-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 992px) {
   .movies-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .movies-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .stats-text {
     font-size: 0.9rem;
     padding: 0.6rem 1.2rem;
   }
-  
+
   .no-data-section {
     padding: 3rem 1rem;
     min-height: 300px;
   }
-  
+
   .btn-retry {
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
@@ -334,16 +369,16 @@ export default {
   .container {
     padding: 0 1rem;
   }
-  
+
   .movies-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
-  
+
   .section-title {
     font-size: 1.8rem;
   }
-  
+
   .category-container {
     padding-top: 2rem;
   }
@@ -354,11 +389,11 @@ export default {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
   }
-  
+
   .section-title {
     font-size: 1.5rem;
   }
-  
+
   .container {
     padding: 0 0.5rem;
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="movie-detail-page">
     <AppHeader></AppHeader>
-    
+
     <main class="main-content">
       <!-- Loading State -->
       <div v-if="movieDetailStore.loading" class="loading-section">
@@ -12,17 +12,22 @@
           <p class="loading-text">Đang tải thông tin phim...</p>
         </div>
       </div>
-      
+
       <!-- Error State -->
       <div v-else-if="movieDetailStore.error" class="error-section">
         <div class="container">
           <div class="alert alert-danger" role="alert">
             Lỗi tải dữ liệu: {{ movieDetailStore.error }}
-            <button @click="loadMovieDetail" class="btn btn-sm btn-outline-danger ms-2">Thử lại</button>
+            <button
+              @click="loadMovieDetail"
+              class="btn btn-sm btn-outline-danger ms-2"
+            >
+              Thử lại
+            </button>
           </div>
         </div>
       </div>
-      
+
       <!-- Movie Detail Content -->
       <div v-else-if="movieDetailStore.hasMovie" class="movie-detail-content">
         <div class="container">
@@ -31,21 +36,25 @@
             <div class="col-lg-4 col-md-5">
               <div class="movie-poster-section">
                 <div class="poster-container">
-                  <img 
-                    :src="getImageUrl(movieDetailStore.movieInfo.poster_url)" 
-                    :alt="movieDetailStore.movieInfo.name" 
+                  <img
+                    :src="getImageUrl(movieDetailStore.movieInfo.poster_url)"
+                    :alt="movieDetailStore.movieInfo.name"
                     class="movie-poster-img"
-                  >
+                  />
                   <div class="poster-overlay">
-                    <div class="quality-badge">{{ movieDetailStore.movieInfo.quality }}</div>
-                    <div class="episode-badge">{{ movieDetailStore.movieInfo.episode_current }}</div>
+                    <div class="quality-badge">
+                      {{ movieDetailStore.movieInfo.quality }}
+                    </div>
+                    <div class="episode-badge">
+                      {{ movieDetailStore.movieInfo.episode_current }}
+                    </div>
                   </div>
                 </div>
-                
+
                 <!-- Action Buttons with Naive UI -->
                 <div class="action-buttons">
-                  <n-button 
-                    type="info" 
+                  <n-button
+                    type="info"
                     size="large"
                     @click="toggleEpisodes"
                     class="btn-episodes"
@@ -55,10 +64,10 @@
                     </template>
                     Chọn Tập
                   </n-button>
-                  
-                  <n-button 
+
+                  <n-button
                     v-if="movieDetailStore.movieInfo?.trailer_url"
-                    type="success" 
+                    type="success"
                     size="large"
                     @click="openTrailerModal"
                     class="btn-trailer"
@@ -68,12 +77,8 @@
                     </template>
                     Trailer
                   </n-button>
-                  
-                  <n-button 
-                    circle
-                    size="large"
-                    class="btn-bookmark"
-                  >
+
+                  <n-button circle size="large" class="btn-bookmark">
                     <template #icon>
                       <i class="bi bi-bookmark"></i>
                     </template>
@@ -81,151 +86,208 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Movie Info -->
             <div class="col-lg-8 col-md-7">
               <div class="movie-info-section">
                 <!-- Title -->
-                <h1 class="movie-title">{{ movieDetailStore.movieInfo.name }}</h1>
-                <h2 class="movie-subtitle">{{ movieDetailStore.movieInfo.origin_name }}</h2>
-                
+                <h1 class="movie-title">
+                  {{ movieDetailStore.movieInfo.name }}
+                </h1>
+                <h2 class="movie-subtitle">
+                  {{ movieDetailStore.movieInfo.origin_name }}
+                </h2>
 
                 <!-- Movie Meta Info -->
                 <div class="movie-meta">
                   <div class="meta-row">
                     <span class="meta-label">Trạng thái:</span>
-                    <span class="meta-value status">{{ movieDetailStore.movieInfo.episode_current }}</span>
+                    <span class="meta-value status">{{
+                      movieDetailStore.movieInfo.episode_current
+                    }}</span>
                   </div>
-                  
+
                   <div class="meta-row">
                     <span class="meta-label">Năm phát hành:</span>
-                    <span class="meta-value">{{ movieDetailStore.movieInfo.year }}</span>
+                    <span class="meta-value">{{
+                      movieDetailStore.movieInfo.year
+                    }}</span>
                   </div>
-                  
+
                   <div class="meta-row">
                     <span class="meta-label">Thời lượng:</span>
-                    <span class="meta-value">{{ movieDetailStore.movieInfo.time }}</span>
+                    <span class="meta-value">{{
+                      movieDetailStore.movieInfo.time
+                    }}</span>
                   </div>
-                  
+
                   <div class="meta-row">
                     <span class="meta-label">Thể loại:</span>
                     <span class="meta-value categories">
-                      <span 
-                        v-for="(category, index) in movieDetailStore.movieInfo.category" 
+                      <span
+                        v-for="(category, index) in movieDetailStore.movieInfo
+                          .category"
                         :key="category.id"
                         class="category-link"
                         @click="goToCategory(category.slug)"
                       >
-                        {{ category.name }}<span v-if="index < movieDetailStore.movieInfo.category.length - 1">, </span>
+                        {{ category.name
+                        }}<span
+                          v-if="
+                            index <
+                            movieDetailStore.movieInfo.category.length - 1
+                          "
+                          >,
+                        </span>
                       </span>
                     </span>
                   </div>
-                  
+
                   <div class="meta-row">
                     <span class="meta-label">Quốc gia:</span>
                     <span class="meta-value">
-                      {{ movieDetailStore.movieInfo.country?.map(c => c.name).join(', ') }}
+                      {{
+                        movieDetailStore.movieInfo.country
+                          ?.map((c) => c.name)
+                          .join(", ")
+                      }}
                     </span>
                   </div>
-                  
+
                   <div class="meta-row">
                     <span class="meta-label">Đạo diễn:</span>
-                    <span class="meta-value">{{ movieDetailStore.movieInfo.director?.join(', ') || 'Đang cập nhật' }}</span>
+                    <span class="meta-value">{{
+                      movieDetailStore.movieInfo.director?.join(", ") ||
+                      "Đang cập nhật"
+                    }}</span>
                   </div>
-                  
+
                   <div class="meta-row">
                     <span class="meta-label">Diễn viên:</span>
-                    <span class="meta-value">{{ movieDetailStore.movieInfo.actor?.join(', ') || 'Đang cập nhật' }}</span>
+                    <span class="meta-value">{{
+                      movieDetailStore.movieInfo.actor?.join(", ") ||
+                      "Đang cập nhật"
+                    }}</span>
                   </div>
-                  
+
                   <div class="meta-row">
                     <span class="meta-label">Yêu thích:</span>
                     <div class="rating-stars">
-                      <i 
-                        v-for="star in 5" 
+                      <i
+                        v-for="star in 5"
                         :key="star"
                         :class="getStarClass(star, movieDetailStore.rating)"
                       ></i>
-                      <span class="rating-text">({{ formatRating(movieDetailStore.rating) }}/5)</span>
+                      <span class="rating-text"
+                        >({{ movieDetailStore.rating }}/10)</span
+                      >
                     </div>
                   </div>
                 </div>
-                
+
                 <!-- Movie Description - Moved here -->
                 <div class="movie-description-inline">
                   <h3 class="description-title">Nội dung phim</h3>
                   <div class="description-content">
-                    <p 
-                      class="description-text" 
-                      :class="{ 'collapsed': !isDescriptionExpanded && isDescriptionLong }"
+                    <p
+                      class="description-text"
+                      :class="{
+                        collapsed: !isDescriptionExpanded && isDescriptionLong,
+                      }"
                       ref="descriptionText"
                     >
-                      {{ movieDetailStore.movieInfo.content || 'Nội dung phim đang được cập nhật...' }}
+                      {{
+                        movieDetailStore.movieInfo.content ||
+                        "Nội dung phim đang được cập nhật..."
+                      }}
                     </p>
-                    <button 
+                    <button
                       v-if="isDescriptionLong"
                       class="btn btn-toggle-description"
                       @click="toggleDescription"
                     >
-                      {{ isDescriptionExpanded ? 'Thu gọn' : 'Xem thêm' }}
+                      {{ isDescriptionExpanded ? "Thu gọn" : "Xem thêm" }}
                     </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          
+
+          <!-- Episodes Section (Outside container-body) -->
+          <div
+            v-if="movieDetailStore.hasMovie && showEpisodes"
+            class="episodes-section"
+          >
+            <div class="container">
+              <n-collapse
+                v-model:expanded-names="expandedEpisodes"
+                class="episodes-collapse"
+              >
+                <div
+                  class="episodes-container"
+                  v-if="
+                    Array.isArray(movieDetailStore.episodes) &&
+                    movieDetailStore.episodes.length > 0
+                  "
+                >
+                  <div
+                    v-for="(server, serverIndex) in movieDetailStore.episodes"
+                    :key="serverIndex"
+                    class="server-section"
+                  >
+                    <div class="server-header">
+                      <n-tag type="error" size="large">
+                        {{ server.server_name }}
+                      </n-tag>
+                    </div>
+                    <div
+                      class="episodes-grid"
+                      v-if="
+                        Array.isArray(server.server_data) &&
+                        server.server_data.length > 0
+                      "
+                    >
+                      <n-button
+                        v-for="(episode, episodeIndex) in server.server_data"
+                        :key="episodeIndex"
+                        size="small"
+                        class="episode-btn"
+                        @click="playEpisode(serverIndex, episodeIndex, episode)"
+                      >
+                        {{ getEpisodeNumber(episode.name) }}
+                      </n-button>
+                    </div>
+                    <div v-else class="no-server-data">
+                      <p class="text-muted">Server này chưa có tập phim nào.</p>
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="no-episodes">
+                  <p>Chưa có tập phim nào được cập nhật.</p>
+                </div>
+              </n-collapse>
+            </div>
+          </div>
+
           <!-- Related Movies Section -->
           <div class="row mt-4" v-if="movieDetailStore.hasMovie">
             <div class="col-12">
-              <RelatedMovies :currentMovie="movieDetailStore.movie" />
+              <RelatedMoviesNew :currentMovie="movieDetailStore.movie" />
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Episodes Section (Outside container-body) -->
-      <div v-if="movieDetailStore.hasMovie && showEpisodes" class="episodes-section">
-        <div class="container">
-          <n-collapse v-model:expanded-names="expandedEpisodes" class="episodes-collapse">
-            <n-collapse-item title="Danh sách tập phim" name="episodes">
-              <div class="episodes-container" v-if="Array.isArray(movieDetailStore.episodes) && movieDetailStore.episodes.length > 0">
-                <div 
-                  v-for="(server, serverIndex) in movieDetailStore.episodes" 
-                  :key="serverIndex"
-                  class="server-section"
-                >
-                  <div class="server-header">
-                    <n-tag type="error" size="large">
-                      {{ server.server_name }}
-                    </n-tag>
-                  </div>
-                  <div class="episodes-grid" v-if="Array.isArray(server.server_data) && server.server_data.length > 0">
-                    <n-button
-                      v-for="(episode, episodeIndex) in server.server_data"
-                      :key="episodeIndex"
-                      size="small"
-                      class="episode-btn"
-                      @click="playEpisode(serverIndex, episodeIndex, episode)"
-                    >
-                      {{ getEpisodeNumber(episode.name) }}
-                    </n-button>
-                  </div>
-                  <div v-else class="no-server-data">
-                    <p class="text-muted">Server này chưa có tập phim nào.</p>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="no-episodes">
-                <p>Chưa có tập phim nào được cập nhật.</p>
-              </div>
-            </n-collapse-item>
-          </n-collapse>
-        </div>
-      </div>
-      
       <!-- No Data State -->
-      <div v-else-if="!movieDetailStore.loading && !movieDetailStore.error && !movieDetailStore.hasMovie" class="no-data-section">
+      <div
+        v-else-if="
+          !movieDetailStore.loading &&
+          !movieDetailStore.error &&
+          !movieDetailStore.hasMovie
+        "
+        class="no-data-section"
+      >
         <div class="container">
           <div class="no-data-content">
             <i class="bi bi-film display-1 text-muted mb-3"></i>
@@ -241,21 +303,19 @@
         </div>
       </div>
     </main>
-    
+
     <!-- Trailer Modal -->
-    <div 
-      v-if="showTrailerModal" 
-      class="trailer-modal-overlay" 
+    <div
+      v-if="showTrailerModal"
+      class="trailer-modal-overlay"
       @click="closeTrailerModal"
     >
       <div class="trailer-modal" @click.stop>
         <div class="trailer-modal-header">
-          <h5 class="modal-title">{{ movieDetailStore.movieInfo.name }} - Trailer</h5>
-          <button 
-            type="button" 
-            class="btn-close" 
-            @click="closeTrailerModal"
-          >
+          <h5 class="modal-title">
+            {{ movieDetailStore.movieInfo.name }} - Trailer
+          </h5>
+          <button type="button" class="btn-close" @click="closeTrailerModal">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -273,32 +333,31 @@
         </div>
       </div>
     </div>
-    
+
     <AppFooter></AppFooter>
   </div>
 </template>
 
 <script>
-import AppHeader from '@/components/Header.vue'
-import AppFooter from '@/components/Footer.vue'
-import RelatedMovies from '@/components/RelatedMovies.vue'
-import { useMovieDetailStore } from '@/stores/movieDetailStore'
-import { NButton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
+import AppHeader from "@/components/Header.vue";
+import AppFooter from "@/components/Footer.vue";
+import RelatedMoviesNew from "@/components/RelatedMoviesNew.vue";
+import { useMovieDetailStore } from "@/stores/movieDetailStore";
+import { NButton, NCollapse, NTag } from "naive-ui";
 
 export default {
-  name: 'MovieDetailPage',
+  name: "MovieDetailPage",
   components: {
     AppHeader,
     AppFooter,
-    RelatedMovies,
+    RelatedMoviesNew,
     NButton,
     NCollapse,
-    NCollapseItem,
-    NTag
+    NTag,
   },
   setup() {
-    const movieDetailStore = useMovieDetailStore()
-    return { movieDetailStore }
+    const movieDetailStore = useMovieDetailStore();
+    return { movieDetailStore };
   },
   data() {
     return {
@@ -308,158 +367,176 @@ export default {
       showTrailerModal: false,
       trailerEmbedUrl: null,
       expandedEpisodes: [], // For collapse control
-      showEpisodes: false // Control episodes section visibility
-    }
+      showEpisodes: false, // Control episodes section visibility
+    };
   },
   async mounted() {
     // Scroll to top when page loads
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     // Lấy movie slug từ route params
-    this.movieSlug = this.$route.params.slug
+    this.movieSlug = this.$route.params.slug;
     if (this.movieSlug) {
-      await this.loadMovieDetail()
+      await this.loadMovieDetail();
     }
   },
   async beforeRouteUpdate(to, from, next) {
     // Scroll to top when changing to different movie
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     // Khi route thay đổi (chuyển sang phim khác)
-    this.movieSlug = to.params.slug
+    this.movieSlug = to.params.slug;
     if (this.movieSlug) {
-      await this.loadMovieDetail()
+      await this.loadMovieDetail();
     }
-    next()
+    next();
+  },
+  watch: {
+    // Cập nhật title khi movieInfo thay đổi
+    "movieDetailStore.movieInfo": {
+      handler(newMovieInfo) {
+        if (newMovieInfo && newMovieInfo.name) {
+          document.title = `${newMovieInfo.name} - Website Movie`;
+        } else {
+          document.title = "Chi Tiết Phim - Website Movie";
+        }
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   methods: {
     async loadMovieDetail() {
       if (this.movieSlug) {
-        await this.movieDetailStore.fetchMovieDetail(this.movieSlug)
-        // Debug: Log episodes data
-        console.log('Episodes data:', this.movieDetailStore.episodes)
-        console.log('Movie data:', this.movieDetailStore.movie)
+        await this.movieDetailStore.fetchMovieDetail(this.movieSlug);
+        /* // Debug: Log episodes data
+        console.log("Episodes data:", this.movieDetailStore.episodes);
+        console.log("Movie data:", this.movieDetailStore.movie); */
         // Check if description is long after loading
         this.$nextTick(() => {
-          this.checkDescriptionLength()
-        })
+          this.checkDescriptionLength();
+        });
       }
     },
-    
+
     checkDescriptionLength() {
-      const content = this.movieDetailStore.movieInfo?.content || ''
+      const content = this.movieDetailStore.movieInfo?.content || "";
       // Consider description long if it's more than 200 characters
-      this.isDescriptionLong = content.length > 200
+      this.isDescriptionLong = content.length > 200;
     },
-    
+
     toggleDescription() {
-      this.isDescriptionExpanded = !this.isDescriptionExpanded
+      this.isDescriptionExpanded = !this.isDescriptionExpanded;
     },
-    
+
     openTrailerModal() {
-      const trailerUrl = this.movieDetailStore.movieInfo?.trailer_url
-      if (trailerUrl && trailerUrl.trim() !== '') {
-        this.trailerEmbedUrl = this.convertToEmbedUrl(trailerUrl)
-        this.showTrailerModal = true
+      const trailerUrl = this.movieDetailStore.movieInfo?.trailer_url;
+      if (trailerUrl && trailerUrl.trim() !== "") {
+        this.trailerEmbedUrl = this.convertToEmbedUrl(trailerUrl);
+        this.showTrailerModal = true;
         // Prevent body scroll when modal is open
-        document.body.style.overflow = 'hidden'
+        document.body.style.overflow = "hidden";
       }
     },
-    
+
     closeTrailerModal() {
-      this.showTrailerModal = false
-      this.trailerEmbedUrl = null
+      this.showTrailerModal = false;
+      this.trailerEmbedUrl = null;
       // Restore body scroll
-      document.body.style.overflow = 'auto'
+      document.body.style.overflow = "auto";
     },
-    
+
     convertToEmbedUrl(url) {
       // Convert YouTube URL to embed URL
-      if (url.includes('youtube.com/watch?v=')) {
-        const videoId = url.split('v=')[1].split('&')[0]
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1`
-      } else if (url.includes('youtu.be/')) {
-        const videoId = url.split('youtu.be/')[1].split('?')[0]
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1`
+      if (url.includes("youtube.com/watch?v=")) {
+        const videoId = url.split("v=")[1].split("&")[0];
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      } else if (url.includes("youtu.be/")) {
+        const videoId = url.split("youtu.be/")[1].split("?")[0];
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
       }
       // Return original URL if not YouTube
-      return url
+      return url;
     },
-    
-    getImageUrl(imageUrl) {
-      // Nếu URL đã có domain thì return luôn, ngược lại thêm CDN domain
-      if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('//'))) {
-        return imageUrl
+
+    getImageUrl(posterUrl) {
+      if (!posterUrl) {
+        return "";
       }
-      // Thêm CDN domain
-      return `https://phimimg.com/${imageUrl}`
-    },
-    
-    formatRating(rating) {
-      if (rating === 0) return '0.0'
-      // Chuyển từ thang 10 sang thang 5 để hiển thị
-      const starRating = rating / 2
-      const rounded = Math.round(starRating * 10) / 10
-      return rounded.toFixed(1)
-    },
-    
-    getStarClass(starPosition, rating) {
-      if (rating === 0) return 'bi bi-star no-rating'
-      
-      // Chuyển đổi rating từ thang 10 sang thang 5 sao
-      const starRating = rating / 2
-      
-      if (starPosition <= Math.floor(starRating)) {
-        return 'bi bi-star-fill'
-      } else if (starPosition === Math.floor(starRating) + 1 && starRating % 1 >= 0.5) {
-        return 'bi bi-star-half'
+      let originalUrl;
+      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
+        originalUrl = posterUrl;
       } else {
-        return 'bi bi-star'
+        originalUrl = `https://phimimg.com/${posterUrl}`;
+      }
+      return `https://phimapi.com/image.php?url=${encodeURIComponent(
+        originalUrl
+      )}`;
+    },
+
+    getStarClass(starPosition, rating) {
+      if (rating === 0) {
+        return "bi bi-star no-rating";
+      }
+
+      const starRating = rating / 2;
+
+      if (starPosition <= Math.floor(starRating)) {
+        return "bi bi-star-fill";
+      } else if (
+        starPosition === Math.floor(starRating) + 1 &&
+        starRating % 1 >= 0.5
+      ) {
+        return "bi bi-star-half";
+      } else {
+        return "bi bi-star";
       }
     },
-    
+
     goToCategory(categorySlug) {
-      this.$router.push(`/the-loai/${categorySlug}`)
+      this.$router.push(`/the-loai/${categorySlug}`);
     },
-  
-    
-    playEpisode(serverIndex, episodeIndex, episode) {
-      console.log('Play episode:', episode)
-      console.log('Server index:', serverIndex)
-      console.log('Episode index:', episodeIndex)
-      
+
+    playEpisode(serverIndex, episodeIndex) {
+      /* console.log("Play episode:", episode);
+      console.log("Server index:", serverIndex);
+      console.log("Episode index:", episodeIndex); */
+
       // Chuyển hướng đến trang xem phim
       this.$router.push({
-        name: 'watch',
+        name: "watch",
         params: {
           slug: this.movieSlug,
           serverIndex: (serverIndex + 1).toString(), // Server bắt đầu từ 1
-          episodeIndex: (episodeIndex + 1).toString() // Episode bắt đầu từ 1
-        }
-      })
+          episodeIndex: (episodeIndex + 1).toString(), // Episode bắt đầu từ 1
+        },
+      });
     },
-    
+
     toggleEpisodes() {
-      this.showEpisodes = !this.showEpisodes
+      this.showEpisodes = !this.showEpisodes;
       if (this.showEpisodes) {
         // Auto expand episodes when showing
-        this.expandedEpisodes = ['episodes']
+        this.expandedEpisodes = ["episodes"];
         // Scroll to episodes section
         this.$nextTick(() => {
-          const episodesSection = document.querySelector('.episodes-section')
+          const episodesSection = document.querySelector(".description-content");
           if (episodesSection) {
-            episodesSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            episodesSection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
           }
-        })
+        });
       }
     },
-    
+
     getEpisodeNumber(episodeName) {
       // Bỏ chữ "Tập" và chỉ lấy số: "Tập 01" -> "1", "Tập 1" -> "1"
-      return episodeName.replace(/^Tập\s*0?/, '').trim()
+      return episodeName.replace(/^Tập\s*0?/, "").trim();
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -468,6 +545,7 @@ export default {
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  overflow-x: hidden; /* Ngăn scroll ngang */
 }
 
 .main-content {
@@ -479,6 +557,8 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Loading and Error States */
@@ -538,7 +618,11 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -625,7 +709,7 @@ export default {
   color: white !important;
   padding: 2px 6px !important;
   margin: 2px !important;
-  background-color: #282F33 !important;
+  background-color: #282f33 !important;
   overflow: visible;
   white-space: nowrap;
   display: flex !important;
@@ -636,7 +720,7 @@ export default {
 }
 
 .episode-btn:hover {
-  background-color: #E46565 !important;
+  background-color: #e46565 !important;
 }
 
 .no-episodes {
@@ -651,7 +735,6 @@ export default {
   color: #666;
   font-style: italic;
 }
-
 
 /* Movie Info Section */
 .movie-info-section {
@@ -670,11 +753,10 @@ export default {
 
 .movie-subtitle {
   font-size: 1.2rem;
-  color:#F0FFFF;
+  color: #f0ffff;
   margin-bottom: 1.5rem;
   font-style: italic;
 }
-
 
 /* Movie Meta PC */
 .movie-meta {
@@ -701,7 +783,7 @@ export default {
 }
 
 .meta-value.status {
-  color: #4CAF50;
+  color: #4caf50;
   font-weight: bold;
 }
 
@@ -766,7 +848,7 @@ export default {
 }
 
 .description-text.collapsed::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -836,17 +918,17 @@ export default {
     padding-left: 0;
     margin-top: 2rem;
   }
-  
+
   .movie-title {
     font-size: 2rem;
   }
-  
+
   .meta-row {
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
   }
-  
+
   .meta-label {
     min-width: 100px;
     flex-shrink: 0;
@@ -857,41 +939,41 @@ export default {
   .container {
     padding: 0 1rem;
   }
-  
+
   /* Mobile Layout: Stack poster on top */
   .row {
     flex-direction: column;
   }
-  
-  .col-lg-4, .col-md-5 {
+
+  .col-lg-4,
+  .col-md-5 {
     order: 1;
     margin-bottom: 1.5rem;
   }
-  
-  .col-lg-8, .col-md-7 {
+
+  .col-lg-8,
+  .col-md-7 {
     order: 2;
   }
-  
+
   /* Smaller poster for mobile */
   .poster-container {
     max-width: 250px;
     margin: 0 auto 1rem auto;
   }
-  
+
   .movie-title {
     font-size: 1.8rem;
     text-align: center;
     margin-bottom: 1rem;
   }
-  
+
   .movie-subtitle {
     font-size: 1rem;
     text-align: center;
     margin-bottom: 1rem;
   }
-  
-  
-  
+
   /* Keep meta info inline on mobile */
   .meta-row {
     flex-direction: row;
@@ -899,31 +981,31 @@ export default {
     gap: 0.5rem;
     margin-bottom: 0.8rem;
   }
-  
+
   .meta-label {
     min-width: 100px;
     flex-shrink: 0;
     font-size: 0.9rem;
   }
-  
+
   .meta-value {
     font-size: 0.9rem;
   }
-  
+
   .action-buttons {
     justify-content: center;
     flex-wrap: wrap;
     gap: 0.8rem;
     margin-top: 1rem;
   }
-  
+
   /* Episodes collapse responsive */
   .episodes-grid {
     grid-template-columns: repeat(auto-fill, minmax(35px, max-content));
     gap: 0.3rem;
     justify-content: start;
   }
-  
+
   .episode-btn {
     min-width: 35px !important;
     width: max-content !important;
@@ -935,7 +1017,7 @@ export default {
     color: white !important;
     padding: 2px 5px !important;
     margin: 2px !important;
-    background-color: #282F33 !important;
+    background-color: #282f33 !important;
     overflow: visible;
     white-space: nowrap;
     display: flex !important;
@@ -946,14 +1028,14 @@ export default {
   }
 
   .episode-btn:hover {
-    background-color: #E46565 !important;
+    background-color: #e46565 !important;
   }
-  
+
   .movie-description-inline {
     margin-top: 1.5rem;
     padding-top: 1rem;
   }
-  
+
   .description-title {
     font-size: 1.1rem;
     text-align: center;
@@ -962,26 +1044,26 @@ export default {
     width: 95%;
     margin: 1rem;
   }
-  
+
   .trailer-modal-header {
     padding: 1rem;
   }
-  
+
   .modal-title {
     font-size: 1.1rem;
   }
-  
+
   .action-buttons {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .btn-watch,
   .btn-trailer {
     flex: 1;
     min-width: 120px;
   }
-  
+
   .btn-bookmark {
     flex-shrink: 0;
   }
@@ -1069,36 +1151,33 @@ export default {
   border: none;
 }
 
-
 @media (max-width: 576px) {
   /* Even smaller poster for very small screens */
   .poster-container {
     max-width: 300px;
   }
-  
+
   .movie-title {
     font-size: 1.5rem;
   }
-  
-
 
   /* Movie Meta Mobile */
-.movie-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-  
+  .movie-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
   /* Compact meta info for small screens */
   .meta-label {
     min-width: 80px;
     font-size: 0.85rem;
   }
-  
+
   .meta-value {
     font-size: 0.85rem;
   }
-  
+
   .action-buttons {
     flex-direction: row;
     justify-content: center;
@@ -1106,14 +1185,14 @@ export default {
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-  
+
   /* Smaller episodes buttons on mobile */
   .episodes-grid {
     grid-template-columns: repeat(auto-fill, minmax(32px, max-content));
     gap: 0.25rem;
     justify-content: start;
   }
-  
+
   .episode-btn {
     min-width: 32px !important;
     width: max-content !important;
@@ -1125,7 +1204,7 @@ export default {
     color: white !important;
     padding: 1px 4px !important;
     margin: 1px !important;
-    background-color: #282F33 !important;
+    background-color: #282f33 !important;
     overflow: visible;
     white-space: nowrap;
     display: flex !important;
@@ -1136,17 +1215,17 @@ export default {
   }
 
   .episode-btn:hover {
-    background-color: #E46565 !important;
+    background-color: #e46565 !important;
   }
-  
+
   .server-header {
     margin-bottom: 0.6rem;
   }
-  
+
   .trailer-modal-header {
     padding: 0.8rem;
   }
-  
+
   .modal-title {
     font-size: 1rem;
   }

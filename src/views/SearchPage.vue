@@ -36,7 +36,7 @@
           
           <!-- Movies Grid -->
           <div v-else-if="store.hasResults" class="movies-grid">
-            <MovieCard 
+            <MovieCardNew
               v-for="movie in store.searchResults" 
               :key="movie._id || movie.slug" 
               :movie="movie"
@@ -79,7 +79,7 @@
 <script>
 import AppHeader from '@/components/Header.vue'
 import AppFooter from '@/components/Footer.vue'
-import MovieCard from '@/components/MovieCard.vue'
+import MovieCardNew from '@/components/MovieCardNew.vue'
 import MoviePagination from '@/components/Pagination.vue'
 import BackToTop from '@/components/BackToTop.vue'
 import { useSearchStore } from '@/stores/searchStore'
@@ -89,7 +89,7 @@ export default {
   components: {
     AppHeader,
     AppFooter,
-    MovieCard,
+    MovieCardNew,
     MoviePagination,
     BackToTop
   },
@@ -252,7 +252,7 @@ export default {
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
@@ -296,21 +296,21 @@ export default {
 @media (max-width: 1200px) {
   .movies-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 992px) {
   .movies-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .movies-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
   }
   
   .section-title {
