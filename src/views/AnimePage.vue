@@ -77,7 +77,7 @@
 <script>
 import AppHeader from '@/components/Header.vue'
 import AppFooter from '@/components/Footer.vue'
-import MoviePagination from '@/components/Pagination.vue'
+import MoviePagination from '@/components/PaginationNew.vue'
 import { useAnimeStore } from '@/stores/animeStore'
 import MovieCardNew from '@/components/MovieCardNew.vue'
 

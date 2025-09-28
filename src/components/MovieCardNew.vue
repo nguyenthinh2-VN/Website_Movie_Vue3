@@ -1,44 +1,58 @@
 <template>
   <div class="movie-card-new" @click="goToMovieDetail">
     <div class="movie-poster">
+      
+      <!-- Blur preview image (loads first) -->
       <img
-        :src="getImageUrl(movie.poster_url)"
+        v-if="blurPreviewLoaded && !loaded && !imageError"
+        :src="getBlurPreviewUrl(movie.poster_url)"
         :alt="movie.name"
-        class="poster-image"
+        class="poster-image blur-preview"
         loading="lazy"
       />
-      
-      <!-- Gradient overlay luôn hiển thị -->
-      <div class="movie-overlay-permanent">
-        <!-- Episode badge ở góc trên phải -->
-        <div class="episode-badge">
-          {{ movie.episode_current }}
-        </div>
-        
-        <!-- Movie info ở dưới -->
-        <div class="movie-info-bottom">
-          <h3 class="movie-title" :title="movie.name">{{ movie.name }}</h3>
-          
-          <div class="movie-rating">
-            <div class="stars">
-              <i
-                v-for="star in 5"
-                :key="star"
-                :class="getStarClass(star, getRating())"
-              ></i>
-            </div>
-            <span
-              class="rating-score"
-              :class="{ 'no-rating': getRating() === 0 }"
-            >{{ formatRating(getRating()) }}</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Play button overlay chỉ hiện khi hover -->
+
+      <!-- Main image -->
+      <img
+        v-if="loaded || imageError"
+        :src="imageError ? fallbackImage : getImageUrl(movie.poster_url)"
+        :alt="movie.name"
+        class="poster-image main-image"
+        :class="{ 'fade-in': loaded }"
+        loading="lazy"
+        @load="onImageLoad"
+        @error="onImageError"
+      />
+
+      <!-- Overlay luôn hiển thị cho gradient -->
+      <div class="movie-overlay-permanent"></div>
+
+      <!-- Play overlay chỉ hiện khi hover -->
       <div class="play-overlay">
         <div class="play-button">
           <i class="bi bi-play-circle"></i>
+        </div>
+      </div>
+
+      <!-- Episode badge ở góc trên phải -->
+      <div class="episode-badge">{{ movie.episode_current }}</div>
+
+      <!-- Movie info ở dưới -->
+      <div class="movie-info-bottom">
+        <h3 class="movie-title" :title="movie.name">{{ movie.name }}</h3>
+
+        <div class="movie-rating">
+          <div class="stars">
+            <i
+              v-for="star in 5"
+              :key="star"
+              :class="getStarClass(star, getRating())"
+            ></i>
+          </div>
+          <span
+            class="rating-score"
+            :class="{ 'no-rating': getRating() === 0 }"
+            >{{ formatRating(getRating()) }}</span
+          >
         </div>
       </div>
     </div>
@@ -47,17 +61,42 @@
 
 <script>
 export default {
-  name: "MovieCardNew",
+  name: "MovieCard",
   props: {
     movie: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return {
+      loaded: false,
+      imageError: false,
+      blurPreviewLoaded: false,
+      isInViewport: false,
+      observer: null,
+      fallbackImage:
+        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQ1MCIgdmlld0JveD0iMCAwIDMwMCA0NTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDUwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjE1MCIgeT0iMjI1IiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4K",
+    };
+  },
+  mounted() {
+    if (this.movie.poster_url) {
+      // Add small delay for Swiper compatibility
+      setTimeout(() => {
+        this.setupLazyLoading();
+      }, 100);
+    }
+  },
+
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
   methods: {
     getImageUrl(posterUrl) {
       if (!posterUrl) {
-        return '';
+        return "";
       }
       let originalUrl;
       if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
@@ -65,44 +104,202 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${posterUrl}`;
       }
-      return `https://phimapi.com/image.php?url=${encodeURIComponent(originalUrl)}`;
+      
+      // Responsive image sizing based on screen width
+      const width = this.getOptimalImageWidth();
+      const quality = this.getOptimalImageQuality();
+      
+      return `https://phimapi.com/image.php?url=${encodeURIComponent(
+        originalUrl
+      )}&w=${width}&q=${quality}&format=webp`;
+    },
+
+    getOptimalImageWidth() {
+      // Get screen width and calculate optimal image size
+      const screenWidth = window.innerWidth;
+      if (screenWidth <= 400) return 200;      // Mobile small
+      if (screenWidth <= 576) return 250;     // Mobile
+      if (screenWidth <= 768) return 300;     // Tablet
+      if (screenWidth <= 1200) return 350;    // Desktop small
+      return 400;                             // Desktop large
+    },
+
+    getOptimalImageQuality() {
+      // Lower quality for mobile to save bandwidth
+      const screenWidth = window.innerWidth;
+      if (screenWidth <= 576) return 70;      // Mobile - lower quality
+      if (screenWidth <= 768) return 75;      // Tablet
+      return 80;                              // Desktop - higher quality
+    },
+
+    getBlurPreviewUrl(posterUrl) {
+      if (!posterUrl) {
+        return "";
+      }
+      let originalUrl;
+      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
+        originalUrl = posterUrl;
+      } else {
+        originalUrl = `https://phimimg.com/${posterUrl}`;
+      }
+      // Ultra small blur preview (~1-2kb)
+      return `https://phimapi.com/image.php?url=${encodeURIComponent(
+        originalUrl
+      )}&w=50&q=30&format=webp`;
+    },
+
+    setupLazyLoading() {
+      // Use Intersection Observer for true lazy loading
+      if ('IntersectionObserver' in window) {
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                this.isInViewport = true;
+                this.loadImages();
+                this.observer.disconnect(); // Stop observing after loading
+              }
+            });
+          },
+          {
+            rootMargin: '100px', // Increase margin for Swiper
+            threshold: 0.01 // Lower threshold for better detection
+          }
+        );
+        
+        // Wait for next tick to ensure element is mounted
+        this.$nextTick(() => {
+          if (this.$el) {
+            this.observer.observe(this.$el);
+          } else {
+            // Fallback if element not ready
+            this.isInViewport = true;
+            this.loadImages();
+          }
+        });
+      } else {
+        // Fallback for older browsers
+        this.isInViewport = true;
+        this.loadImages();
+      }
+    },
+
+    loadImages() {
+      if (!this.isInViewport) return;
+      
+      // Load blur preview first
+      this.loadBlurPreview();
+      
+      // Then load main image
+      this.loadMainImage();
+    },
+
+    // Force load images (for debugging or manual trigger)
+    forceLoadImages() {
+      this.isInViewport = true;
+      this.loadImages();
+    },
+
+    loadBlurPreview() {
+      const blurImg = new Image();
+      blurImg.onload = () => {
+        this.blurPreviewLoaded = true;
+      };
+      blurImg.onerror = () => {
+        // If blur preview fails, skip to main image
+        this.blurPreviewLoaded = false;
+      };
+      // Add decode() for better performance
+      blurImg.src = this.getBlurPreviewUrl(this.movie.poster_url);
+      if (blurImg.decode) {
+        blurImg.decode().catch(() => {});
+      }
+    },
+
+    loadMainImage() {
+      // Add small delay to show blur preview first
+      setTimeout(() => {
+        const img = new Image();
+        img.onload = () => {
+          this.loaded = true;
+          this.imageError = false;
+        };
+        img.onerror = () => {
+          this.imageError = true;
+          this.loaded = false;
+        };
+        img.src = this.getImageUrl(this.movie.poster_url);
+      }, 100);
+    },
+
+    onImageLoad() {
+      this.loaded = true;
+      this.imageError = false;
+    },
+
+    onImageError() {
+      console.log(
+        "Image failed to load:",
+        this.getImageUrl(this.movie.poster_url)
+      );
+      this.imageError = true;
+      this.loaded = false;
+    },
+
+    getMovieType(type) {
+      const typeMap = {
+        series: "Phim bộ",
+        single: "Phim lẻ",
+        hoathinh: "Hoạt hình",
+      };
+      return typeMap[type] || "Phim";
     },
 
     getRating() {
+      // Trả về rating nếu có, ngược lại trả về 0
       return this.movie.tmdb && this.movie.tmdb.vote_average
         ? this.movie.tmdb.vote_average
         : 0;
     },
 
     formatRating(rating) {
+      // Nếu rating = 0 thì hiển thị "0.0"
       if (rating === 0) {
         return "0.0";
       }
+      // Làm tròn theo quy tắc: >= 0.5 thì làm tròn lên, < 0.5 thì làm tròn xuống
       const rounded = Math.round(rating * 10) / 10;
       return rounded.toFixed(1);
     },
 
     getStarClass(starPosition, rating) {
+      // Nếu rating = 0, tất cả sao đều không màu
       if (rating === 0) {
         return "bi bi-star no-rating";
       }
 
+      // Chuyển đổi rating từ thang 10 sang thang 5 sao (1 sao = 2 điểm)
       const starRating = rating / 2;
 
       if (starPosition <= Math.floor(starRating)) {
+        // Sao đầy
         return "bi bi-star-fill";
       } else if (
         starPosition === Math.floor(starRating) + 1 &&
         starRating % 1 >= 0.5
       ) {
+        // Sao nửa (nếu phần thập phân >= 0.5)
         return "bi bi-star-half";
       } else {
+        // Sao rỗng
         return "bi bi-star";
       }
     },
 
     goToMovieDetail() {
+      // Navigate to movie detail page
       this.$router.push(`/phim/${this.movie.slug}`);
+      // Don't scroll here - let router scrollBehavior handle it
     },
   },
 };
@@ -137,6 +334,23 @@ export default {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+}
+
+.blur-preview {
+  filter: blur(8px);
+  transform: scale(1.1); /* Slightly scale up to hide blur edges */
+}
+
+.main-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.main-image.fade-in {
+  opacity: 1;
 }
 
 .movie-card-new:hover .poster-image {
@@ -207,7 +421,7 @@ export default {
   color: white;
   padding: 0.3rem 0.6rem;
   border-radius: 12px;
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   font-weight: bold;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);

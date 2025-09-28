@@ -78,11 +78,22 @@
                     Trailer
                   </n-button>
 
-                  <n-button circle size="large" class="btn-bookmark">
-                    <template #icon>
-                      <i class="bi bi-bookmark"></i>
+                  <n-tooltip trigger="hover">
+                    <template #trigger>
+                      <n-button
+                        circle
+                        size="large"
+                        class="btn-bookmark"
+                        :class="{ saved: isSaved }"
+                        @click="toggleSaveMovieHandler"
+                      >
+                        <template #icon>
+                          <i :class="isSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"></i>
+                        </template>
+                      </n-button>
                     </template>
-                  </n-button>
+                    {{ isSaved ? 'Bỏ lưu' : 'Lưu phim' }}
+                  </n-tooltip>
                 </div>
               </div>
             </div>
@@ -343,7 +354,8 @@ import AppHeader from "@/components/Header.vue";
 import AppFooter from "@/components/Footer.vue";
 import RelatedMoviesNew from "@/components/RelatedMoviesNew.vue";
 import { useMovieDetailStore } from "@/stores/movieDetailStore";
-import { NButton, NCollapse, NTag } from "naive-ui";
+import { useSavedMoviesStore } from '@/stores/savedMoviesStore';
+import { NButton, NCollapse, NTag, NTooltip } from "naive-ui";
 
 export default {
   name: "MovieDetailPage",
@@ -354,10 +366,12 @@ export default {
     NButton,
     NCollapse,
     NTag,
+    NTooltip,
   },
   setup() {
     const movieDetailStore = useMovieDetailStore();
-    return { movieDetailStore };
+    const savedMoviesStore = useSavedMoviesStore();
+    return { movieDetailStore, savedMoviesStore};
   },
   data() {
     return {
@@ -380,6 +394,7 @@ export default {
       await this.loadMovieDetail();
     }
   },
+
   async beforeRouteUpdate(to, from, next) {
     // Scroll to top when changing to different movie
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -391,6 +406,7 @@ export default {
     }
     next();
   },
+
   watch: {
     // Cập nhật title khi movieInfo thay đổi
     "movieDetailStore.movieInfo": {
@@ -405,7 +421,37 @@ export default {
       deep: true,
     },
   },
+
+  computed: {
+    isSaved() {
+      if (!this.movieDetailStore.movieInfo) {
+        console.log('No movieInfo for isSaved check');
+        return false;
+      }
+      const slug = this.movieDetailStore.movieInfo.slug;
+      const saved = this.savedMoviesStore.isMovieSaved(slug);
+      console.log(`Checking if movie ${slug} is saved:`, saved);
+      return saved;
+    },
+  },
+
+
   methods: {
+    toggleSaveMovieHandler() {
+      console.log('Toggle save clicked');
+      console.log('MovieInfo:', this.movieDetailStore.movieInfo);
+      console.log('Current saved state:', this.isSaved);
+      
+      if (this.movieDetailStore.movieInfo) {
+        // Pass the entire movieInfo object to ensure all data is saved
+        this.savedMoviesStore.toggleSaveMovie(this.movieDetailStore.movieInfo);
+        console.log('After toggle - saved state:', this.isSaved);
+        console.log('Saved movies:', this.savedMoviesStore.savedMovies);
+      } else {
+        console.error('No movieInfo available');
+      }
+    },
+
     async loadMovieDetail() {
       if (this.movieSlug) {
         await this.movieDetailStore.fetchMovieDetail(this.movieSlug);
@@ -656,6 +702,34 @@ export default {
   gap: 1rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;
+} 
+
+
+/* Custom styling for bookmark button */
+.btn-bookmark {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+.btn-bookmark:hover {
+  background: rgba(255, 107, 107, 0.2) !important;
+  border-color: rgba(255, 107, 107, 0.3) !important;
+  color: #ffd93d !important;
+  transform: translateY(-2px);
+}
+
+.btn-bookmark.saved {
+  background: #ff6b6b !important;
+  border-color: #ff6b6b !important;
+  color: white !important;
+}
+
+.btn-bookmark.saved:hover {
+  background: #e45a5a !important;
+  border-color: #e45a5a !important;
+  color: white !important;
 }
 
 /* Custom styling for bookmark button */

@@ -42,13 +42,28 @@
             <div class="slide-overlay"></div>
           </div>
           <div class="slide-info">
-            <div class="container">
-              <div class="row align-items-center justify-content-center">
-                <div class="col-lg-8 text-center">
+            <div class="container-fluid">
+              <div class="row align-items-center">
+                <div class="col-lg-5 col-md-7 ps-4">
                   <div class="anime-details">
-                    <!-- <span class="anime-badge">{{ movie.episode_current }}</span> -->
-                    <h1 class="anime-title">{{ movie.name }}</h1>
-                    <h2 class="anime-subtitle">{{ movie.origin_name }}</h2>
+                    <!-- Rating score with single star icon -->
+                    <div class="anime-rating">
+                      <i class="bi bi-star-fill rating-icon"></i>
+                      <span
+                        class="rating-score"
+                        :class="{ 'no-rating': getRating(movie) === 0 }"
+                        >{{ formatRating(getRating(movie)) }}/10</span
+                      >
+                    </div>
+
+                    <h1
+                      class="anime-title"
+                      v-html="decodeHtmlEntities(movie.name)"
+                    ></h1>
+                    <h2
+                      class="anime-subtitle"
+                      v-html="decodeHtmlEntities(movie.origin_name)"
+                    ></h2>
                     <div class="anime-meta">
                       <span class="genre">{{ getGenres(movie.category) }}</span>
                       <!-- <span class="quality">{{ movie.quality }}</span> -->
@@ -58,6 +73,8 @@
                       <span class="year">{{ movie.year }}</span>
                       <!-- <span class="lang">{{ movie.lang }}</span> -->
                     </div>
+
+                    
                   </div>
                 </div>
               </div>
@@ -138,6 +155,50 @@ export default {
     navigateToMovie(movieSlug) {
       this.$router.push(`/phim/${movieSlug}`);
     },
+
+    // Rating methods from MovieCardNew
+    getRating(movie) {
+      return movie.tmdb && movie.tmdb.vote_average
+        ? movie.tmdb.vote_average
+        : 0;
+    },
+
+    formatRating(rating) {
+      if (rating === 0) {
+        return "0.0";
+      }
+      const rounded = Math.round(rating * 10) / 10;
+      return rounded.toFixed(1);
+    },
+
+    getStarClass(starPosition, rating) {
+      if (rating === 0) {
+        return "bi bi-star no-rating";
+      }
+
+      const starRating = rating / 2;
+
+      if (starPosition <= Math.floor(starRating)) {
+        return "bi bi-star-fill";
+      } else if (
+        starPosition === Math.floor(starRating) + 1 &&
+        starRating % 1 >= 0.5
+      ) {
+        return "bi bi-star-half";
+      } else {
+        return "bi bi-star";
+      }
+    },
+
+    // Decode HTML entities like &#39; &quot; &amp; etc.
+    decodeHtmlEntities(text) {
+      if (!text) return "";
+
+      // Create a temporary element to decode HTML entities
+      const textarea = document.createElement("textarea");
+      textarea.innerHTML = text;
+      return textarea.value;
+    },
   },
 };
 </script>
@@ -202,8 +263,9 @@ export default {
   background: linear-gradient(
     135deg,
     rgba(26, 26, 46, 0.6) 0%,
-    rgba(22, 33, 62, 0.5) 50%,
-    rgba(15, 52, 96, 0.45) 100%
+    rgba(26, 26, 46, 0.6) 25%,
+    rgba(22, 33, 62, 0.45) 50%,
+    rgba(15, 52, 96, 0.4) 100%
   );
 }
 
@@ -216,7 +278,39 @@ export default {
 
 .anime-details {
   color: white;
-  text-align: center;
+  text-align: left !important;
+}
+
+/* Simple rating with single star */
+.anime-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 217, 61, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  width: fit-content;
+}
+
+.anime-rating .rating-icon {
+  color: #ffd93d;
+  font-size: 1.4rem;
+  text-shadow: 0 2px 8px rgba(255, 217, 61, 0.5);
+}
+
+.anime-rating .rating-score {
+  font-size: 1.4rem;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.anime-rating .rating-score.no-rating {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .anime-badge {
@@ -225,14 +319,11 @@ export default {
 }
 
 .anime-title {
-  font-size: 3.5rem;
+  font-size: 2.7rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: white;
   background-clip: text;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   line-height: 1.2;
 }
 
@@ -246,17 +337,17 @@ export default {
 
 .anime-meta {
   display: flex;
-  gap: 1.5rem;
-  justify-content: center;
+  gap: 1rem;
+  justify-content: flex-start !important;
   flex-wrap: wrap;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .anime-meta span {
   background: rgba(255, 255, 255, 0.1);
-  padding: 0.6rem 1.2rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   font-weight: 500;
@@ -325,6 +416,19 @@ export default {
   .anime-meta {
     gap: 1rem;
   }
+
+  .anime-rating {
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .anime-rating .rating-icon {
+    font-size: 1.1rem;
+  }
+
+  .anime-rating .rating-score {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -348,6 +452,20 @@ export default {
   .anime-meta span {
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
+  }
+
+  .anime-rating {
+    padding: 0.4rem 0.7rem;
+    margin-bottom: 1rem;
+    gap: 0.4rem;
+  }
+
+  .anime-rating .rating-icon {
+    font-size: 1rem;
+  }
+
+  .anime-rating .rating-score {
+    font-size: 0.95rem;
   }
 }
 
@@ -378,6 +496,20 @@ export default {
   .anime-meta span {
     padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
+  }
+
+  .anime-rating {
+    padding: 0.3rem 0.6rem;
+    margin-bottom: 0.8rem;
+    gap: 0.4rem;
+  }
+
+  .anime-rating .rating-icon {
+    font-size: 0.9rem;
+  }
+
+  .anime-rating .rating-score {
+    font-size: 0.9rem;
   }
 
   :deep(.swiper-button-next),

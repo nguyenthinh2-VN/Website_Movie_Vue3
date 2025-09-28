@@ -93,7 +93,7 @@
 import AppHeader from "@/components/Header.vue";
 import AppFooter from "@/components/Footer.vue";
 import MovieCardNew from "@/components/MovieCardNew.vue";
-import MoviePagination from "@/components/Pagination.vue";
+import MoviePagination from "@/components/PaginationNew.vue";
 import { useCategoryMovieStore } from "@/stores/categoryMovieStore";
 
 export default {

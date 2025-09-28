@@ -43,7 +43,7 @@
           @slideChange="onSlideChange"
         >
           <swiper-slide v-for="movie in relatedMovies" :key="movie._id">
-            <MovieCardNew :movie="movie" />
+            <MovieCard :movie="movie" />
           </swiper-slide>
         </swiper>
 
@@ -67,7 +67,7 @@
 <script>
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { useCategoryMovieStore } from "@/stores/categoryMovieStore";
-import MovieCardNew from "@/components/MovieCardNew.vue";
+import MovieCard from "@/components/MovieCard.vue";
 import "swiper/css";
 
 export default {
@@ -75,7 +75,7 @@ export default {
   components: {
     Swiper,
     SwiperSlide,
-    MovieCardNew,
+    MovieCard,
   },
   props: {
     currentMovie: {
@@ -142,6 +142,13 @@ export default {
           this.relatedMovies = this.categoryMovieStore.movies
             .filter((movie) => movie._id !== this.currentMovie._id)
             .slice(0, 30);
+          
+          // Force load images after swiper is ready
+          this.$nextTick(() => {
+            setTimeout(() => {
+              this.forceLoadVisibleImages();
+            }, 500);
+          });
         }
       } catch (error) {
         this.error = "Không thể tải phim tương tự";
@@ -151,10 +158,28 @@ export default {
       }
     },
 
+    // Force load images for visible cards
+    forceLoadVisibleImages() {
+      const movieCards = this.$el.querySelectorAll('.movie-card-new');
+      movieCards.forEach((card, index) => {
+        if (index < 6) { // Load first 6 cards immediately
+          const cardComponent = card.__vueParentComponent;
+          if (cardComponent && cardComponent.ctx.forceLoadImages) {
+            cardComponent.ctx.forceLoadImages();
+          }
+        }
+      });
+    },
+
     // Swiper methods
     onSwiper(swiper) {
       this.swiperInstance = swiper;
       this.updateNavigationState();
+      
+      // Force load images when swiper is ready
+      setTimeout(() => {
+        this.forceLoadVisibleImages();
+      }, 200);
     },
 
     onSlideChange() {

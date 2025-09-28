@@ -5,6 +5,7 @@ import MovieDetailPage from '@/views/MovieDetailPage.vue'
 import WatchPage from '@/views/WatchPage.vue'
 import AnimePage from '@/views/AnimePage.vue'
 import SearchPage from '@/views/SearchPage.vue'
+import SavedMoviesPage from '@/views/SavedMoviesPage.vue'
 
 const routes = [
   {
@@ -46,6 +47,12 @@ const routes = [
     component: SearchPage,
     meta: { title: 'Tìm kiếm' },
     props: true
+  },
+  {
+    path: '/phim-da-luu',
+    name: 'SavedMovies',
+    component: SavedMoviesPage,
+    meta: { title: 'Phim Đã Lưu - Yuki Movie' }
   }
 
 ]

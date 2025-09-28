@@ -3,7 +3,7 @@
     <AppHeader></AppHeader>
     <main class="main-content">
       <!-- Carousel Section -->
-      <AnimeCarousel></AnimeCarousel>
+      <CarouselNew></CarouselNew>
 
       <div class="container featured-container">
         <section class="featured-section">
@@ -36,7 +36,7 @@
 
           <!-- Movies Grid -->
           <div v-else-if="movieStore.hasMovies" class="movies-grid">
-            <MovieCardNew 
+            <MovieCardNew
               v-for="movie in displayedMovies"
               :key="movie._id"
               :movie="movie"
@@ -64,7 +64,6 @@
             v-if="movieStore.hasMovies && movieStore.pagination.totalPages > 1"
             :current-page="movieStore.pagination.currentPage"
             :total-pages="movieStore.pagination.totalPages"
-            :total-items="movieStore.pagination.totalItems"
             @page-change="handlePageChange"
           />
         </section>
@@ -77,8 +76,8 @@
 <script>
 import AppHeader from "@/components/Header.vue";
 import AppFooter from "@/components/Footer.vue";
-import AnimeCarousel from "@/components/AnimeCarousel.vue";
-import MoviePagination from "@/components/Pagination.vue";
+import CarouselNew from "@/components/CarouselNew.vue";
+import MoviePagination from "@/components/PaginationNew.vue";
 import { useMovieStore } from "@/stores/movieStore";
 import MovieCardNew from "@/components/MovieCardNew.vue";
 
@@ -87,7 +86,7 @@ export default {
   components: {
     AppHeader,
     AppFooter,
-    AnimeCarousel,
+    CarouselNew,
     MoviePagination,
     MovieCardNew,
   },
@@ -119,13 +118,12 @@ export default {
       await this.movieStore.changePage(page);
       this.$router.push({ query: { page } }); // lưu số trang vào URL
     },
-    
   },
   async mounted() {
     // Load initial data
     await this.loadMovies();
   },
-  
+
   async activated() {
     // Called when component is activated by keep-alive
     // Only reload if we don't have data or need to refresh
