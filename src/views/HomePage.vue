@@ -5,6 +5,9 @@
       <!-- Carousel Section -->
       <CarouselNew></CarouselNew>
 
+      <!-- Korean Series Slide Section -->
+      <KoreanSeriesSlide></KoreanSeriesSlide>
+
       <div class="container featured-container">
         <section class="featured-section">
           <h2 class="section-title">Phim mới cập nhật</h2>
@@ -77,6 +80,7 @@
 import AppHeader from "@/components/Header.vue";
 import AppFooter from "@/components/Footer.vue";
 import CarouselNew from "@/components/CarouselNew.vue";
+import KoreanSeriesSlide from "@/components/KoreanSeriesSlide.vue";
 import MoviePagination from "@/components/PaginationNew.vue";
 import { useMovieStore } from "@/stores/movieStore";
 import MovieCardNew from "@/components/MovieCardNew.vue";
@@ -87,6 +91,7 @@ export default {
     AppHeader,
     AppFooter,
     CarouselNew,
+    KoreanSeriesSlide,
     MoviePagination,
     MovieCardNew,
   },

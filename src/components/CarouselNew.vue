@@ -52,7 +52,7 @@
                       <span
                         class="rating-score"
                         :class="{ 'no-rating': getRating(movie) === 0 }"
-                        >{{ formatRating(getRating(movie)) }}/10</span
+                        >{{ formatRating(getRating(movie)) }}</span
                       >
                     </div>
 
@@ -66,12 +66,10 @@
                     ></h2>
                     <div class="anime-meta">
                       <span class="genre">{{ getGenres(movie.category) }}</span>
-                      <!-- <span class="quality">{{ movie.quality }}</span> -->
                       <span class="anime-badge">{{
                         movie.episode_current
                       }}</span>
                       <span class="year">{{ movie.year }}</span>
-                      <!-- <span class="lang">{{ movie.lang }}</span> -->
                     </div>
 
                     
@@ -128,9 +126,10 @@ export default {
     }
   },
   methods: {
+
     getImageUrl(posterUrl) {
       if (!posterUrl) {
-        return "";
+        return '';
       }
       let originalUrl;
       if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
@@ -138,10 +137,9 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${posterUrl}`;
       }
-      return `https://phimapi.com/image.php?url=${encodeURIComponent(
-        originalUrl
-      )}`;
+      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
     },
+
 
     // Helper method to format genres
     getGenres(categories) {
@@ -298,12 +296,12 @@ export default {
 
 .anime-rating .rating-icon {
   color: #ffd93d;
-  font-size: 1.4rem;
+  font-size: 1rem;
   text-shadow: 0 2px 8px rgba(255, 217, 61, 0.5);
 }
 
 .anime-rating .rating-score {
-  font-size: 1.4rem;
+  font-size: 1rem;
   color: #ffffff;
   font-weight: bold;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);

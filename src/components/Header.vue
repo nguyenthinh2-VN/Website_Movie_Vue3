@@ -280,20 +280,20 @@ export default {
       this.searchStore.clearSuggestions();
       this.$router.push(`/phim/${slug}`);
     },
-    getImageUrl(posterUrl) {
-      if (!posterUrl) {
-        return "";
+
+    getImageUrl(thumbUrl) {
+      if (!thumbUrl) {
+        return '';
       }
       let originalUrl;
-      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
-        originalUrl = posterUrl;
+      if (thumbUrl.startsWith("http") || thumbUrl.startsWith("//")) {
+        originalUrl = thumbUrl;
       } else {
-        originalUrl = `https://phimimg.com/${posterUrl}`;
+        originalUrl = `https://phimimg.com/${thumbUrl}`;
       }
-      return `https://phimapi.com/image.php?url=${encodeURIComponent(
-        originalUrl
-      )}`;
+      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
     },
+
     handleSearch() {
       const q = this.searchQuery.trim();
       if (!q) return;
@@ -881,7 +881,11 @@ export default {
 }
 
 .suggestion-year {
-  font-size: 0.8rem;
+  font-size: 13px;
+  color: gray !important;
+  margin-top: 2px;
+  font-weight: 500;
+  opacity: 1;
 }
 
 .view-all {
@@ -896,5 +900,36 @@ export default {
   margin-top: 1rem;
   border-radius: 10px;
   max-height: calc(100vh - 200px); /* Prevent it from taking the whole screen */
+}
+
+/* Bookmark/Saved Movies Styles */
+.saved-movies-icon-container {
+  position: relative;
+  display: inline-block;
+  color: #ffffff;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.saved-movies-icon-container:hover {
+  color: #ff6b6b;
+  transform: scale(1.1);
+}
+
+.saved-count-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff6b6b;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid #131419;
 }
 </style>

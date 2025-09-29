@@ -65,9 +65,9 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${posterUrl}`;
       }
-      return `https://phimapi.com/image.php?url=${encodeURIComponent(originalUrl)}`;
+      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
     },
-
+    
     getRating() {
       return this.movie.tmdb && this.movie.tmdb.vote_average
         ? this.movie.tmdb.vote_average

@@ -67,7 +67,7 @@
 <script>
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { useCategoryMovieStore } from "@/stores/categoryMovieStore";
-import MovieCard from "@/components/MovieCard.vue";
+import MovieCard from "@/components/MovieCardNew.vue";
 import "swiper/css";
 
 export default {

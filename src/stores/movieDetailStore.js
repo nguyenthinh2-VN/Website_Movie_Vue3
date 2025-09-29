@@ -18,6 +18,7 @@ export const useMovieDetailStore = defineStore('movieDetail', {
       return {
         name: state.movie.name,
         origin_name: state.movie.origin_name,
+        slug: state.movie.slug,
         poster_url: state.movie.poster_url,
         thumb_url: state.movie.thumb_url,
         year: state.movie.year,
@@ -32,7 +33,10 @@ export const useMovieDetailStore = defineStore('movieDetail', {
         director: state.movie.director,
         category: state.movie.category,
         country: state.movie.country,
-        trailer_url: state.movie.trailer_url
+        trailer_url: state.movie.trailer_url,
+         // Thêm thông tin rating
+        rating: state.movie.tmdb?.vote_average || 0,
+        tmdb: state.movie.tmdb || null
       }
     },
     
@@ -72,18 +76,13 @@ export const useMovieDetailStore = defineStore('movieDetail', {
             // Lấy episodes từ API response (cùng cấp với movie theo file mẫu)
             this.episodesData = data.episodes || []
             
-            /* console.log('Raw episodes from API:', data.episodes)
-            console.log('Episodes type:', typeof data.episodes)
-            console.log('Episodes is array:', Array.isArray(data.episodes))
-            console.log('Movie detail loaded:', this.movie.name)
-            console.log('Episodes saved to state:', this.episodesData) */
             
             if (this.episodesData && Array.isArray(this.episodesData) && this.episodesData.length > 0) {
-              console.log('Episodes loaded:', this.episodesData.length, 'servers')
-              // Log chi tiết từng server
+              
+              /* // Log chi tiết từng server
               this.episodesData.forEach((server, index) => {
-                console.log(`Server ${index + 1}: ${server.server_name} - ${server.server_data?.length || 0} episodes`)
-              })
+                //console.log(`Server ${index + 1}: ${server.server_name} - ${server.server_data?.length || 0} episodes`)
+              }) */
             } else {
               console.log('No episodes available for this movie')
             }

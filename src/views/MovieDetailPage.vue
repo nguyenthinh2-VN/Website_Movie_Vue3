@@ -371,7 +371,7 @@ export default {
   setup() {
     const movieDetailStore = useMovieDetailStore();
     const savedMoviesStore = useSavedMoviesStore();
-    return { movieDetailStore, savedMoviesStore};
+    return { movieDetailStore, savedMoviesStore };
   },
   data() {
     return {
@@ -387,6 +387,11 @@ export default {
   async mounted() {
     // Scroll to top when page loads
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Debug: Check if stores are properly initialized
+    console.log('MovieDetailPage mounted');
+    console.log('movieDetailStore:', this.movieDetailStore);
+    console.log('savedMoviesStore:', this.savedMoviesStore);
 
     // Lấy movie slug từ route params
     this.movieSlug = this.$route.params.slug;
@@ -424,14 +429,11 @@ export default {
 
   computed: {
     isSaved() {
-      if (!this.movieDetailStore.movieInfo) {
-        console.log('No movieInfo for isSaved check');
+      if (!this.movieDetailStore?.movieInfo || !this.savedMoviesStore) {
         return false;
       }
       const slug = this.movieDetailStore.movieInfo.slug;
-      const saved = this.savedMoviesStore.isMovieSaved(slug);
-      console.log(`Checking if movie ${slug} is saved:`, saved);
-      return saved;
+      return this.savedMoviesStore.isMovieSaved(slug);
     },
   },
 
@@ -439,16 +441,27 @@ export default {
   methods: {
     toggleSaveMovieHandler() {
       console.log('Toggle save clicked');
-      console.log('MovieInfo:', this.movieDetailStore.movieInfo);
-      console.log('Current saved state:', this.isSaved);
       
-      if (this.movieDetailStore.movieInfo) {
-        // Pass the entire movieInfo object to ensure all data is saved
-        this.savedMoviesStore.toggleSaveMovie(this.movieDetailStore.movieInfo);
-        console.log('After toggle - saved state:', this.isSaved);
-        console.log('Saved movies:', this.savedMoviesStore.savedMovies);
-      } else {
+      // Kiểm tra xem các store có tồn tại không
+      if (!this.savedMoviesStore) {
+        console.error('savedMoviesStore is not available');
+        return;
+      }
+      
+      if (!this.movieDetailStore?.movieInfo) {
         console.error('No movieInfo available');
+        return;
+      }
+     
+      try {
+        this.savedMoviesStore.toggleSaveMovie(this.movieDetailStore.movieInfo);
+
+        this.$nextTick(() => {
+          console.log('After toggle - saved state:', this.isSaved);
+          console.log('Saved movies count:', this.savedMoviesStore.savedMovies.length);
+        });
+      } catch (error) {
+        console.error('Error toggling save movie:', error);
       }
     },
 
@@ -507,7 +520,7 @@ export default {
 
     getImageUrl(posterUrl) {
       if (!posterUrl) {
-        return "";
+        return '';
       }
       let originalUrl;
       if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
@@ -515,9 +528,7 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${posterUrl}`;
       }
-      return `https://phimapi.com/image.php?url=${encodeURIComponent(
-        originalUrl
-      )}`;
+      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
     },
 
     getStarClass(starPosition, rating) {

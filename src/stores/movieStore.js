@@ -48,7 +48,7 @@ export const useMovieStore = defineStore('movie', {
 
       try {
         const response = await fetch(
-          `https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${page}`
+          `https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${page}&limit=16`
         )
         
         if (!response.ok) {
