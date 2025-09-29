@@ -6,6 +6,7 @@
         :alt="movie.name"
         class="poster-image"
         loading="lazy"
+        :sizes="imageSizes"
       />
       
       <!-- Remove button (X) ở góc trên trái -->
@@ -56,6 +57,8 @@
 </template>
 
 <script>
+import { ImagePerformanceMonitor } from '@/utils/imagePerformanceMonitor.js';
+
 export default {
   name: "MovieCardNew",
   props: {
@@ -69,6 +72,22 @@ export default {
     },
   },
   emits: ['remove-movie'],
+  computed: {
+    imageSizes() {
+      return '(max-width: 480px) 200px, (max-width: 768px) 300px, 500px';
+    }
+  },
+  mounted() {
+    // Monitor image performance in development
+    if (process.env.NODE_ENV === 'development') {
+      this.$nextTick(() => {
+        const imageEl = this.$el.querySelector('.poster-image');
+        if (imageEl) {
+          ImagePerformanceMonitor.logImageLoad(imageEl, this.movie.name);
+        }
+      });
+    }
+  },
   methods: {
     getImageUrl(posterUrl) {
       if (!posterUrl) {
@@ -80,7 +99,27 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${posterUrl}`;
       }
-      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+      
+      // Replace with ImageKit URL and add responsive transformations
+      const imagekitUrl = originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+      
+      // Add ImageKit transformations for responsive images
+      // This will automatically serve the optimal size based on device
+      const deviceWidth = window.innerWidth;
+      let targetWidth = 500; // default desktop
+      
+      if (deviceWidth <= 400) targetWidth = 180;
+      else if (deviceWidth <= 576) targetWidth = 200;
+      else if (deviceWidth <= 768) targetWidth = 300;
+      
+      const transformations = `tr=w-${targetWidth},h-${Math.round(targetWidth * 1.5)},c-at_max,q-80,f-auto`;
+      
+      // Check if URL already has transformations
+      if (imagekitUrl.includes('?')) {
+        return `${imagekitUrl}&${transformations}`;
+      } else {
+        return `${imagekitUrl}?${transformations}`;
+      }
     },
 
     getRating() {
@@ -156,6 +195,9 @@ export default {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  /* Optimize image rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .movie-card-new:hover .poster-image {
@@ -331,7 +373,38 @@ export default {
 }
 
 /* Responsive Design */
+/* Desktop và Tablet lớn */
+@media (min-width: 1025px) {
+  .movie-card-new {
+    max-width: 500px;
+  }
+  
+  .movie-poster {
+    aspect-ratio: 2/3;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .movie-card-new {
+    max-width: 220px;
+  }
+  
+  .movie-poster {
+    aspect-ratio: 2/3;
+  }
+}
+
+/* Tablet nhỏ */
 @media (max-width: 768px) {
+  .movie-card-new {
+    max-width: 200px;
+  }
+  
+  .movie-poster {
+    aspect-ratio: 2/3;
+  }
+
   .movie-info-bottom {
     padding: 0.8rem;
   }
@@ -363,7 +436,16 @@ export default {
   }
 }
 
+/* Mobile lớn */
 @media (max-width: 576px) {
+  .movie-card-new {
+    max-width: 180px;
+  }
+  
+  .movie-poster {
+    aspect-ratio: 2/3;
+  }
+
   .movie-info-bottom {
     padding: 0.6rem;
   }
@@ -398,7 +480,16 @@ export default {
   }
 }
 
+/* Mobile nhỏ */
 @media (max-width: 400px) {
+  .movie-card-new {
+    max-width: 150px;
+  }
+  
+  .movie-poster {
+    aspect-ratio: 2/3;
+  }
+
   .movie-info-bottom {
     padding: 0.5rem;
   }

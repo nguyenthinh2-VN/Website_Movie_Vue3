@@ -8,6 +8,16 @@
         loading="lazy"
       />
       
+      <!-- Remove button (X) ở góc trên trái -->
+      <button 
+        v-if="showRemoveButton" 
+        @click.stop="handleRemoveMovie"
+        class="remove-button"
+        title="Xóa khỏi danh sách"
+      >
+        <i class="bi bi-x"></i>
+      </button>
+      
       <!-- Gradient overlay luôn hiển thị -->
       <div class="movie-overlay-permanent">
         <!-- Episode badge ở góc trên phải -->
@@ -53,7 +63,12 @@ export default {
       type: Object,
       required: true,
     },
+    showRemoveButton: {
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: ['remove-movie'],
   methods: {
     getImageUrl(posterUrl) {
       if (!posterUrl) {
@@ -67,7 +82,7 @@ export default {
       }
       return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
     },
-    
+
     getRating() {
       return this.movie.tmdb && this.movie.tmdb.vote_average
         ? this.movie.tmdb.vote_average
@@ -103,6 +118,10 @@ export default {
 
     goToMovieDetail() {
       this.$router.push(`/phim/${this.movie.slug}`);
+    },
+
+    handleRemoveMovie() {
+      this.$emit('remove-movie', this.movie.slug);
     },
   },
 };
@@ -142,6 +161,33 @@ export default {
 .movie-card-new:hover .poster-image {
   transform: scale(1.05);
 }
+
+/* Remove button (X) ở góc trên trái */
+.remove-button {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 29px;
+  height: 29px;
+  background: rgba(220, 53, 69, 0.9);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.remove-button i {
+  font-size: 16px;
+  font-weight: bold;
+}
+
 
 /* Overlay luôn hiển thị cho text và episode */
 .movie-overlay-permanent {
