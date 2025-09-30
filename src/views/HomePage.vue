@@ -333,6 +333,16 @@ export default {
   .featured-container {
     padding-top: 2rem;
   }
+
+  /* Prevent horizontal scroll on mobile */
+  .home-page,
+  .main-content,
+  .featured-container,
+  .container,
+  .movies-grid {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 400px) {
@@ -343,10 +353,6 @@ export default {
 
   .section-title {
     font-size: 1.5rem;
-  }
-
-  .container {
-    padding: 0 0.5rem;
   }
 }
 </style>

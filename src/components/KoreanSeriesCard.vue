@@ -2,7 +2,15 @@
   <div class="korean-series-card" @click="goToMovieDetail">
     <div class="movie-thumb">
       <img
-        :src="getImageUrl(movie.thumb_url)"
+        :src="getImageUrl(movie.thumb_url, 'md')"
+        :srcset="`
+    ${getImageUrl(movie.thumb_url, 'sm')} 480w,
+    ${getImageUrl(movie.thumb_url, 'md')} 768w,
+    ${getImageUrl(movie.thumb_url, 'lg')} 1200w
+  `"
+        sizes="(max-width: 480px) 450px,
+         (max-width: 768px) 500px,
+         600px"
         :alt="movie.name"
         class="thumb-image"
         loading="lazy"
@@ -18,7 +26,7 @@
         <!-- Movie info -->
         <div class="movie-info">
           <h3 class="movie-title" :title="movie.name">{{ movie.name }}</h3>
-          <p class="movie-origin" :title="movie.origin_name">{{ movie.origin_name }}</p>
+          <p class="movie-origin" :title="movie.origin_name" v-html="movie.origin_name"></p>
         
         </div>
       </div>
@@ -37,17 +45,27 @@ export default {
     },
   },
   methods: {
-    getImageUrl(thumbUrl) {
-      if (!thumbUrl) {
-        return '';
-      }
-      let originalUrl;
-      if (thumbUrl.startsWith("http") || thumbUrl.startsWith("//")) {
-        originalUrl = thumbUrl;
-      } else {
-        originalUrl = `https://phimimg.com/${thumbUrl}`;
-      }
-      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+    getImageUrl(thumbUrl, size = "md") {
+      if (!thumbUrl) return "";
+
+      let originalUrl =
+        thumbUrl.startsWith("http") || thumbUrl.startsWith("//")
+          ? thumbUrl
+          : `https://phimimg.com/${thumbUrl}`;
+
+      let cdnUrl = originalUrl.replace(
+        "https://phimimg.com/upload/vod/",
+        "https://ik.imagekit.io/yuki/"
+      );
+
+      // tuỳ size chọn kích thước khác nhau
+      let sizes = {
+        sm: "w-450,h-253", // mobile (450px width, 16:9 ratio)
+        md: "w-500,h-281", // tablet (500px width, 16:9 ratio)
+        lg: "w-600,h-338", // PC (600px width, 16:9 ratio)
+      };
+
+      return `${cdnUrl}?tr=${sizes[size]},fo-auto,q-80,f-webp`;
     },
 
     goToMovieDetail() {
@@ -127,6 +145,7 @@ export default {
 /* Movie info */
 .movie-info {
   color: white;
+  margin-bottom: 0;
 }
 
 .movie-title {
@@ -144,7 +163,7 @@ export default {
 .movie-origin {
   font-size: 0.85rem;
   color: #cccccc;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -167,6 +186,7 @@ export default {
 
   .movie-origin {
     font-size: 0.8rem;
+    display: none; /* Hide on mobile */
   }
 
   .episode-badge {
@@ -186,12 +206,13 @@ export default {
 
   .movie-title {
     font-size: 12px;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0;
   }
 
   .movie-origin {
     font-size: 11px;
     margin-bottom: 0;
+    display: none; /* Hide on mobile */
   }
 
   .episode-badge {

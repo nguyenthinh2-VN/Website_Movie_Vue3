@@ -324,10 +324,12 @@ export default {
 
   .swiper-nav-prev {
     left: -15px;
+    display: none;
   }
 
   .swiper-nav-next {
     right: -15px;
+    display: none;
   }
 }
 </style>

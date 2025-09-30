@@ -74,7 +74,7 @@ export default {
   emits: ['remove-movie'],
   computed: {
     imageSizes() {
-      return '(max-width: 480px) 200px, (max-width: 768px) 300px, 500px';
+      return '(max-width: 480px) 220px, (max-width: 768px) 300px, 500px';
     }
   },
   mounted() {
@@ -106,10 +106,10 @@ export default {
       // Add ImageKit transformations for responsive images
       // This will automatically serve the optimal size based on device
       const deviceWidth = window.innerWidth;
-      let targetWidth = 500; // default desktop
+      let targetWidth = 450; // default desktop
       
-      if (deviceWidth <= 400) targetWidth = 180;
-      else if (deviceWidth <= 576) targetWidth = 200;
+      if (deviceWidth <= 400) targetWidth = 190;
+      else if (deviceWidth <= 576) targetWidth = 210;
       else if (deviceWidth <= 768) targetWidth = 300;
       
       const transformations = `tr=w-${targetWidth},h-${Math.round(targetWidth * 1.5)},c-at_max,q-80,f-auto`;
@@ -373,38 +373,8 @@ export default {
 }
 
 /* Responsive Design */
-/* Desktop và Tablet lớn */
-@media (min-width: 1025px) {
-  .movie-card-new {
-    max-width: 500px;
-  }
-  
-  .movie-poster {
-    aspect-ratio: 2/3;
-  }
-}
 
-/* Tablet */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .movie-card-new {
-    max-width: 220px;
-  }
-  
-  .movie-poster {
-    aspect-ratio: 2/3;
-  }
-}
-
-/* Tablet nhỏ */
 @media (max-width: 768px) {
-  .movie-card-new {
-    max-width: 200px;
-  }
-  
-  .movie-poster {
-    aspect-ratio: 2/3;
-  }
-
   .movie-info-bottom {
     padding: 0.8rem;
   }
@@ -438,14 +408,6 @@ export default {
 
 /* Mobile lớn */
 @media (max-width: 576px) {
-  .movie-card-new {
-    max-width: 180px;
-  }
-  
-  .movie-poster {
-    aspect-ratio: 2/3;
-  }
-
   .movie-info-bottom {
     padding: 0.6rem;
   }
@@ -480,16 +442,7 @@ export default {
   }
 }
 
-/* Mobile nhỏ */
 @media (max-width: 400px) {
-  .movie-card-new {
-    max-width: 150px;
-  }
-  
-  .movie-poster {
-    aspect-ratio: 2/3;
-  }
-
   .movie-info-bottom {
     padding: 0.5rem;
   }

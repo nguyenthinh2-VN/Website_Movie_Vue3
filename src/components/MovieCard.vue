@@ -2,33 +2,41 @@
   <div class="movie-card-new" @click="goToMovieDetail">
     <div class="movie-poster">
       <img
-        :src="getImageUrl(movie.poster_url)"
+        :src="getImageUrl(movie.poster_url, 'md')"
+        :srcset="`
+    ${getImageUrl(movie.poster_url, 'sm')} 480w,
+    ${getImageUrl(movie.poster_url, 'md')} 768w,
+    ${getImageUrl(movie.poster_url, 'lg')} 1200w
+  `"
+        sizes="(max-width: 480px) 180px,
+         (max-width: 768px) 300px,
+         500px"
         :alt="movie.name"
         class="poster-image"
         loading="lazy"
       />
-      
+
       <!-- Remove button (X) ở góc trên trái -->
-      <button 
-        v-if="showRemoveButton" 
+      <button
+        v-if="showRemoveButton"
         @click.stop="handleRemoveMovie"
         class="remove-button"
         title="Xóa khỏi danh sách"
       >
         <i class="bi bi-x"></i>
       </button>
-      
+
       <!-- Gradient overlay luôn hiển thị -->
       <div class="movie-overlay-permanent">
         <!-- Episode badge ở góc trên phải -->
         <div class="episode-badge">
           {{ movie.episode_current }}
         </div>
-        
+
         <!-- Movie info ở dưới -->
         <div class="movie-info-bottom">
           <h3 class="movie-title" :title="movie.name">{{ movie.name }}</h3>
-          
+
           <div class="movie-rating">
             <div class="stars">
               <i
@@ -40,11 +48,12 @@
             <span
               class="rating-score"
               :class="{ 'no-rating': getRating() === 0 }"
-            >{{ formatRating(getRating()) }}</span>
+              >{{ formatRating(getRating()) }}</span
+            >
           </div>
         </div>
       </div>
-      
+
       <!-- Play button overlay chỉ hiện khi hover -->
       <div class="play-overlay">
         <div class="play-button">
@@ -68,19 +77,29 @@ export default {
       default: false,
     },
   },
-  emits: ['remove-movie'],
+  emits: ["remove-movie"],
   methods: {
-    getImageUrl(posterUrl) {
-      if (!posterUrl) {
-        return '';
-      }
-      let originalUrl;
-      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
-        originalUrl = posterUrl;
-      } else {
-        originalUrl = `https://phimimg.com/${posterUrl}`;
-      }
-      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+    getImageUrl(posterUrl, size = "md") {
+      if (!posterUrl) return "";
+
+      let originalUrl =
+        posterUrl.startsWith("http") || posterUrl.startsWith("//")
+          ? posterUrl
+          : `https://phimimg.com/${posterUrl}`;
+
+      let cdnUrl = originalUrl.replace(
+        "https://phimimg.com/upload/vod/",
+        "https://ik.imagekit.io/yuki/"
+      );
+
+      // tuỳ size chọn kích thước khác nhau
+      let sizes = {
+        sm: "w-180,h-270", // mobile
+        md: "w-300,h-450", // tablet
+        lg: "w-500,h-750", // PC
+      };
+
+      return `${cdnUrl}?tr=${sizes[size]},fo-auto,q-80,f-webp`;
     },
 
     getRating() {
@@ -121,7 +140,7 @@ export default {
     },
 
     handleRemoveMovie() {
-      this.$emit('remove-movie', this.movie.slug);
+      this.$emit("remove-movie", this.movie.slug);
     },
   },
 };
@@ -188,7 +207,6 @@ export default {
   font-weight: bold;
 }
 
-
 /* Overlay luôn hiển thị cho text và episode */
 .movie-overlay-permanent {
   position: absolute;
@@ -253,7 +271,7 @@ export default {
   color: white;
   padding: 0.3rem 0.6rem;
   border-radius: 12px;
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   font-weight: bold;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
