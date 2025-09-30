@@ -2,8 +2,8 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
     <div class="container">
       <!-- Brand/Logo -->
-      <router-link class="navbar-brand fw-bold" to="/">
-        <span class="text-gradient">Yuki Anime</span>
+      <router-link class="navbar-brand" to="/">
+        <img src="@/assets/LogoPNG1-1.png" alt="Yuki Anime" class="logo-image" />
       </router-link>
 
       <!-- Mobile controls -->
@@ -386,7 +386,7 @@ export default {
 /* Custom navbar background */
 .navbar {
   background: #131419 !important;
-  padding: 9px 0;
+  padding: 0 0;
   position: fixed !important;
   top: 0;
   left: 0;
@@ -414,9 +414,7 @@ export default {
 
 /* Navbar scroll effects */
 .navbar.scrolled {
-  padding: 0.5rem 0;
   backdrop-filter: blur(20px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 .navbar.scrolled::before {
@@ -428,15 +426,22 @@ export default {
   );
 }
 
-/* Logo gradient text */
-.text-gradient {
-  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size: 1.8rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+
+/* Logo image styling */
+.logo-image {
+  height: 95px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
 }
+
+.navbar-brand {
+  padding: 0 0;
+  display: flex;
+  align-items: center;
+}
+
 
 /* Navigation links styling */
 .navbar-nav .nav-link {
@@ -565,8 +570,8 @@ export default {
 /* Ensure proper spacing */
 
 @media (max-width: 576px) {
-  .text-gradient {
-    font-size: 1.5rem;
+  .logo-image {
+    height: 90px;
   }
 
   .search-input {
@@ -585,8 +590,8 @@ export default {
     width: 150px !important;
   }
 
-  .text-gradient {
-    font-size: 1.3rem;
+  .logo-image {
+    height: 90px;
   }
 }
 
@@ -724,7 +729,7 @@ export default {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
   padding: 1rem;
-  top: 50px;
+  top: 80px;
   left: 0;
   right: 0;
   z-index: 1000;
