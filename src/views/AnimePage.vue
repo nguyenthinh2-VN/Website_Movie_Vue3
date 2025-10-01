@@ -69,7 +69,6 @@
         </section>
       </div>
     </main>
-    
     <AppFooter></AppFooter>
   </div>
 </template>
@@ -80,6 +79,7 @@ import AppFooter from '@/components/Footer.vue'
 import MoviePagination from '@/components/PaginationNew.vue'
 import { useAnimeStore } from '@/stores/animeStore'
 import MovieCardNew from '@/components/MovieCardNew.vue'
+import { useLCPOptimization } from '@/composables/useLCPOptimization.js'
 
 export default {
   name: 'AnimePage',
@@ -91,6 +91,9 @@ export default {
   },
   setup() {
     const animeStore = useAnimeStore()
+    // Auto LCP optimization được kích hoạt trong composable
+    useLCPOptimization()
+    
     return { animeStore }
   },
   async mounted() {

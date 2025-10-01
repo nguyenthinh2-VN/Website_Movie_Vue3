@@ -33,12 +33,22 @@
       }"
       class="anime-swiper"
     >
-      <swiper-slide v-for="movie in featuredMovies" :key="movie._id">
+      <swiper-slide v-for="(movie, index) in featuredMovies" :key="movie._id">
         <div class="slide-content" @click="navigateToMovie(movie.slug)">
           <div
             class="slide-background"
             :style="{ backgroundImage: `url(${getImageUrl(movie.thumb_url)})` }"
           >
+            <!-- Preload first image for LCP optimization -->
+            <img 
+              v-if="index === 0"
+              :src="getImageUrl(movie.thumb_url)"
+              :alt="movie.name"
+              class="lcp-preload-image"
+              fetchpriority="high"
+              loading="eager"
+              @load="onFirstImageLoad"
+            />
             <div class="slide-overlay"></div>
           </div>
           <div class="slide-info">
@@ -98,6 +108,7 @@ import { Pagination, Navigation, Autoplay } from "swiper/modules";
 
 // Import Pinia store
 import { useAnimeStore } from "@/stores/animeStore";
+import { resourcePreloader } from "@/utility/resourcePreloader.js";
 
 export default {
   name: "AnimeCarousel",
@@ -124,6 +135,19 @@ export default {
     if (!this.animeStore.hasMovies && !this.animeStore.loading) {
       await this.animeStore.fetchAnimeMovies(1);
     }
+
+    // Preload carousel images sau khi có data
+    this.$nextTick(() => {
+      if (this.featuredMovies.length > 0) {
+        // Preload first 3 carousel images với high priority
+        const imageUrls = this.featuredMovies
+          .slice(0, 3)
+          .map(movie => this.getImageUrl(movie.thumb_url))
+          .filter(Boolean);
+        
+        resourcePreloader.preloadImages(imageUrls, { priority: 'high', concurrent: 3 });
+      }
+    });
   },
   methods: {
 
@@ -197,6 +221,14 @@ export default {
       textarea.innerHTML = text;
       return textarea.value;
     },
+
+    // Handle first image load for LCP optimization
+    onFirstImageLoad() {
+      // Mark LCP element as loaded for performance tracking
+      if (typeof window !== 'undefined' && window.performance) {
+        performance.mark('carousel-first-image-loaded');
+      }
+    },
   },
 };
 </script>
@@ -265,6 +297,19 @@ export default {
     rgba(22, 33, 62, 0.45) 50%,
     rgba(15, 52, 96, 0.4) 100%
   );
+}
+
+/* LCP optimization - preload first image */
+.lcp-preload-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .slide-info {

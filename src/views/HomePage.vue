@@ -5,10 +5,12 @@
       <!-- Carousel Section -->
       <CarouselNew></CarouselNew>
 
-      <!-- Korean Series Slide Section -->
-      <KoreanSeriesSlide></KoreanSeriesSlide>
+      <!-- Korean Series Slide Section - Lazy loaded -->
+      <div ref="koreanSeriesContainer" class="korean-series-container">
+        <KoreanSeriesSlide v-if="showKoreanSeries"></KoreanSeriesSlide>
+      </div>
 
-      <div class="container featured-container">
+      <div class="container featured-container" ref="featuredContainer">
         <section class="featured-section">
           <h2 class="section-title">Phim mới cập nhật</h2>
 
@@ -84,6 +86,9 @@ import KoreanSeriesSlide from "@/components/KoreanSeriesSlide.vue";
 import MoviePagination from "@/components/PaginationNew.vue";
 import { useMovieStore } from "@/stores/movieStore";
 import MovieCardNew from "@/components/MovieCardNew.vue";
+import { useLCPOptimization } from "@/composables/useLCPOptimization.js";
+import { resourcePreloader, autoPreloadForRoute } from "@/utility/resourcePreloader.js";
+import { performanceMonitor } from "@/utility/performanceMonitor.js";
 
 export default {
   name: "HomePage",
@@ -97,11 +102,20 @@ export default {
   },
   setup() {
     const movieStore = useMovieStore();
-    return { movieStore };
+    const { setupLazyLoading } = useLCPOptimization();
+    
+    return { 
+      movieStore,
+      setupLazyLoading,
+      resourcePreloader,
+      autoPreloadForRoute
+    };
   },
   data() {
     return {
       debugInfo: null,
+      showKoreanSeries: false,
+      showFeaturedMovies: false,
     };
   },
   computed: {
@@ -117,16 +131,58 @@ export default {
         ? parseInt(this.$route.query.page)
         : 1;
       await this.movieStore.fetchMovies(page);
+      
+      // Preload next page images after loading current page
+      if (this.movieStore.hasMovies) {
+        this.$nextTick(() => {
+          this.resourcePreloader.preloadNextPageImages(this.movieStore.movies, 6);
+        });
+      }
     },
     //Đưa State lên URL
     async handlePageChange(page) {
       await this.movieStore.changePage(page);
       this.$router.push({ query: { page } }); // lưu số trang vào URL
     },
+
+
+    // Initialize lazy loading observers
+    initLazyLoading() {
+      this.$nextTick(() => {
+        const elements = [
+          this.$refs.koreanSeriesContainer,
+          this.$refs.featuredContainer
+        ].filter(Boolean);
+
+        this.setupLazyLoading(elements, (target) => {
+          if (target === this.$refs.koreanSeriesContainer) {
+            this.showKoreanSeries = true;
+          } else if (target === this.$refs.featuredContainer) {
+            this.showFeaturedMovies = true;
+            this.loadMovies();
+          }
+        });
+      });
+    },
   },
   async mounted() {
-    // Load initial data
-    await this.loadMovies();
+    // Mark page load start
+    performanceMonitor.markEvent('homepage-mount-start');
+
+    // Initialize LCP Observer for carousel optimization
+    if (typeof window !== 'undefined') {
+      const { initLCPObserver } = await import('@/utility/lcpObserver.js');
+      initLCPObserver();
+    }
+
+    // Initialize lazy loading for other components
+    this.initLazyLoading();
+
+    // Mark page load complete
+    this.$nextTick(() => {
+      performanceMonitor.markEvent('homepage-mount-complete');
+      performanceMonitor.measureEvent('homepage-mount-duration', 'homepage-mount-start', 'homepage-mount-complete');
+    });
   },
 
   async activated() {
@@ -136,6 +192,7 @@ export default {
       await this.loadMovies();
     }
   },
+
 };
 </script>
 
@@ -150,6 +207,10 @@ export default {
 .main-content {
   flex: 1;
   padding: 0;
+}
+
+.korean-series-container {
+  min-height: 200px; /* Prevent layout shift while loading */
 }
 
 .container {
