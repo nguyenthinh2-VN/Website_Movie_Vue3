@@ -66,7 +66,7 @@
 
 <script>
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { useCategoryMovieStore } from "@/stores/categoryMovieStore";
+import { useRelatedMoviesStore } from "@/stores/relatedMoviesStore";
 import MovieCard from "@/components/MovieCardNew.vue";
 import "swiper/css";
 
@@ -84,9 +84,9 @@ export default {
     },
   },
   setup() {
-    const categoryMovieStore = useCategoryMovieStore();
+    const relatedMoviesStore = useRelatedMoviesStore();
     return {
-      categoryMovieStore,
+      relatedMoviesStore,
       modules: [],
     };
   },
@@ -128,28 +128,19 @@ export default {
         // Lấy thể loại đầu tiên của phim hiện tại
         const firstCategory = this.currentMovie.category[0];
 
-        // Fetch movies từ thể loại đó
-        await this.categoryMovieStore.fetchMoviesByCategory(
+        // Fetch related movies từ store mới
+        this.relatedMovies = await this.relatedMoviesStore.fetchRelatedMovies(
           firstCategory.slug,
-          1
+          this.currentMovie._id,
+          30
         );
-
-        if (
-          this.categoryMovieStore.movies &&
-          this.categoryMovieStore.movies.length > 0
-        ) {
-          // Lọc bỏ phim hiện tại và lấy tối đa 30 phim
-          this.relatedMovies = this.categoryMovieStore.movies
-            .filter((movie) => movie._id !== this.currentMovie._id)
-            .slice(0, 30);
-          
-          // Force load images after swiper is ready
-          this.$nextTick(() => {
-            setTimeout(() => {
-              this.forceLoadVisibleImages();
-            }, 500);
-          });
-        }
+        
+        // Force load images after swiper is ready
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.forceLoadVisibleImages();
+          }, 500);
+        });
       } catch (error) {
         this.error = "Không thể tải phim tương tự";
         console.error("Error loading related movies:", error);
