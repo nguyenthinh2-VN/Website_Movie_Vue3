@@ -72,11 +72,7 @@ export default {
     },
   },
   emits: ['remove-movie'],
-  computed: {
-    imageSizes() {
-      return '(max-width: 480px) 220px, (max-width: 768px) 300px, 500px';
-    }
-  },
+  
   mounted() {
     // Monitor image performance in development
     if (process.env.NODE_ENV === 'development') {
@@ -101,7 +97,7 @@ export default {
       }
       
       // Replace with ImageKit URL and add responsive transformations
-      const imagekitUrl = originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+      const imagekitUrl = originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki1/");
       
       // Add ImageKit transformations for responsive images
       // This will automatically serve the optimal size based on device

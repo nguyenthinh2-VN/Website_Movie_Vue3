@@ -415,6 +415,7 @@ export default {
 /* Navbar scroll effects */
 .navbar.scrolled {
   backdrop-filter: blur(20px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 .navbar.scrolled::before {
