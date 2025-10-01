@@ -153,7 +153,7 @@ export default {
 
     getImageUrl(posterUrl) {
       if (!posterUrl) {
-        return '';
+        return "";
       }
       let originalUrl;
       if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
@@ -161,7 +161,27 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${posterUrl}`;
       }
-      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+      
+      // Replace with ImageKit URL and add responsive transformations
+      const imagekitUrl = originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki1/");
+      
+      // Add ImageKit transformations for responsive images
+      const deviceWidth = window.innerWidth;
+      
+      // Mobile: set width to 500, PC: no transformation
+      if (deviceWidth <= 768) {
+        const transformations = `tr=w-500,h-750,c-at_max,q-80,f-auto`;
+        
+        // Check if URL already has transformations
+        if (imagekitUrl.includes('?')) {
+          return `${imagekitUrl}&${transformations}`;
+        } else {
+          return `${imagekitUrl}?${transformations}`;
+        }
+      } else {
+        // PC: return original ImageKit URL without transformations
+        return imagekitUrl;
+      }
     },
 
 
