@@ -27,20 +27,19 @@ export const useAnimeStore = defineStore('anime', {
       
       try {
         const response = await fetch(`https://phimapi.com/v1/api/danh-sach/hoat-hinh?page=${page}&limit=20`)
-        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         
         const data = await response.json()
-        if (!silent) {
-          console.log('Anime Movies API Response:', data)
-        }
         
         if (data.status) {
           // Kiểm tra cấu trúc data theo API mẫu
           if (data.data && data.data.items) {
             this.movies = data.data.items
+            if (!silent) {
+              console.log('Anime movies loaded successfully')
+            }
             
             // Cập nhật pagination từ data.data.params.pagination
             if (data.data.params && data.data.params.pagination) {
@@ -58,11 +57,6 @@ export const useAnimeStore = defineStore('anime', {
                 currentPage: page,
                 totalPages: Math.ceil(this.movies.length / 20)
               }
-            }
-            
-            if (!silent) {
-              console.log('Anime movies loaded:', this.movies.length)
-              console.log('Pagination info:', this.pagination)
             }
             
           } else {

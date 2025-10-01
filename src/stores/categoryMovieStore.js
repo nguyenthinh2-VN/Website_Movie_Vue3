@@ -37,9 +37,6 @@ export const useCategoryMovieStore = defineStore('categoryMovie', {
         }
         
         const data = await response.json()
-        if (!silent) {
-          console.log('Category Movies API Response:', data)
-        }
         
         if (data.status) {
           // Kiểm tra cấu trúc data theo API mẫu
@@ -72,10 +69,6 @@ export const useCategoryMovieStore = defineStore('categoryMovie', {
               }
             }
             
-            if (!silent) {
-              console.log('Category movies loaded:', this.movies.length)
-              console.log('Pagination info:', this.pagination)
-            }
             
           } else {
             console.error('Unexpected data structure:', data)
@@ -96,23 +89,6 @@ export const useCategoryMovieStore = defineStore('categoryMovie', {
       }
     },
 
-    async changePage(categorySlug, page) {
-      if (page === this.pagination.currentPage || this.loading) return
-      
-      await this.fetchMoviesByCategory(categorySlug, page)
-      
-      // Scroll to section-title when changing page
-      const sectionTitle = document.querySelector('.section-title')
-      if (sectionTitle) {
-        sectionTitle.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        })
-      } else {
-        // Fallback to top if section-title not found
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-    },
 
     // Reset store
     resetStore() {

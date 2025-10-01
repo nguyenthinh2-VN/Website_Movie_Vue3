@@ -36,8 +36,10 @@ const currentPageModel = ref(props.currentPage);
 
 // Watch for prop changes to sync with parent
 watch(() => props.currentPage, (newPage) => {
-  currentPageModel.value = newPage;
-});
+  if (newPage !== currentPageModel.value) {
+    currentPageModel.value = newPage;
+  }
+}, { immediate: true });
 
 // Handle page change
 const handlePageChange = (page) => {

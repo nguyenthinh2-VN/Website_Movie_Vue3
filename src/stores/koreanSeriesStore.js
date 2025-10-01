@@ -43,7 +43,7 @@ export const useKoreanSeriesStore = defineStore('koreanSeries', {
         // API endpoint for Korean series (phim-bo + han-quoc filter)
         const apiUrl = `https://phimapi.com/v1/api/danh-sach/phim-bo?page=${page}&country=han-quoc&limit=8`;
         
-        console.log('Fetching Korean series from:', apiUrl);
+        console.log('Fetching Korean series...');
         
         const response = await fetch(apiUrl);
         
@@ -73,7 +73,7 @@ export const useKoreanSeriesStore = defineStore('koreanSeries', {
           }
           
           this.lastFetchTime = Date.now();
-          console.log(`Loaded ${this.movies.length} Korean series movies`);
+          console.log('Korean series loaded successfully');
           
         } else {
           throw new Error(data.msg || 'Invalid API response format');

@@ -172,7 +172,7 @@ export default {
         .slice(0, 3)
         .map((cat) => cat.name)
         .join(", ");
-    },
+    },  
     // Navigate to movie detail page
     navigateToMovie(movieSlug) {
       this.$router.push(`/phim/${movieSlug}`);

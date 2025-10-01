@@ -16,13 +16,13 @@ export const useSavedMoviesStore = defineStore('savedMovies', {
     addMovie(movie) {
       // Đảm bảo movie và movie.slug tồn tại trước khi thêm
       if (movie && movie.slug && !this.isMovieSaved(movie.slug)) {
-        console.log('Adding movie:', movie.name, 'with slug:', movie.slug);
+        console.log('Adding movie to saved list');
         const movieClone = JSON.parse(JSON.stringify(movie));
         this.savedMovies.push(movieClone);
         this.updateLocalStorage();
-        console.log('Movie added successfully. Total saved movies:', this.savedMovies.length);
+        console.log('Movie saved successfully');
       } else {
-        console.log('Movie not added - already exists or invalid data');
+        console.log('Movie not saved - already exists or invalid data');
       }
     },
 

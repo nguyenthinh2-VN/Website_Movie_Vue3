@@ -111,23 +111,38 @@ export default {
   data() {
     return {
       categorySlug: null,
+      isInitialLoad: true,
     };
   },
   async mounted() {
     // Lấy category slug từ route params
     this.categorySlug = this.$route.params.slug;
+    
+    // Luôn load data khi mounted
     if (this.categorySlug) {
       await this.loadCategoryMovies();
     }
+    
+    // Set flag sau khi mounted xong
+    this.$nextTick(() => {
+      this.isInitialLoad = false;
+    });
   },
 
   async activated() {
     // Called when component is activated by keep-alive
+    if (this.isInitialLoad) {
+      return; // Skip on initial load since mounted() already handles it
+    }
+    
     const newSlug = this.$route.params.slug;
+    const currentPage = this.$route.query.page ? parseInt(this.$route.query.page) : 1;
+    const storeCurrentPage = this.categoryMovieStore.pagination.currentPage;
 
-    // If slug changed or no data, reload
+    // If slug changed or page changed, reload
     if (
       newSlug !== this.categorySlug ||
+      currentPage !== storeCurrentPage ||
       (!this.categoryMovieStore.hasMovies && !this.categoryMovieStore.loading)
     ) {
       this.categorySlug = newSlug;
@@ -137,11 +152,8 @@ export default {
     }
   },
   async beforeRouteUpdate(to, from, next) {
-    // Khi route thay đổi (chuyển sang thể loại khác)
+    // Chỉ cập nhật categorySlug, để mounted xử lý việc fetch data
     this.categorySlug = to.params.slug;
-    if (this.categorySlug) {
-      await this.loadCategoryMovies();
-    }
     next();
   },
   watch: {
@@ -149,9 +161,9 @@ export default {
     'categoryMovieStore.categoryInfo': {
       handler(newCategoryInfo) {
         if (newCategoryInfo && newCategoryInfo.name) {
-          document.title = `Thể Loại - ${newCategoryInfo.name} - Website Movie`;
+          document.title = `Thể Loại - ${newCategoryInfo.name} - Yuki Movie`;
         } else {
-          document.title = 'Thể Loại - Website Movie';
+          document.title = 'Thể Loại - Yuki Movie';
         }
       },
       immediate: true,
@@ -161,16 +173,35 @@ export default {
   methods: {
     async loadCategoryMovies() {
       if (this.categorySlug) {
+        // Lấy page từ URL query, nếu không có thì mặc định 1
+        const page = this.$route.query.page ? parseInt(this.$route.query.page) : 1;
+        
         await this.categoryMovieStore.fetchMoviesByCategory(
           this.categorySlug,
-          1
+          page
         );
       }
     },
-
     async handlePageChange(page) {
       if (this.categorySlug) {
-        await this.categoryMovieStore.changePage(this.categorySlug, page);
+        // Chỉ cập nhật URL, không gọi changePage vì nó sẽ fetch data
+        // mounted() sẽ tự động fetch data khi URL thay đổi
+        this.$router.push({ query: { page } });
+        
+        // Scroll lên đầu trang sau khi đổi page
+        this.$nextTick(() => {
+          // Scroll to section-title when changing page
+          const sectionTitle = document.querySelector('.section-title');
+          if (sectionTitle) {
+            sectionTitle.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          } else {
+            // Fallback to top if section-title not found
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
       }
     },
   },
@@ -326,13 +357,6 @@ export default {
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-  .movies-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 992px) {
   .movies-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;

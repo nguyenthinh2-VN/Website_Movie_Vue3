@@ -417,9 +417,9 @@ export default {
     "movieDetailStore.movieInfo": {
       handler(newMovieInfo) {
         if (newMovieInfo && newMovieInfo.name) {
-          document.title = `${newMovieInfo.name} - Website Movie`;
+          document.title = `${newMovieInfo.name} - Yuki Movie`;
         } else {
-          document.title = "Chi Tiết Phim - Website Movie";
+          document.title = "Chi Tiết Phim - Yuki Movie";
         }
       },
       immediate: true,

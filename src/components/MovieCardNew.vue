@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { ImagePerformanceMonitor } from '@/utils/imagePerformanceMonitor.js';
+
 
 export default {
   name: "MovieCardNew",
@@ -73,17 +73,7 @@ export default {
   },
   emits: ['remove-movie'],
   
-  mounted() {
-    // Monitor image performance in development
-    if (process.env.NODE_ENV === 'development') {
-      this.$nextTick(() => {
-        const imageEl = this.$el.querySelector('.poster-image');
-        if (imageEl) {
-          ImagePerformanceMonitor.logImageLoad(imageEl, this.movie.name);
-        }
-      });
-    }
-  },
+
   methods: {
     getImageUrl(posterUrl) {
       if (!posterUrl) {

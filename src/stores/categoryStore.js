@@ -113,7 +113,6 @@ export const useCategoryStore = defineStore('category', {
         console.log('Categories already loading, skipping...')
         return this.categories
       }
-
       this.loading = true
       this.error = null
       
@@ -126,20 +125,19 @@ export const useCategoryStore = defineStore('category', {
         }
         
         const data = await response.json()
-        console.log('Categories API Response:', data)
         
         // API trả về trực tiếp một array các thể loại
         if (Array.isArray(data)) {
           this.categories = data
-          this.lastFetched = Date.now() // Lưu thời gian fetch
+          this.lastFetched = Date.now() // Lưu thòi gian fetch
           this.saveToCache() // Lưu vào localStorage
-          console.log('Categories loaded from API:', this.categories.length)
+          console.log('Categories loaded successfully')
         } else if (data.status && data.data && Array.isArray(data.data)) {
           // Fallback cho trường hợp API có wrapper
           this.categories = data.data
-          this.lastFetched = Date.now() // Lưu thời gian fetch
+          this.lastFetched = Date.now() // Lưu thòi gian fetch
           this.saveToCache() // Lưu vào localStorage
-          console.log('Categories loaded from API:', this.categories.length)
+          console.log('Categories loaded successfully')
         } else {
           console.error('Unexpected categories data structure:', data)
           throw new Error('Invalid categories data structure')

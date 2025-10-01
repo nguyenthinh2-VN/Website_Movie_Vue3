@@ -57,7 +57,6 @@ export const useSearchStore = defineStore('search', {
         }
         
         const data = await response.json()
-        console.log('Search API Response:', data)
         
         // Xử lý dữ liệu trả về
         if (data.status === 'success' && data.data) {

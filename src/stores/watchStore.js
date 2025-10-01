@@ -74,22 +74,13 @@ export const useWatchStore = defineStore('watch', {
         }
         
         const data = await response.json()
-        console.log('Watch Page API Response:', data)
         
         if (data.status) {
           if (data.movie) {
             this.movie = data.movie
             this.episodesData = data.episodes || []
             
-            console.log('Movie loaded for watch:', this.movie.name)
-            console.log('Episodes loaded for watch:', this.episodesData.length, 'servers')
-            
-            // Log chi tiết từng server
-            if (this.episodesData && Array.isArray(this.episodesData)) {
-              this.episodesData.forEach((server, index) => {
-                console.log(`Server ${index + 1}: ${server.server_name} - ${server.server_data?.length || 0} episodes`)
-              })
-            }
+            console.log('Movie and episodes loaded for watch')
           } else {
             throw new Error('Invalid movie data structure')
           }
@@ -115,11 +106,10 @@ export const useWatchStore = defineStore('watch', {
       if (currentEpisode && currentEpisode.link_m3u8) {
         // Sử dụng link_m3u8 để tạo URL cho iframe
         this.currentEpisodeUrl = `https://player.phimapi.com/player/?url=${encodeURIComponent(currentEpisode.link_m3u8)}`
-        console.log('Current episode URL:', this.currentEpisodeUrl)
-        console.log('Episode info:', currentEpisode)
+        console.log('Episode URL updated')
       } else {
         this.currentEpisodeUrl = null
-        console.log('No valid episode URL found')
+        console.log('No valid episode found')
       }
     },
 

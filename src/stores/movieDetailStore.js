@@ -66,7 +66,6 @@ export const useMovieDetailStore = defineStore('movieDetail', {
         }
         
         const data = await response.json()
-        console.log('Movie Detail API Response:', data)
         
         if (data.status) {
           // API trả về movie detail trong data.movie và episodes trong data.episodes
@@ -84,7 +83,7 @@ export const useMovieDetailStore = defineStore('movieDetail', {
                 //console.log(`Server ${index + 1}: ${server.server_name} - ${server.server_data?.length || 0} episodes`)
               }) */
             } else {
-              console.log('No episodes available for this movie')
+              console.log('No episodes data')
             }
           } else {
             console.error('Unexpected data structure:', data)
