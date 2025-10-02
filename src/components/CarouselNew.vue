@@ -161,27 +161,9 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${posterUrl}`;
       }
-      
-      // Replace with ImageKit URL and add responsive transformations
-      const imagekitUrl = originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki1/");
-      
-      // Add ImageKit transformations for responsive images
-      const deviceWidth = window.innerWidth;
-      
-      // Mobile: set width to 500, PC: no transformation
-      if (deviceWidth <= 768) {
-        const transformations = `tr=w-500,h-750,c-at_max,q-80,f-auto`;
-        
-        // Check if URL already has transformations
-        if (imagekitUrl.includes('?')) {
-          return `${imagekitUrl}&${transformations}`;
-        } else {
-          return `${imagekitUrl}?${transformations}`;
-        }
-      } else {
-        // PC: return original ImageKit URL without transformations
-        return imagekitUrl;
-      }
+      return `https://phimapi.com/image.php?url=${encodeURIComponent(
+        originalUrl
+      )}`;
     },
 
 
@@ -282,7 +264,7 @@ export default {
 }
 
 .anime-swiper {
-  height: 88vh;
+  height: 90vh;
   min-height: 400px;
 }
 
@@ -496,7 +478,7 @@ export default {
 
 @media (max-width: 768px) {
   .anime-swiper {
-    height: 50vh;
+    height: 60vh;
     min-height: 300px;
   }
 
@@ -534,7 +516,7 @@ export default {
 
 @media (max-width: 576px) {
   .anime-swiper {
-    height: 45vh;
+    height: 50vh;
     min-height: 280px;
   }
 
