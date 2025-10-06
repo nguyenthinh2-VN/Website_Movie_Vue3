@@ -3,7 +3,7 @@
     <div class="container">
       <!-- Brand/Logo -->
       <router-link class="navbar-brand" to="/">
-        <img src="@/assets/LogoPNG1-1.png" alt="Yuki Anime" class="logo-image" />
+        <img src="@/assets/Logo3.png" alt="Yuki Anime" class="logo-image" />
       </router-link>
 
       <!-- Mobile controls -->
@@ -386,7 +386,7 @@ export default {
 /* Custom navbar background */
 .navbar {
   background: #131419 !important;
-  padding: 0 0;
+  padding: 5px 0;
   position: fixed !important;
   top: 0;
   left: 0;
@@ -431,16 +431,19 @@ export default {
 
 /* Logo image styling */
 .logo-image {
-  height: 95px;
+  height: 200px;
   width: auto;
-  max-width: 120px;
-  object-fit: contain;
+  padding: 0 0;
+  position: relative;
+  z-index: 10;
+  transition: all 0.3s ease;
 }
 
 .navbar-brand {
   padding: 0 0;
   display: flex;
   align-items: center;
+  height: 65px; /* Fixed height to prevent navbar expansion */
 }
 
 
@@ -572,7 +575,7 @@ export default {
 
 @media (max-width: 576px) {
   .logo-image {
-    height: 90px;
+    height: 200px;
   }
 
   .search-input {
@@ -592,7 +595,7 @@ export default {
   }
 
   .logo-image {
-    height: 90px;
+    height: 200px;
   }
 }
 

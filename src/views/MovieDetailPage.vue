@@ -352,7 +352,7 @@
 
 <script>
 import AppHeader from "@/components/Header.vue";
-import AppFooter from "@/components/Footer.vue";
+import AppFooter from "@/components/Footer.vue"; 
 import RelatedMoviesNew from "@/components/RelatedMoviesNew.vue";
 import { useMovieDetailStore } from "@/stores/movieDetailStore";
 import { useSavedMoviesStore } from '@/stores/savedMoviesStore';
@@ -378,12 +378,13 @@ export default {
     const router = useRouter();
     const slug = route.params.slug;
     
-    const { watched } = useWatchedEpisodes(slug);
+    const { watched, markAsWatched } = useWatchedEpisodes(slug);
     
     return { 
       movieDetailStore, 
       savedMoviesStore,
       watched,
+      markAsWatched,
       router
     };
   },
@@ -563,7 +564,6 @@ export default {
         return "bi bi-star";
       }
     },
-
     goToCategory(categorySlug) {
       this.$router.push(`/the-loai/${categorySlug}`);
     },
@@ -572,6 +572,10 @@ export default {
       /* console.log("Play episode:", episode);
       console.log("Server index:", serverIndex);
       console.log("Episode index:", episodeIndex); */
+
+      // Đánh dấu tập đã xem trước khi chuyển hướng
+      const episodeNumber = episodeIndex + 1; // Chuyển từ 0-based về 1-based
+      this.markAsWatched(episodeNumber);
 
       // Chuyển hướng đến trang xem phim
       this.$router.push({
