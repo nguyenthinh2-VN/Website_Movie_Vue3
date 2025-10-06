@@ -264,6 +264,7 @@
                         :key="episodeIndex"
                         size="small"
                         class="episode-btn"
+                        :class="{ 'watched-episode': isEpisodeWatched(episodeIndex) }"
                         @click="playEpisode(serverIndex, episodeIndex, episode)"
                       >
                         {{ getEpisodeNumber(episode.name) }}
@@ -356,6 +357,8 @@ import RelatedMoviesNew from "@/components/RelatedMoviesNew.vue";
 import { useMovieDetailStore } from "@/stores/movieDetailStore";
 import { useSavedMoviesStore } from '@/stores/savedMoviesStore';
 import { NButton, NCollapse, NTag, NTooltip } from "naive-ui";
+import { useRoute, useRouter } from "vue-router";
+import { useWatchedEpisodes } from "@/composables/useWatchedEpisodes";
 
 export default {
   name: "MovieDetailPage",
@@ -371,7 +374,18 @@ export default {
   setup() {
     const movieDetailStore = useMovieDetailStore();
     const savedMoviesStore = useSavedMoviesStore();
-    return { movieDetailStore, savedMoviesStore };
+    const route = useRoute();
+    const router = useRouter();
+    const slug = route.params.slug;
+    
+    const { watched } = useWatchedEpisodes(slug);
+    
+    return { 
+      movieDetailStore, 
+      savedMoviesStore,
+      watched,
+      router
+    };
   },
   data() {
     return {
@@ -592,6 +606,11 @@ export default {
       // Bỏ chữ "Tập" và chỉ lấy số: "Tập 01" -> "1", "Tập 1" -> "1"
       return episodeName.replace(/^Tập\s*0?/, "").trim();
     },
+    
+    isEpisodeWatched(episodeIndex) {
+      const episodeNumber = episodeIndex + 1; // Chuyển từ 0-based về 1-based
+      return this.watched.includes(episodeNumber);
+    },
   },
 };
 </script>
@@ -806,6 +825,16 @@ export default {
 
 .episode-btn:hover {
   background-color: #e46565 !important;
+}
+
+/* Watched Episode Styling */
+.episode-btn.watched-episode {
+  background-color: #f39c12 !important;
+  position: relative;
+}
+
+.episode-btn.watched-episode:hover {
+  background-color: #e67e22 !important;
 }
 
 .no-episodes {

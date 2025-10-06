@@ -76,10 +76,14 @@
                       size="small"
                       :type="isCurrentEpisode(serverIndex, episodeIndex) ? 'error' : 'default'"
                       class="episode-btn"
-                      :class="{ 'current-episode': isCurrentEpisode(serverIndex, episodeIndex) }"
+                      :class="{ 
+                        'current-episode': isCurrentEpisode(serverIndex, episodeIndex),
+                        'watched-episode': isEpisodeWatched(episodeIndex) && !isCurrentEpisode(serverIndex, episodeIndex)
+                      }"
                       @click="playEpisode(serverIndex, episodeIndex)"
                     >
                       {{ getEpisodeNumber(episode.name) }}
+                  
                     </n-button>
                   </div>
                   
@@ -124,6 +128,10 @@ import AppHeader from '@/components/Header.vue'
 import AppFooter from '@/components/Footer.vue'
 import { useWatchStore } from '@/stores/watchStore'
 import { NButton, NTag } from 'naive-ui'
+import { useRoute } from "vue-router"
+import { useWatchedEpisodes } from "@/composables/useWatchedEpisodes"
+
+
 
 export default {
   name: 'WatchPage',
@@ -135,7 +143,16 @@ export default {
   },
   setup() {
     const watchStore = useWatchStore()
-    return { watchStore }
+    const route = useRoute()
+    const slug = route.params.slug
+    
+    const { watched, markAsWatched } = useWatchedEpisodes(slug)
+    
+    return { 
+      watchStore,
+      watched,
+      markAsWatched
+    }
   },
   data() {
     return {
@@ -177,6 +194,10 @@ export default {
         await this.watchStore.fetchMovieDetail(this.movieSlug)
         // Sau khi load xong, set episode hiện tại
         this.watchStore.setCurrentEpisode(this.currentServerIndex, this.currentEpisodeIndex)
+        
+        // Đánh dấu tập hiện tại đã xem
+        const currentEpisodeNumber = this.currentEpisodeIndex + 1 // Chuyển từ 0-based về 1-based
+        this.markAsWatched(currentEpisodeNumber)
       } catch (error) {
         console.error('Error loading episode:', error)
       }
@@ -189,6 +210,10 @@ export default {
       
       // Cập nhật store
       this.watchStore.setCurrentEpisode(serverIndex, episodeIndex)
+      
+      // Đánh dấu tập đã xem
+      const episodeNumber = episodeIndex + 1 // Chuyển từ 0-based về 1-based
+      this.markAsWatched(episodeNumber)
       
       // Cập nhật URL mà không reload trang
       const newRoute = {
@@ -218,6 +243,11 @@ export default {
     getEpisodeNumber(episodeName) {
       // Bỏ chữ "Tập" và chỉ lấy số: "Tập 01" -> "1", "Tập 1" -> "1"
       return episodeName.replace(/^Tập\s*0?/, '').trim()
+    },
+    
+    isEpisodeWatched(episodeIndex) {
+      const episodeNumber = episodeIndex + 1 // Chuyển từ 0-based về 1-based
+      return this.watched.includes(episodeNumber)
     }
   }
 }
@@ -383,6 +413,26 @@ export default {
   background-color: #E46565 !important;
   box-shadow: 0 0 10px rgba(228, 101, 101, 0.5);
   transform: scale(1.05);
+}
+
+/* Watched Episode Styling */
+.episode-btn.watched-episode {
+  background-color: #4CAF50 !important;
+  position: relative;
+}
+
+.episode-btn.watched-episode:hover {
+  background-color: #45a049 !important;
+}
+
+.watched-icon {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 0.6rem;
+  color: #fff;
+  background: #4CAF50;
+  border-radius: 50%;
 }
 
 .no-episodes,

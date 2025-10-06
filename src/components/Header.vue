@@ -730,7 +730,7 @@ export default {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
   padding: 1rem;
-  top: 80px;
+  top: 70px;
   left: 0;
   right: 0;
   z-index: 1000;
