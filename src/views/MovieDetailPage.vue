@@ -195,7 +195,6 @@
                     </div>
                   </div>
                 </div>
-
                 <!-- Movie Description - Moved here -->
                 <div class="movie-description-inline">
                   <h3 class="description-title">Nội dung phim</h3>
@@ -206,11 +205,8 @@
                         collapsed: !isDescriptionExpanded && isDescriptionLong,
                       }"
                       ref="descriptionText"
+                      v-html="movieDetailStore.movieInfo.content || 'Nội dung phim đang được cập nhật...'"
                     >
-                      {{
-                        movieDetailStore.movieInfo.content ||
-                        "Nội dung phim đang được cập nhật..."
-                      }}
                     </p>
                     <button
                       v-if="isDescriptionLong"

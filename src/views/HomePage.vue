@@ -3,7 +3,7 @@
     <AppHeader></AppHeader>
     <main class="main-content">
       <!-- Carousel Section -->
-      <CarouselNew></CarouselNew>
+      <ModernBanner></ModernBanner>
 
       <!-- Korean Series Slide Section - Lazy loaded -->
       <div ref="koreanSeriesContainer" class="korean-series-container">
@@ -81,13 +81,16 @@
 <script>
 import AppHeader from "@/components/Header.vue";
 import AppFooter from "@/components/Footer.vue";
-import CarouselNew from "@/components/CarouselNew.vue";
+import ModernBanner from "@/components/ModernBanner.vue";
 import KoreanSeriesSlide from "@/components/KoreanSeriesSlide.vue";
 import MoviePagination from "@/components/PaginationNew.vue";
 import { useMovieStore } from "@/stores/movieStore";
 import MovieCardNew from "@/components/MovieCardNew.vue";
 import { useLCPOptimization } from "@/composables/useLCPOptimization.js";
-import { resourcePreloader, autoPreloadForRoute } from "@/utility/resourcePreloader.js";
+import {
+  resourcePreloader,
+  autoPreloadForRoute,
+} from "@/utility/resourcePreloader.js";
 import { performanceMonitor } from "@/utility/performanceMonitor.js";
 
 export default {
@@ -95,7 +98,7 @@ export default {
   components: {
     AppHeader,
     AppFooter,
-    CarouselNew,
+    ModernBanner,
     KoreanSeriesSlide,
     MoviePagination,
     MovieCardNew,
@@ -103,12 +106,12 @@ export default {
   setup() {
     const movieStore = useMovieStore();
     const { setupLazyLoading } = useLCPOptimization();
-    
-    return { 
+
+    return {
       movieStore,
       setupLazyLoading,
       resourcePreloader,
-      autoPreloadForRoute
+      autoPreloadForRoute,
     };
   },
   data() {
@@ -131,11 +134,14 @@ export default {
         ? parseInt(this.$route.query.page)
         : 1;
       await this.movieStore.fetchMovies(page);
-      
+
       // Preload next page images after loading current page
       if (this.movieStore.hasMovies) {
         this.$nextTick(() => {
-          this.resourcePreloader.preloadNextPageImages(this.movieStore.movies, 6);
+          this.resourcePreloader.preloadNextPageImages(
+            this.movieStore.movies,
+            6
+          );
         });
       }
     },
@@ -145,13 +151,12 @@ export default {
       this.$router.push({ query: { page } }); // lưu số trang vào URL
     },
 
-
     // Initialize lazy loading observers
     initLazyLoading() {
       this.$nextTick(() => {
         const elements = [
           this.$refs.koreanSeriesContainer,
-          this.$refs.featuredContainer
+          this.$refs.featuredContainer,
         ].filter(Boolean);
 
         this.setupLazyLoading(elements, (target) => {
@@ -167,11 +172,11 @@ export default {
   },
   async mounted() {
     // Mark page load start
-    performanceMonitor.markEvent('homepage-mount-start');
+    performanceMonitor.markEvent("homepage-mount-start");
 
     // Initialize LCP Observer for carousel optimization
-    if (typeof window !== 'undefined') {
-      const { initLCPObserver } = await import('@/utility/lcpObserver.js');
+    if (typeof window !== "undefined") {
+      const { initLCPObserver } = await import("@/utility/lcpObserver.js");
       initLCPObserver();
     }
 
@@ -180,8 +185,12 @@ export default {
 
     // Mark page load complete
     this.$nextTick(() => {
-      performanceMonitor.markEvent('homepage-mount-complete');
-      performanceMonitor.measureEvent('homepage-mount-duration', 'homepage-mount-start', 'homepage-mount-complete');
+      performanceMonitor.markEvent("homepage-mount-complete");
+      performanceMonitor.measureEvent(
+        "homepage-mount-duration",
+        "homepage-mount-start",
+        "homepage-mount-complete"
+      );
     });
   },
 
@@ -192,7 +201,6 @@ export default {
       await this.loadMovies();
     }
   },
-
 };
 </script>
 
