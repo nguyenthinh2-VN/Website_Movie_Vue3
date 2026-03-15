@@ -1,0 +1,339 @@
+<template>
+  <div class="theater-page">
+    <AppHeader></AppHeader>
+
+    <main class="main-content">
+      <div class="container theater-container">
+        <section class="theater-section">
+          <!-- Title -->
+          <h2 class="section-title">Phim Chiếu Rạp</h2>
+
+          <!-- Stats -->
+          <div
+            v-if="theaterMovieStore.pagination.totalItems > 0"
+            class="theater-stats"
+          >
+            <p class="stats-text">
+              Tìm thấy
+              <strong>{{
+                theaterMovieStore.pagination.totalItems.toLocaleString()
+              }}</strong>
+              phim chiếu rạp
+            </p>
+          </div>
+
+          <!-- Loading -->
+          <div v-if="theaterMovieStore.listLoading" class="loading-section">
+            <div class="spinner-border text-light" role="status">
+              <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="loading-text">Đang tải danh sách phim...</p>
+          </div>
+
+          <!-- Error -->
+          <div v-else-if="theaterMovieStore.listError" class="error-section">
+            <div class="alert alert-danger" role="alert">
+              Lỗi tải dữ liệu: {{ theaterMovieStore.listError }}
+              <button
+                @click="loadMovies"
+                class="btn btn-sm btn-outline-danger ms-2"
+              >
+                Thử lại
+              </button>
+            </div>
+          </div>
+
+          <!-- Movies Grid -->
+          <div v-else-if="theaterMovieStore.hasListMovies" class="movies-grid">
+            <MovieCardNew
+              v-for="movie in theaterMovieStore.listMovies"
+              :key="movie._id"
+              :movie="movie"
+            />
+          </div>
+
+          <!-- No Data -->
+          <div v-else class="no-data-section">
+            <div class="no-data-content">
+              <i class="bi bi-film display-1 text-muted mb-3"></i>
+              <h3 class="text-light mb-2">Không có phim nào</h3>
+              <p class="text-muted mb-3">
+                Không tìm thấy phim chiếu rạp nào.
+              </p>
+              <button @click="$router.push('/')" class="btn btn-retry">
+                <i class="bi bi-house me-2"></i>
+                Về trang chủ
+              </button>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <MoviePagination
+            v-if="
+              theaterMovieStore.hasListMovies &&
+              theaterMovieStore.pagination.totalPages > 1
+            "
+            :current-page="theaterMovieStore.pagination.currentPage"
+            :total-pages="theaterMovieStore.pagination.totalPages"
+            :total-items="theaterMovieStore.pagination.totalItems"
+            @page-change="handlePageChange"
+          />
+        </section>
+      </div>
+    </main>
+
+    <AppFooter></AppFooter>
+  </div>
+</template>
+
+<script>
+import AppHeader from "@/components/Header.vue";
+import AppFooter from "@/components/Footer.vue";
+import MovieCardNew from "@/components/MovieCardNew.vue";
+import MoviePagination from "@/components/PaginationNew.vue";
+import { useTheaterMovieStore } from "@/stores/theaterMovieStore";
+
+export default {
+  name: "TheaterMoviePage",
+  components: {
+    AppHeader,
+    AppFooter,
+    MovieCardNew,
+    MoviePagination,
+  },
+  setup() {
+    const theaterMovieStore = useTheaterMovieStore();
+    return { theaterMovieStore };
+  },
+  async mounted() {
+    await this.loadMovies();
+  },
+  watch: {
+    "$route.query.page"() {
+      this.loadMovies();
+    },
+  },
+  methods: {
+    async loadMovies() {
+      const page = this.$route.query.page
+        ? parseInt(this.$route.query.page)
+        : 1;
+      await this.theaterMovieStore.fetchTheaterMovieList(page);
+      document.title = "Phim Chiếu Rạp - Yuki Movie";
+    },
+    handlePageChange(page) {
+      this.$router.push({ query: { page } });
+      this.$nextTick(() => {
+        const sectionTitle = document.querySelector(".section-title");
+        if (sectionTitle) {
+          sectionTitle.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.theater-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.main-content {
+  flex: 1;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.theater-container {
+  padding-top: 3rem;
+}
+
+.theater-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  color: #ff6b6b;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+  border-radius: 2px;
+}
+
+.theater-stats {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.stats-text {
+  color: #a0a0a0;
+  font-size: 1rem;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  display: inline-block;
+}
+
+.stats-text strong {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.loading-section,
+.error-section {
+  text-align: center;
+  padding: 3rem 0;
+  color: #ffffff;
+}
+
+.loading-section .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  color: #a0a0a0;
+}
+
+.error-section .alert {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #ffffff;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Movies Grid */
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* No Data */
+.no-data-section {
+  text-align: center;
+  padding: 4rem 2rem;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-data-content {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.no-data-content i {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-retry {
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+  border: none;
+  color: #ffffff;
+  padding: 0.75rem 2rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-retry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .movies-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .stats-text {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .theater-container {
+    padding-top: 2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+</style>

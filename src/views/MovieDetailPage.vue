@@ -30,7 +30,26 @@
 
       <!-- Movie Detail Content -->
       <div v-else-if="movieDetailStore.hasMovie" class="movie-detail-content">
-        <div class="container">
+        <!-- Background Backdrop -->
+        <div class="backdrop-section">
+          <div class="backdrop-image-box">
+            <div
+              class="backdrop-img"
+              :style="{
+                backgroundImage: `url(${getImageUrl(
+                  movieDetailStore.movieInfo.thumb_url
+                )})`,
+              }"
+            ></div>
+            <!-- Overlay Fade 4 edges -->
+            <div class="overlay-bottom"></div>
+            <div class="overlay-top"></div>
+            <div class="overlay-left"></div>
+            <div class="overlay-right"></div>
+          </div>
+        </div>
+
+        <div class="container detail-container">
           <div class="row container-body">
             <!-- Movie Poster -->
             <div class="col-lg-4 col-md-5">
@@ -88,11 +107,15 @@
                         @click="toggleSaveMovieHandler"
                       >
                         <template #icon>
-                          <i :class="isSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"></i>
+                          <i
+                            :class="
+                              isSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'
+                            "
+                          ></i>
                         </template>
                       </n-button>
                     </template>
-                    {{ isSaved ? 'Bỏ lưu' : 'Lưu phim' }}
+                    {{ isSaved ? "Bỏ lưu" : "Lưu phim" }}
                   </n-tooltip>
                 </div>
               </div>
@@ -205,9 +228,11 @@
                         collapsed: !isDescriptionExpanded && isDescriptionLong,
                       }"
                       ref="descriptionText"
-                      v-html="movieDetailStore.movieInfo.content || 'Nội dung phim đang được cập nhật...'"
-                    >
-                    </p>
+                      v-html="
+                        movieDetailStore.movieInfo.content ||
+                        'Nội dung phim đang được cập nhật...'
+                      "
+                    ></p>
                     <button
                       v-if="isDescriptionLong"
                       class="btn btn-toggle-description"
@@ -260,7 +285,9 @@
                         :key="episodeIndex"
                         size="small"
                         class="episode-btn"
-                        :class="{ 'watched-episode': isEpisodeWatched(episodeIndex) }"
+                        :class="{
+                          'watched-episode': isEpisodeWatched(episodeIndex),
+                        }"
                         @click="playEpisode(serverIndex, episodeIndex, episode)"
                       >
                         {{ getEpisodeNumber(episode.name) }}
@@ -348,10 +375,10 @@
 
 <script>
 import AppHeader from "@/components/Header.vue";
-import AppFooter from "@/components/Footer.vue"; 
+import AppFooter from "@/components/Footer.vue";
 import RelatedMoviesNew from "@/components/RelatedMoviesNew.vue";
 import { useMovieDetailStore } from "@/stores/movieDetailStore";
-import { useSavedMoviesStore } from '@/stores/savedMoviesStore';
+import { useSavedMoviesStore } from "@/stores/savedMoviesStore";
 import { NButton, NCollapse, NTag, NTooltip } from "naive-ui";
 import { useRoute, useRouter } from "vue-router";
 import { useWatchedEpisodes } from "@/composables/useWatchedEpisodes";
@@ -373,15 +400,15 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const slug = route.params.slug;
-    
+
     const { watched, markAsWatched } = useWatchedEpisodes(slug);
-    
-    return { 
-      movieDetailStore, 
+
+    return {
+      movieDetailStore,
       savedMoviesStore,
       watched,
       markAsWatched,
-      router
+      router,
     };
   },
   data() {
@@ -400,9 +427,9 @@ export default {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     // Debug: Check if stores are properly initialized
-    console.log('MovieDetailPage mounted');
-    console.log('movieDetailStore:', this.movieDetailStore);
-    console.log('savedMoviesStore:', this.savedMoviesStore);
+    console.log("MovieDetailPage mounted");
+    console.log("movieDetailStore:", this.movieDetailStore);
+    console.log("savedMoviesStore:", this.savedMoviesStore);
 
     // Lấy movie slug từ route params
     this.movieSlug = this.$route.params.slug;
@@ -448,31 +475,33 @@ export default {
     },
   },
 
-
   methods: {
     toggleSaveMovieHandler() {
-      console.log('Toggle save clicked');
-      
+      console.log("Toggle save clicked");
+
       // Kiểm tra xem các store có tồn tại không
       if (!this.savedMoviesStore) {
-        console.error('savedMoviesStore is not available');
+        console.error("savedMoviesStore is not available");
         return;
       }
-      
+
       if (!this.movieDetailStore?.movieInfo) {
-        console.error('No movieInfo available');
+        console.error("No movieInfo available");
         return;
       }
-     
+
       try {
         this.savedMoviesStore.toggleSaveMovie(this.movieDetailStore.movieInfo);
 
         this.$nextTick(() => {
-          console.log('After toggle - saved state:', this.isSaved);
-          console.log('Saved movies count:', this.savedMoviesStore.savedMovies.length);
+          console.log("After toggle - saved state:", this.isSaved);
+          console.log(
+            "Saved movies count:",
+            this.savedMoviesStore.savedMovies.length
+          );
         });
       } catch (error) {
-        console.error('Error toggling save movie:', error);
+        console.error("Error toggling save movie:", error);
       }
     },
 
@@ -530,16 +559,14 @@ export default {
     },
 
     getImageUrl(posterUrl) {
-      if (!posterUrl) {
-        return '';
-      }
-      let originalUrl;
-      if (posterUrl.startsWith("http") || posterUrl.startsWith("//")) {
-        originalUrl = posterUrl;
-      } else {
-        originalUrl = `https://phimimg.com/${posterUrl}`;
-      }
-      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+      if (!posterUrl) return "";
+
+      let finalUrl = posterUrl.includes("https://phimimg.com")
+        ? posterUrl
+        : `https://phimimg.com/${posterUrl}`;
+
+      // Use proxy for optimal resize/loading
+      return `https://phimapi.com/image.php?url=${finalUrl}`;
     },
 
     getStarClass(starPosition, rating) {
@@ -591,7 +618,9 @@ export default {
         this.expandedEpisodes = ["episodes"];
         // Scroll to episodes section
         this.$nextTick(() => {
-          const episodesSection = document.querySelector(".description-content");
+          const episodesSection = document.querySelector(
+            ".description-content"
+          );
           if (episodesSection) {
             episodesSection.scrollIntoView({
               behavior: "smooth",
@@ -606,7 +635,7 @@ export default {
       // Bỏ chữ "Tập" và chỉ lấy số: "Tập 01" -> "1", "Tập 1" -> "1"
       return episodeName.replace(/^Tập\s*0?/, "").trim();
     },
-    
+
     isEpisodeWatched(episodeIndex) {
       const episodeNumber = episodeIndex + 1; // Chuyển từ 0-based về 1-based
       return this.watched.includes(episodeNumber);
@@ -626,7 +655,7 @@ export default {
 
 .main-content {
   flex: 1;
-  padding: 2rem 0;
+  padding: 0;
 }
 
 .container {
@@ -669,6 +698,88 @@ export default {
   color: #ffffff;
 }
 
+/* Background Backdrop */
+.backdrop-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.backdrop-image-box {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: 42%;
+}
+
+.backdrop-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+}
+
+/* Overlay fades - 4 edges */
+.overlay-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70%;
+  background: linear-gradient(to top, #0f0f23 20%, transparent);
+  z-index: 1;
+}
+
+.overlay-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, #0f0f23, transparent);
+  z-index: 1;
+}
+
+.overlay-left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 33%;
+  background: linear-gradient(to right, #0f0f23, transparent);
+  z-index: 1;
+}
+
+.overlay-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 33%;
+  background: linear-gradient(to left, #0f0f23, transparent);
+  z-index: 1;
+}
+
+/* Detail container overlaps backdrop */
+.detail-container {
+  position: relative;
+  z-index: 2;
+  margin-top: -250px;
+}
+
+/* Blur background for content readability */
+.container-body {
+  background: rgba(15, 15, 35, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 /* Poster Section */
 .movie-poster-section {
   margin-bottom: 2rem;
@@ -676,15 +787,17 @@ export default {
 
 .poster-container {
   position: relative;
-  border-radius: 15px;
+  width: 160px;
+  border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .movie-poster-img {
   width: 100%;
-  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
   display: block;
 }
 
@@ -732,8 +845,7 @@ export default {
   gap: 1rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;
-} 
-
+}
 
 /* Custom styling for bookmark button */
 .btn-bookmark {
@@ -1072,8 +1184,16 @@ export default {
 
   /* Smaller poster for mobile */
   .poster-container {
-    max-width: 250px;
+    max-width: 160px;
     margin: 0 auto 1rem auto;
+  }
+
+  .backdrop-image-box {
+    padding-top: 60%;
+  }
+
+  .detail-container {
+    margin-top: -60px;
   }
 
   .movie-title {

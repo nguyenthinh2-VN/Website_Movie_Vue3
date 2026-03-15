@@ -10,6 +10,11 @@
         <KoreanSeriesSlide v-if="showKoreanSeries"></KoreanSeriesSlide>
       </div>
 
+      <!-- Theater Movie Slide Section - Lazy loaded -->
+      <div ref="theaterMovieContainer" class="theater-movie-container">
+        <TheaterMovieSlide v-if="showTheaterMovies"></TheaterMovieSlide>
+      </div>
+
       <div class="container featured-container" ref="featuredContainer">
         <section class="featured-section">
           <h2 class="section-title">Phim mới cập nhật</h2>
@@ -83,6 +88,7 @@ import AppHeader from "@/components/Header.vue";
 import AppFooter from "@/components/Footer.vue";
 import ModernBanner from "@/components/ModernBanner.vue";
 import KoreanSeriesSlide from "@/components/KoreanSeriesSlide.vue";
+import TheaterMovieSlide from "@/components/TheaterMovieSlide.vue";
 import MoviePagination from "@/components/PaginationNew.vue";
 import { useMovieStore } from "@/stores/movieStore";
 import MovieCardNew from "@/components/MovieCardNew.vue";
@@ -100,6 +106,7 @@ export default {
     AppFooter,
     ModernBanner,
     KoreanSeriesSlide,
+    TheaterMovieSlide,
     MoviePagination,
     MovieCardNew,
   },
@@ -118,6 +125,7 @@ export default {
     return {
       debugInfo: null,
       showKoreanSeries: false,
+      showTheaterMovies: false,
       showFeaturedMovies: false,
     };
   },
@@ -156,12 +164,15 @@ export default {
       this.$nextTick(() => {
         const elements = [
           this.$refs.koreanSeriesContainer,
+          this.$refs.theaterMovieContainer,
           this.$refs.featuredContainer,
         ].filter(Boolean);
 
         this.setupLazyLoading(elements, (target) => {
           if (target === this.$refs.koreanSeriesContainer) {
             this.showKoreanSeries = true;
+          } else if (target === this.$refs.theaterMovieContainer) {
+            this.showTheaterMovies = true;
           } else if (target === this.$refs.featuredContainer) {
             this.showFeaturedMovies = true;
             this.loadMovies();

@@ -9,10 +9,17 @@
       <!-- Mobile controls -->
       <div class="mobile-controls d-lg-none ms-auto">
         <!-- Saved Movies Button (Mobile) -->
-        <router-link to="/phim-da-luu" class="saved-movies-btn-wrapper text-decoration-none">
+        <router-link
+          to="/phim-da-luu"
+          class="saved-movies-btn-wrapper text-decoration-none"
+        >
           <div class="saved-movies-icon-container">
             <i class="bi bi-bookmark"></i>
-            <span v-if="savedMoviesStore.savedCount > 0" class="saved-count-badge">{{ savedMoviesStore.savedCount }}</span>
+            <span
+              v-if="savedMoviesStore.savedCount > 0"
+              class="saved-count-badge"
+              >{{ savedMoviesStore.savedCount }}</span
+            >
           </div>
         </router-link>
 
@@ -45,25 +52,62 @@
         <!-- Navigation links -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0" @click="closeDropdowns">
           <li class="nav-item">
-            <router-link class="nav-link" :class="{ active: $route.name === 'Home' }" to="/">Trang chủ</router-link>
+            <router-link
+              class="nav-link"
+              :class="{ active: $route.name === 'Home' }"
+              to="/"
+              >Trang chủ</router-link
+            >
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :class="{ active: $route.name === 'Anime' }" to="/hoat-hinh">Anime mới</router-link>
+            <router-link
+              class="nav-link"
+              :class="{ active: $route.name === 'Anime' }"
+              to="/hoat-hinh"
+              >Anime mới</router-link
+            >
           </li>
           <li class="nav-item dropdown" ref="categoryDropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" :class="{ show: isCategoryDropdownOpen }" @click.prevent.stop="toggleCategoryDropdown" :aria-expanded="isCategoryDropdownOpen">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              :class="{ show: isCategoryDropdownOpen }"
+              @click.prevent.stop="toggleCategoryDropdown"
+              :aria-expanded="isCategoryDropdownOpen"
+            >
               Thể loại
             </a>
-            <ul class="dropdown-menu" :class="{ show: isCategoryDropdownOpen }" v-if="categoryStore.hasCategories">
-              <li v-for="category in categoryStore.categories" :key="category._id">
-                <router-link class="dropdown-item" :class="{ 'active-category': activeCategorySlug === category.slug }" :to="`/the-loai/${category.slug}`" @click="closeDropdowns">
+            <ul
+              class="dropdown-menu"
+              :class="{ show: isCategoryDropdownOpen }"
+              v-if="categoryStore.hasCategories"
+            >
+              <li
+                v-for="category in categoryStore.categories"
+                :key="category._id"
+              >
+                <router-link
+                  class="dropdown-item"
+                  :class="{
+                    'active-category': activeCategorySlug === category.slug,
+                  }"
+                  :to="`/the-loai/${category.slug}`"
+                  @click="closeDropdowns"
+                >
                   {{ category.name }}
                 </router-link>
               </li>
             </ul>
-            <ul class="dropdown-menu" :class="{ show: isCategoryDropdownOpen }" v-else>
+            <ul
+              class="dropdown-menu"
+              :class="{ show: isCategoryDropdownOpen }"
+              v-else
+            >
               <li>
-                <span class="dropdown-item-text text-muted">{{ categoryStore.loading ? "Đang tải..." : "Lỗi" }}</span>
+                <span class="dropdown-item-text text-muted">{{
+                  categoryStore.loading ? "Đang tải..." : "Lỗi"
+                }}</span>
               </li>
             </ul>
           </li>
@@ -75,16 +119,27 @@
         <!-- Right side icons (Desktop) -->
         <div class="right-icons d-none d-lg-flex align-items-center">
           <!-- Saved Movies Button (Desktop) -->
-          <router-link to="/phim-da-luu" class="saved-movies-btn-wrapper align-items-center text-decoration-none me-3">
+          <router-link
+            to="/phim-da-luu"
+            class="saved-movies-btn-wrapper align-items-center text-decoration-none me-3"
+          >
             <div class="saved-movies-icon-container">
               <i class="bi bi-bookmark"></i>
-              <span v-if="savedMoviesStore.savedCount > 0" class="saved-count-badge">{{ savedMoviesStore.savedCount }}</span>
+              <span
+                v-if="savedMoviesStore.savedCount > 0"
+                class="saved-count-badge"
+                >{{ savedMoviesStore.savedCount }}</span
+              >
             </div>
           </router-link>
 
           <!-- Desktop Search form -->
           <div class="desktop-search-container position-relative">
-            <form class="w-100 d-flex" role="search" @submit.prevent="handleSearch">
+            <form
+              class="w-100 d-flex"
+              role="search"
+              @submit.prevent="handleSearch"
+            >
               <input
                 class="form-control search-input"
                 type="search"
@@ -99,21 +154,51 @@
               <button class="btn btn-search" type="submit">🔍</button>
             </form>
             <!-- Suggestions Dropdown -->
-            <div v-if="showSuggestions && searchQuery.length > 0" class="suggestions-dropdown">
-              <div v-if="searchStore.suggestionsLoading" class="suggestion-item text-secondary">Đang tìm...</div>
-              <ul v-else-if="searchStore.suggestions.length > 0" class="list-unstyled mb-0">
-                <li v-for="movie in searchStore.suggestions.slice(0, 7)" :key="movie._id" class="suggestion-item" @mousedown.prevent="selectSuggestion(movie.slug)">
-                  <img :src="getImageUrl(movie.poster_url)" :alt="movie.name" class="suggestion-poster" loading="lazy" @error="handleImageError" @load="handleImageLoad"/>
+            <div
+              v-if="showSuggestions && searchQuery.length > 0"
+              class="suggestions-dropdown"
+            >
+              <div
+                v-if="searchStore.suggestionsLoading"
+                class="suggestion-item text-secondary"
+              >
+                Đang tìm...
+              </div>
+              <ul
+                v-else-if="searchStore.suggestions.length > 0"
+                class="list-unstyled mb-0"
+              >
+                <li
+                  v-for="movie in searchStore.suggestions.slice(0, 7)"
+                  :key="movie._id"
+                  class="suggestion-item"
+                  @mousedown.prevent="selectSuggestion(movie.slug)"
+                >
+                  <img
+                    :src="getImageUrl(movie.poster_url)"
+                    :alt="movie.name"
+                    class="suggestion-poster"
+                    loading="lazy"
+                    @error="handleImageError"
+                    @load="handleImageLoad"
+                  />
                   <div class="suggestion-info">
                     <div class="suggestion-name">{{ movie.name }}</div>
-                    <div class="suggestion-year text-muted">{{ movie.year }}</div>
+                    <div class="suggestion-year text-muted">
+                      {{ movie.year }}
+                    </div>
                   </div>
                 </li>
-                <li class="suggestion-item view-all" @mousedown.prevent="handleSearch">
+                <li
+                  class="suggestion-item view-all"
+                  @mousedown.prevent="handleSearch"
+                >
                   Xem tất cả kết quả cho "{{ searchQuery }}"
                 </li>
               </ul>
-              <div v-else class="suggestion-item text-secondary">Không tìm thấy kết quả phù hợp.</div>
+              <div v-else class="suggestion-item text-secondary">
+                Không tìm thấy kết quả phù hợp.
+              </div>
             </div>
           </div>
         </div>
@@ -283,7 +368,7 @@ export default {
 
     getImageUrl(thumbUrl) {
       if (!thumbUrl) {
-        return '';
+        return "";
       }
       let originalUrl;
       if (thumbUrl.startsWith("http") || thumbUrl.startsWith("//")) {
@@ -291,7 +376,10 @@ export default {
       } else {
         originalUrl = `https://phimimg.com/${thumbUrl}`;
       }
-      return originalUrl.replace("https://phimimg.com/upload/vod/", "https://ik.imagekit.io/yuki/");
+      return originalUrl.replace(
+        "https://phimimg.com/upload/vod/",
+        "https://ik.imagekit.io/yuki/"
+      );
     },
 
     handleSearch() {
@@ -427,8 +515,6 @@ export default {
   );
 }
 
-
-
 /* Logo image styling */
 .logo-image {
   height: 200px;
@@ -445,7 +531,6 @@ export default {
   align-items: center;
   height: 65px; /* Fixed height to prevent navbar expansion */
 }
-
 
 /* Navigation links styling */
 .navbar-nav .nav-link {
